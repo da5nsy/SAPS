@@ -1,4 +1,11 @@
-function [data,peak] = read_UPTREK(folder,plt)
+% Function for reading data from a UPRtek MK350
+% https://www.uprtek.com/en/index.html
+
+% Note, before use, all files were opened in excel and resaved as '.xlsx'
+% files due to unusual '.XLS' files (probably a quicker way to do this
+% could be found).
+
+function [data,peak] = read_UPRtek(folder,plt)
 
 cd(folder)
 xlsx=dir('*.xlsx');
