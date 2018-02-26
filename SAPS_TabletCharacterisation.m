@@ -4,6 +4,8 @@
 % have upon the measured (and thus viewed) output of the screen. 
 
 clear, clc, close all
+%stuff
+a=5+5;
 
 %% Pre run commands:
 rootdir = fullfile('C:','Users','cege-user','Dropbox','UCL','Data',...
