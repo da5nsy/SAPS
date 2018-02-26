@@ -6,6 +6,7 @@
 clear, clc, close all
 %stuff
 a=5+5;
+b=10+10;
 
 %% Pre run commands:
 rootdir = fullfile('C:','Users','cege-user','Dropbox','UCL','Data',...
