@@ -16,9 +16,9 @@ clc, clear, close all
 % both raw and numerical data is useful, but they require different excel
 % addresses to specify data)
 
-location='PAMELA_20180205';  %changing this changes EVERYTHING
+location='basement_rgby_test';  %changing this changes EVERYTHING
                     %'PAMELA' or 'GRANT' or 'BM' or '200s' or
-                    %'PAMELA_20180205'
+                    %'PAMELA_20180205' or 'basement_rgby_test'
 
 rootdir = fullfile('C:','Users','cege-user','Dropbox','UCL','Data','Tablet',location);
 cd(rootdir)
@@ -188,6 +188,21 @@ end
 %figure, hold on
 %axis square
 
+fig=figure('Position', [50, 50, 800, 800]); hold on; hold on
+locus=scatter(ubar,vbar,100,'filled');
+LCol=xyz2rgb(ciedata2_10001);
+LCol(LCol<0)=0;LCol(LCol>1)=1;
+locus.CData=LCol;
+axis square;
+
+load('SAPS_SelectableColoursGamut.mat')
+s=scatter(u(1:50:end),v(1:50:end),20,occ(1:50:end));
+view(2)
+axis('equal')
+xlim([0.14 0.25]),ylim([0.41 0.52])
+colorbar
+xlabel('u'''),ylabel('v'''),zlabel('Y')
+
 % from http://stackoverflow.com/questions/3417028/ellipse-around-the-data-in-matlab
 
 G = 1*ones(n-10,1);
@@ -295,15 +310,36 @@ for k=1:numel(sheets)
             end
             %end
     elseif strcmp(location,'PAMELA_20180205')
-        if k==1
-           p1{k}=plot(e(1,:), e(2,:),'r');
-        elseif (1<k) && (k<11)
-            p1{k}=plot(e(1,:), e(2,:),'g');
-        elseif (10<k) && (k<20)
-            p1{k}=plot(e(1,:), e(2,:),'b');
-        elseif (19<k) 
-            p1{k}=plot(e(1,:), e(2,:),'k');
+        if strcmp(files(k).participant,'test, corners, colour & bw') ||...
+                strcmp(files(k).participant,'KW')
+            %specify a single participant (also plots test case)
+            if k==1
+                p1{k}=plot(e(1,:), e(2,:),'r'); %!!!!!!!!!!!!!!!!!!!!!!!!!
+                scatter(X(idx,1),X(idx,2),'r','filled')
+            elseif (1<k) && (k<11)
+                p1{k}=plot(e(1,:), e(2,:),'g'); %!!!!!!!!!!!!!!!!!!!!!!!!!
+                scatter(X(idx,1),X(idx,2),'g','filled')
+            elseif (10<k) && (k<20)
+                p1{k}=plot(e(1,:), e(2,:),'b'); %!!!!!!!!!!!!!!!!!!!!!!!!!
+                scatter(X(idx,1),X(idx,2),'b','filled')
+            elseif (19<k)
+                p1{k}=plot(e(1,:), e(2,:),'k');
+                scatter(X(idx,1),X(idx,2),'k','filled') %!!!!!!!!!!!!!!!!!!!!!!!!!
+            end
+            %title(files(k).participant) !!!!!!!!!!!!!!!!!!!!!!!!!
+            saveas(fig,strcat('bg',files(k).participant,'.tif'))
+            %scatter(X(idx,1),X(idx,2),'k','filled') !!!!!!!!!!!!!!!!!!!!!!!!!
         end
+%     elseif strcmp(location,'PAMELA_20180205')
+%         if k==1
+%            p1{k}=plot(e(1,:), e(2,:),'r');
+%         elseif (1<k) && (k<11)
+%             p1{k}=plot(e(1,:), e(2,:),'g');
+%         elseif (10<k) && (k<20)
+%             p1{k}=plot(e(1,:), e(2,:),'b');
+%         elseif (19<k) 
+%             p1{k}=plot(e(1,:), e(2,:),'k');
+%         end
         
     end
     
@@ -313,4 +349,8 @@ end
 % if strcmp(location,'PAMELA')
 %     legend([p1 p2 p3])
 % end
-legend
+%legend !!!!!!!!!!!!!!!!!!!!!!!!!
+
+close
+
+
