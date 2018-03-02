@@ -16,7 +16,7 @@ clc, clear, close all
 % both raw and numerical data is useful, but they require different excel
 % addresses to specify data)
 
-location='basement_rgby_test';  %changing this changes EVERYTHING
+location='PAMELA_20180205';  %changing this changes EVERYTHING
                     %'PAMELA' or 'GRANT' or 'BM' or '200s' or
                     %'PAMELA_20180205' or 'basement_rgby_test'
 
@@ -188,7 +188,7 @@ end
 %figure, hold on
 %axis square
 
-fig=figure('Position', [50, 50, 800, 800]); hold on; hold on
+fig=figure('Position', [50, 50, 800, 800]); hold on
 locus=scatter(ubar,vbar,100,'filled');
 LCol=xyz2rgb(ciedata2_10001);
 LCol(LCol<0)=0;LCol(LCol>1)=1;
@@ -199,7 +199,7 @@ load('SAPS_SelectableColoursGamut.mat')
 s=scatter(u(1:50:end),v(1:50:end),20,occ(1:50:end));
 view(2)
 axis('equal')
-xlim([0.14 0.25]),ylim([0.41 0.52])
+xlim([0.14 0.25]),ylim([0.41 0.52]) %close to selectable gamut boundary
 colorbar
 xlabel('u'''),ylabel('v'''),zlabel('Y')
 
@@ -219,7 +219,7 @@ X=reshape(permute([ TabletData(1:end-10,11,:), ...
 
 % for i=1:numel(sheets)
 %     kstd_u(i)=nanstd(TabletData(1:end-10,11,i));
-%     kstd_u(i)=nanstd(TabletData(1:end-10,12,i));
+%     kstd_v(i)=nanstd(TabletData(1:end-10,12,i));
 % end
 
 for k=1:numel(sheets)
@@ -314,21 +314,20 @@ for k=1:numel(sheets)
                 strcmp(files(k).participant,'KW')
             %specify a single participant (also plots test case)
             if k==1
-                p1{k}=plot(e(1,:), e(2,:),'r'); %!!!!!!!!!!!!!!!!!!!!!!!!!
+                p1{k}=plot(e(1,:), e(2,:),'r'); 
                 scatter(X(idx,1),X(idx,2),'r','filled')
             elseif (1<k) && (k<11)
-                p1{k}=plot(e(1,:), e(2,:),'g'); %!!!!!!!!!!!!!!!!!!!!!!!!!
+                p1{k}=plot(e(1,:), e(2,:),'g'); 
                 scatter(X(idx,1),X(idx,2),'g','filled')
             elseif (10<k) && (k<20)
-                p1{k}=plot(e(1,:), e(2,:),'b'); %!!!!!!!!!!!!!!!!!!!!!!!!!
+                p1{k}=plot(e(1,:), e(2,:),'b'); 
                 scatter(X(idx,1),X(idx,2),'b','filled')
             elseif (19<k)
                 p1{k}=plot(e(1,:), e(2,:),'k');
-                scatter(X(idx,1),X(idx,2),'k','filled') %!!!!!!!!!!!!!!!!!!!!!!!!!
+                scatter(X(idx,1),X(idx,2),'k','filled') 
             end
-            %title(files(k).participant) !!!!!!!!!!!!!!!!!!!!!!!!!
-            saveas(fig,strcat('bg',files(k).participant,'.tif'))
-            %scatter(X(idx,1),X(idx,2),'k','filled') !!!!!!!!!!!!!!!!!!!!!!!!!
+            %title(files(k).participant) 
+            %saveas(fig,strcat('bg',files(k).participant,'.tif'))
         end
 %     elseif strcmp(location,'PAMELA_20180205')
 %         if k==1
@@ -340,6 +339,28 @@ for k=1:numel(sheets)
 %         elseif (19<k) 
 %             p1{k}=plot(e(1,:), e(2,:),'k');
 %         end
+    elseif strcmp(location,'basement_rgby_test')
+        if k==1
+            p1{k}=plot(e(1,:), e(2,:),'r');
+            scatter(X(idx,1),X(idx,2),...
+                'MarkerFaceColor','r','MarkerEdgeColor','k')
+        elseif k==2
+            p1{k}=plot(e(1,:), e(2,:),'g');
+            scatter(X(idx,1),X(idx,2),...
+                'MarkerFaceColor','g','MarkerEdgeColor','k')
+        elseif k==3
+            p1{k}=plot(e(1,:), e(2,:),'b');
+            scatter(X(idx,1),X(idx,2),...
+                'MarkerFaceColor','b','MarkerEdgeColor','k')
+        elseif k==4
+            p1{k}=plot(e(1,:), e(2,:),'Color',[1,.9,0]);
+            scatter(X(idx,1),X(idx,2),...
+                'MarkerFaceColor',[1,.9,0],'MarkerEdgeColor','k')
+        elseif k==5
+            p1{k}=plot(e(1,:), e(2,:),'Color',[0.5,0.5,0.5]);
+            scatter(X(idx,1),X(idx,2),...
+                'MarkerFaceColor',[0.5,0.5,0.5],'MarkerEdgeColor','k')
+        end
         
     end
     
@@ -349,8 +370,66 @@ end
 % if strcmp(location,'PAMELA')
 %     legend([p1 p2 p3])
 % end
-%legend !!!!!!!!!!!!!!!!!!!!!!!!!
+%legend 
 
-close
+%close
 
+%% Plot standard deviation for each observer across runs
+
+for i=1:numel(sheets)
+    kstd_u(i)=nanstd(TabletData(1:end-10,11,i));
+    kstd_v(i)=nanstd(TabletData(1:end-10,12,i));
+end
+
+kstd_mean=mean([kstd_u;kstd_v]);
+
+figure, hold on
+scatter(0,kstd_mean(1),'r','filled');
+plot([0,9],[kstd_mean(1),kstd_mean(1)],'r--');
+scatter(1:9,kstd_mean(2:10),'g','filled');
+scatter(1:9,kstd_mean(11:19),'b','filled');
+scatter(1:9,kstd_mean(20:28),'k','filled');
+
+xlabel('Observer')
+%Replace numbers with participant identifiers
+%xticklabels({files([2:10]).participant}) 
+ylabel('Mean SD in u'' and v''')
+
+%% Analyse repeat values
+
+
+fig=figure('Position', [50, 50, 800, 800]); hold on; 
+locus=scatter(ubar,vbar,100,'filled');
+LCol=xyz2rgb(ciedata2_10001);
+LCol(LCol<0)=0;LCol(LCol>1)=1;
+locus.CData=LCol;
+axis square;
+
+load('SAPS_SelectableColoursGamut.mat')
+s=scatter(u(1:50:end),v(1:50:end),20,occ(1:50:end));
+view(2)
+axis('equal')
+xlim([0.14 0.25]),ylim([0.41 0.52]) %close to selectable gamut boundary
+colorbar
+xlabel('u'''),ylabel('v'''),zlabel('Y')
+
+
+repeats=[3,8];
+
+% % Test I've got the right ones
+%TabletData(repeats,1:3,:);
+
+for i=length(sheets)
+%for i=2:10
+%for i=11:19
+%for i=20:28
+    plot(TabletData(repeats,11,i),TabletData(repeats,12,i),'k')
+    scatter(TabletData(repeats(2),11,i),TabletData(repeats(2),12,i),kstd_mean(i)*10000,'k','filled')
+    text(TabletData(repeats(2),11,i)+0.003,TabletData(repeats(2),12,i),files(i).participant)
+end
+
+% % Add Baseline data (essentially zero apart from the difference from
+% % input variability)
+% plot(TabletData(repeats,11,1),TabletData(repeats,12,1),'r')
+% scatter(TabletData(repeats(2),11,1),TabletData(repeats(2),12,1),'r')
 
