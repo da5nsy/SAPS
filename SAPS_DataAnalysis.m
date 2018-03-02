@@ -311,20 +311,24 @@ for k=1:numel(sheets)
             %end
     elseif strcmp(location,'PAMELA_20180205')
         if strcmp(files(k).participant,'test, corners, colour & bw') ||...
-                strcmp(files(k).participant,'KW')
+                strcmp(files(k).participant,'SP')
             %specify a single participant (also plots test case)
             if k==1
                 p1{k}=plot(e(1,:), e(2,:),'r'); 
                 scatter(X(idx,1),X(idx,2),'r','filled')
+                %comet(X(idx,1),X(idx,2))
             elseif (1<k) && (k<11)
                 p1{k}=plot(e(1,:), e(2,:),'g'); 
                 scatter(X(idx,1),X(idx,2),'g','filled')
+                %comet(X(idx,1),X(idx,2))
             elseif (10<k) && (k<20)
                 p1{k}=plot(e(1,:), e(2,:),'b'); 
                 scatter(X(idx,1),X(idx,2),'b','filled')
+                %comet(X(idx,1),X(idx,2))
             elseif (19<k)
                 p1{k}=plot(e(1,:), e(2,:),'k');
                 scatter(X(idx,1),X(idx,2),'k','filled') 
+                %comet(X(idx,1),X(idx,2))
             end
             %title(files(k).participant) 
             %saveas(fig,strcat('bg',files(k).participant,'.tif'))
@@ -432,4 +436,5 @@ end
 % % input variability)
 % plot(TabletData(repeats,11,1),TabletData(repeats,12,1),'r')
 % scatter(TabletData(repeats(2),11,1),TabletData(repeats(2),12,1),'r')
+
 
