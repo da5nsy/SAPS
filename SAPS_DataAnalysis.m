@@ -185,9 +185,6 @@ if strcmp(location,'BM')
     scatter(GLuv(1,:),GLuv(2,:),'k*');
 end
 
-if strcmp(location,'PAMELA_20180205')
-    
-end
 %% Plot
 %figure, hold on
 %axis square
