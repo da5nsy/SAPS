@@ -2,7 +2,7 @@ clc, clear, close all
 % Requires Psychtoolbox and read_UPRtek
 
 %% Load lighting measurements
-[spectral_data,peak]=read_UPRtek('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20180205 Spectra',[]);
+[spectral_data,peak,lux_fromExcel]=read_UPRtek('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20180205 Spectra',[]);
 S_spectral_data=[360,1,401];
 
 for i=1:size(spectral_data,2)

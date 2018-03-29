@@ -5,7 +5,7 @@
 % files due to unusual '.XLS' files (probably a quicker way to do this
 % could be found).
 
-function [data,peak] = read_UPRtek(folder,plt)
+function [data,peak,lux] = read_UPRtek(folder,plt)
 
 cd(folder)
 xlsx=dir('*.xlsx');
@@ -19,9 +19,15 @@ for i=1:length(xlsx)
     xlRange = 'B10:B410';
     
     data(:,i) = xlsread(filename,xlRange);
+    
     [~,txt,~] = xlsread(filename,'A7:A7');
     words = regexp(txt,' ','split');
     peak(i) = str2double(words{1,1}{1,4});
+    clear txt words
+    
+    [~,txt,~] = xlsread(filename,'A9:A9');
+    words = regexp(txt,' ','split');
+    lux(i) = str2double(words{1,1}{1,3});
     clear txt words
     
     if plt==1

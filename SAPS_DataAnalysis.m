@@ -138,7 +138,7 @@ LCol(LCol<0)=0;LCol(LCol>1)=1;
 locus.CData=LCol;
 axis square;
 
-%% Pull GL
+%% Pull light measurements
 
 if strcmp(location,'BM')
     
@@ -184,6 +184,10 @@ if strcmp(location,'BM')
     GLuv=[4*GLxy(1,:)./(-2*GLxy(1,:)+12*GLxy(2,:)+3);9*GLxy(2,:)./(-2*GLxy(1,:)+12*GLxy(2,:)+3)];
     scatter(GLuv(1,:),GLuv(2,:),'k*');
 end
+
+if strcmp(location,'PAMELA_20180205')
+    
+end
 %% Plot
 %figure, hold on
 %axis square
@@ -213,6 +217,19 @@ end
 X=reshape(permute([ TabletData(1:end-10,11,:), ...
     TabletData(1:end-10,12,:)],[1 3 2])...
     ,[(n-10)*numel(sheets),2]);
+
+%PlotZeros = 1;
+if exist('PlotZeros','var')
+    clear G X
+    G = 1*ones(n,1);
+    for i=2:numel(sheets)
+        G = [G ; i*ones(n,1)];
+    end
+    
+    X=reshape(permute([ TabletData(1:end,11,:), ...
+        TabletData(1:end,12,:)],[1 3 2])...
+        ,[(n)*numel(sheets),2]);
+end
 
 %gscatter(X(:,1), X(:,2), G)
 %gscatter(X(1:n-10,1), X(1:n-10,2), G(1:n-10))
@@ -311,12 +328,13 @@ for k=1:numel(sheets)
             %end
     elseif strcmp(location,'PAMELA_20180205')
         if strcmp(files(k).participant,'test, corners, colour & bw') ||...
-                strcmp(files(k).participant,'SP')
+                strcmp(files(k).participant,'KW')
             %specify a single participant (also plots test case)
             if k==1
                 p1{k}=plot(e(1,:), e(2,:),'r'); 
                 scatter(X(idx,1),X(idx,2),'r','filled')
                 %comet(X(idx,1),X(idx,2))
+                
             elseif (1<k) && (k<11)
                 p1{k}=plot(e(1,:), e(2,:),'g'); 
                 scatter(X(idx,1),X(idx,2),'g','filled')
