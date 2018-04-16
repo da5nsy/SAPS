@@ -8,6 +8,7 @@ clc, clear, close all
 % Add Grant data (different run length, should just be able to change n)
 % Clean up data, find a way to threshold and recognise duds
 % Threshold BM data
+% Replace dist function in BM plotting
 
 %% Load Data
 
@@ -16,9 +17,10 @@ clc, clear, close all
 % both raw and numerical data is useful, but they require different excel
 % addresses to specify data)
 
-location='PAMELA_20180205';  %changing this changes EVERYTHING
+location='basement_greyCard_test';  %changing this changes EVERYTHING
                     %'PAMELA' or 'GRANT' or 'BM' or '200s' or
-                    %'PAMELA_20180205' or 'basement_rgby_test'
+                    %'PAMELA_20180205' or 'basement_rgby_test' or
+                    %'basement_greyCard_test'
 
 rootdir = fullfile('C:','Users','cege-user','Dropbox','UCL','Data','Tablet',location);
 cd(rootdir)
@@ -144,7 +146,7 @@ if strcmp(location,'BM')
     
     clear out
     
-    rootdir = ('C:\Users\ucesars\Dropbox\UCL\Data\Tablet\BM\GL');
+    rootdir = ('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\BM\GL');
     %rootdir = uigetdir; %select folder where .mmg (GL Optis) files stored
     cd(rootdir)
     mmg=dir('*.mmg');
@@ -195,6 +197,8 @@ LCol=xyz2rgb(ciedata2_10001);
 LCol(LCol<0)=0;LCol(LCol>1)=1;
 locus.CData=LCol;
 axis square;
+
+%scatter(GLuv(1,:),GLuv(2,:),'k*');
 
 load('SAPS_SelectableColoursGamut.mat')
 s=scatter(u(1:50:end),v(1:50:end),20,occ(1:50:end));
@@ -273,22 +277,22 @@ for k=1:numel(sheets)
     if strcmp(location,'200s')
         p1=plot(e(1,:), e(2,:),'Color','k');
     
-        %Mod to pick out short adapt vs long adap
-    elseif strcmp(location,'PAMELA')
-        P='DG'; %specify participant
-        if strcmp(files(k).Light(1:2),'WW') && strcmp(files(k).participant,P)
-            p1{i}=plot(e(1,:), e(2,:),'DisplayName',files(k).Light);
-        end
-        
+%         %Mod to pick out short adapt vs long adap
 %     elseif strcmp(location,'PAMELA')
 %         P='DG'; %specify participant
-%         if strcmp(files(k).Light(1:2),'CW') && strcmp(files(k).participant,P)
-%             p1=plot(e(1,:), e(2,:), 'Color','b','DisplayName','CW');
-%         elseif strcmp(files(k).Light(1:2),'WW') && strcmp(files(k).participant,P)
-%             p2=plot(e(1,:), e(2,:), 'Color','r','DisplayName','WW');
-%         elseif strcmp(files(k).Light(1:2),'MH') && strcmp(files(k).participant,P)
-%             p3=plot(e(1,:), e(2,:), 'Color','g','DisplayName','MH');
+%         if strcmp(files(k).Light(1:2),'WW') && strcmp(files(k).participant,P)
+%             p1{i}=plot(e(1,:), e(2,:),'DisplayName',files(k).Light);
 %         end
+        
+    elseif strcmp(location,'PAMELA')
+        P='Tatsuto'; %specify participant
+        if strcmp(files(k).Light(1:2),'CW') && strcmp(files(k).participant,P)
+            p1=plot(e(1,:), e(2,:), 'Color','b','DisplayName','CW');
+        elseif strcmp(files(k).Light(1:2),'WW') && strcmp(files(k).participant,P)
+            p2=plot(e(1,:), e(2,:), 'Color','r','DisplayName','WW');
+        elseif strcmp(files(k).Light(1:2),'MH') && strcmp(files(k).participant,P)
+            p3=plot(e(1,:), e(2,:), 'Color','g','DisplayName','MH');
+        end
         
     elseif strcmp(location,'BM')
         %if strcmp(files(k).participant,'Public') %Exclude LM and DG
@@ -302,25 +306,25 @@ for k=1:numel(sheets)
                 %plot(e(1,:), e(2,:), 'Color','r');
                 
                 %plot line
-                e2=dist(e);
-                [~,I] = max(e2(:));
-                [I_row, I_col] = ind2sub(size(e2),I);
-                plot([e(1,I_row),e(1,I_col)],[e(2,I_row),e(2,I_col)],'r:')
+%                 e2=dist(e);
+%                 [~,I] = max(e2(:));
+%                 [I_row, I_col] = ind2sub(size(e2),I);
+%                 plot([e(1,I_row),e(1,I_col)],[e(2,I_row),e(2,I_col)],'r:')
                 
             elseif files(k).Time.d==12||files(k).Time.d==13 %Africa
                 scatter(Mu(1),Mu(2),'kv','filled');
                 %plot(e(1,:), e(2,:), 'Color','g');
-                e2=dist(e);
-                [~,I] = max(e2(:));
-                [I_row, I_col] = ind2sub(size(e2),I);
-                plot([e(1,I_row),e(1,I_col)],[e(2,I_row),e(2,I_col)],'k--')
+%                 e2=dist(e);
+%                 [~,I] = max(e2(:));
+%                 [I_row, I_col] = ind2sub(size(e2),I);
+%                 plot([e(1,I_row),e(1,I_col)],[e(2,I_row),e(2,I_col)],'k--')
             elseif files(k).Time.d==14 %Great Court
                 scatter(Mu(1),Mu(2),'bo','filled');
                 %plot(e(1,:), e(2,:), 'Color','b');
-                e2=dist(e);
-                [~,I] = max(e2(:));
-                [I_row, I_col] = ind2sub(size(e2),I);
-                plot([e(1,I_row),e(1,I_col)],[e(2,I_row),e(2,I_col)],'b-.')
+%                 e2=dist(e);
+%                 [~,I] = max(e2(:));
+%                 [I_row, I_col] = ind2sub(size(e2),I);
+%                 plot([e(1,I_row),e(1,I_col)],[e(2,I_row),e(2,I_col)],'b-.')
             end
             %end
     elseif strcmp(location,'PAMELA_20180205')
@@ -380,8 +384,31 @@ for k=1:numel(sheets)
             scatter(X(idx,1),X(idx,2),...
                 'MarkerFaceColor',[0.5,0.5,0.5],'MarkerEdgeColor','k')
         end
-        
-    end
+    elseif strcmp(location,'basement_greyCard_test')
+
+        if k==4 %LM hole
+            p1{k}=plot(e(1,:), e(2,:),'r');
+            scatter(X(idx,1),X(idx,2),...
+                'r','DisplayName','LM - hole method')
+        elseif k==5 %LM default
+            p1{k}=plot(e(1,:), e(2,:),'r');
+            scatter(X(idx,1),X(idx,2),'s',...
+                'MarkerFaceColor','r','DisplayName','LM - default method')
+        elseif k==6 %DG hole
+            p1{k}=plot(e(1,:), e(2,:),'b');
+            scatter(X(idx,1),X(idx,2),...
+                'b','DisplayName','DG - hole method')
+        elseif k==7 %DG default
+            p1{k}=plot(e(1,:), e(2,:),'b');
+            scatter(X(idx,1),X(idx,2),'s',...
+                'MarkerFaceColor','b','DisplayName','DG - default method')
+        elseif k<4 % baseline data and data from pre-runs
+                p1{k}=plot(e(1,:), e(2,:),'k');
+                scatter(X(idx,1),X(idx,2),...
+                    'k','DisplayName','Test data')
+            end
+            
+        end
     
     xlabel('u'''),ylabel('v''')
 end
@@ -389,7 +416,7 @@ end
 % if strcmp(location,'PAMELA')
 %     legend([p1 p2 p3])
 % end
-%legend 
+legend 
 
 %close
 
