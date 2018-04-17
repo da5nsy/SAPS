@@ -5,6 +5,7 @@
 
 clear, clc, close all
 
+
 %% Pre run commands:
 rootdir = fullfile('C:','Users','cege-user','Dropbox','UCL','Data',...
     'Tablet','PAMELA','tablet_characterization');
@@ -163,6 +164,7 @@ for i=1:4
     end
 end
 
+%% Plot chromaticities
 figure, hold on
 
 % ubar=4.*xbar ./ (xbar + 15.*ybar + 3.*zbar);
@@ -174,11 +176,18 @@ figure, hold on
 % end
 % xlabel('u'''),ylabel('v'''),axis square
 
+% for i=1:4
+%     scatter3(uv(1,:,i),uv(2,:,i),XYZ(2,:,i),'filled')
+% end
+
+annot={'0','15','30','45','60','75','90','105','120','135','150','165','180','195','210','225','240','255'};
 for i=1:4
-    scatter3(uv(1,:,i),uv(2,:,i),XYZ(2,:,i),'filled')
+    scatter(uv(1,:,i),uv(2,:,i),'filled')
+    maxTxtVl=60;
+    text(uv(1,1:(maxTxtVl/15+1),i)+0.001,uv(2,1:(maxTxtVl/15+1),i),annot(1:(maxTxtVl/15+1)));
 end
 xlabel('u'''),ylabel('v'''),zlabel('Y'),axis square
-legend(titles)
+legend(titles,'Location','Best')
 
 %% u'v' distance from average
 
@@ -197,6 +206,8 @@ end
     
 xlabel('PV')
 ylabel('Delta u''v''')
+
+
 %% Histograms for each channel
 %clear
 
