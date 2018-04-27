@@ -5,7 +5,7 @@
 % files due to unusual '.XLS' files (probably a quicker way to do this
 % could be found).
 
-function [data,peak,lux,spd_uv] = read_UPRtek(folder,plt)
+function [data,peak,lux,spd_uv] = read_UPRtek(folder,plt,sv_plt)
 
 cd(folder)
 xlsx=dir('*.xlsx');
@@ -50,17 +50,19 @@ for i=1:length(xlsx)
         if i>1 %plot previous in black, to make new ones show up in red
             plot(360:760,data(:,i-1)*peak(i-1),'k');
         end
-        plot(360:760,data(:,i)*peak(i),'r'); 
+        plot(360:760,data(:,i)*peak(i),'r');
         if i==length(xlsx) %overplot the last one in black
-            plot(360:760,data(:,i)*peak(i),'k'); 
+            plot(360:760,data(:,i)*peak(i),'k');
         end
-            
+        
     end
     %plot(360:760,av_data*peak,'b');
-     title(xlsx(i).name)
-     
-%      drawnow
-%      saveas(gcf,strcat(filename(1:end-5),'.tif'))
+    title(xlsx(i).name)
+        
+    if sv_plt
+        drawnow
+        saveas(gcf,strcat(filename(1:end-5),'.tif'))
+    end
 end
 end
 

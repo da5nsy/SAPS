@@ -146,7 +146,9 @@ if strcmp(location,'BM')
     
     clear out
     
-    rootdir = ('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\BM\GL');
+    %rootdir = ('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\BM\GL'); %old measurements
+    rootdir = ('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\BM\GL 20180427'); %new measurements
+
     %rootdir = uigetdir; %select folder where .mmg (GL Optis) files stored
     cd(rootdir)
     mmg=dir('*.mmg');
@@ -167,15 +169,19 @@ if strcmp(location,'BM')
         out(i+1,1)=str2double(xFile.getElementsByTagName('row').item(i).getAttribute('wavelength'));
     end    
     
-    % for i=2:mmgl+1
-    %     figure
-    %     plot(out(:,1),out(:,i))
-    %     title(i-1)
-    %     drawnow
-    %     pause(0.5)
-    % end
-    
     spd=out(28:end,:);
+    
+    %for new data, where this is 10 of each datasets
+    spd_all=spd; %backup all data before averaging
+    spd(:,1)=spd(:,1);
+    spd(:,2)=mean(spd(:,2:11),2);
+    spd(:,3)=mean(spd(:,12:21),2);
+    spd(:,4)=mean(spd(:,22:end),2);
+    spd=spd(:,1:4);
+    
+%     for i=2:4
+%         figure, plot(spd(:,1),spd(:,i))
+%     end
     
     xbar2_GL=interp1(lambdaCie2,xbar2,spd(:,1),'spline');
     ybar2_GL=interp1(lambdaCie2,ybar2,spd(:,1),'spline');
@@ -184,7 +190,25 @@ if strcmp(location,'BM')
     GLXYZ=[xbar2_GL,ybar2_GL,zbar2_GL]'*spd(:,2:4);
     GLxy=[GLXYZ(1,:)./sum(GLXYZ);GLXYZ(2,:)./sum(GLXYZ)];
     GLuv=[4*GLxy(1,:)./(-2*GLxy(1,:)+12*GLxy(2,:)+3);9*GLxy(2,:)./(-2*GLxy(1,:)+12*GLxy(2,:)+3)];
+  
+%     for i=2:mmgl+1
+%         figure
+%         plot(out(:,1),out(:,i))
+%         title(mmg(i-1).name)
+%         drawnow
+%         %pause(0.5)
+%         %saveas(gcf,strcat(mmg(i-1).name(1:end-4),'.tif'))
+%     end
+    
+%     for i=2:4
+%         figure
+%         plot(spd(:,1),spd(:,i))
+%     end
+    
+    %figure, scatter(GLuv(1,:),GLuv(2,:),'k*');
+    %figure, 
     scatter(GLuv(1,:),GLuv(2,:),'k*');
+    text(GLuv(1,:),GLuv(2,:),{'1','2','3'})    
 end
 
 if strcmp(location,'PAMELA')
@@ -207,7 +231,8 @@ end
 %figure, hold on
 %axis square
 
-fig=figure('Position', [50, 50, 800, 800]); hold on
+%fig=figure('Position', [50, 50, 800, 800]); hold on
+fig=gcf; hold on
 locus=scatter(ubar,vbar,100,'filled');
 LCol=xyz2rgb(ciedata2_10001);
 LCol(LCol<0)=0;LCol(LCol>1)=1;
@@ -432,7 +457,8 @@ end
 % if strcmp(location,'PAMELA')
 %     legend([p1 p2 p3])
 % end
-legend 
+
+%legend 
 
 %close
 
