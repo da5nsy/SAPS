@@ -17,7 +17,7 @@ clc, clear, close all
 % both raw and numerical data is useful, but they require different excel
 % addresses to specify data)
 
-location='basement_greyCard_test';  %changing this changes EVERYTHING
+location='BM';  %changing this changes EVERYTHING
                     %'PAMELA' or 'GRANT' or 'BM' or '200s' or
                     %'PAMELA_20180205' or 'basement_rgby_test' or
                     %'basement_greyCard_test'
@@ -187,6 +187,22 @@ if strcmp(location,'BM')
     scatter(GLuv(1,:),GLuv(2,:),'k*');
 end
 
+if strcmp(location,'PAMELA')
+    [spd_data,peak,lux,spd_uv] = read_UPRtek('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20170331 Spectra',1);
+    
+    % Plot chromaticities of light sources
+    figure, hold on
+    for i=1:18
+        scatter(spd_uv(i,1),spd_uv(i,2),'filled')
+        text(spd_uv(i,1)+(i/300),spd_uv(i,2)+(i/300),string(i))
+    end
+    legend
+    axis equal
+    
+    
+end
+
+
 %% Plot
 %figure, hold on
 %axis square
@@ -285,7 +301,7 @@ for k=1:numel(sheets)
 %         end
         
     elseif strcmp(location,'PAMELA')
-        P='Tatsuto'; %specify participant
+        P='DG'; %specify participant
         if strcmp(files(k).Light(1:2),'CW') && strcmp(files(k).participant,P)
             p1=plot(e(1,:), e(2,:), 'Color','b','DisplayName','CW');
         elseif strcmp(files(k).Light(1:2),'WW') && strcmp(files(k).participant,P)
@@ -385,7 +401,7 @@ for k=1:numel(sheets)
                 'MarkerFaceColor',[0.5,0.5,0.5],'MarkerEdgeColor','k')
         end
     elseif strcmp(location,'basement_greyCard_test')
-
+        
         if k==4 %LM hole
             p1{k}=plot(e(1,:), e(2,:),'r');
             scatter(X(idx,1),X(idx,2),...
@@ -402,13 +418,13 @@ for k=1:numel(sheets)
             p1{k}=plot(e(1,:), e(2,:),'b');
             scatter(X(idx,1),X(idx,2),'s',...
                 'MarkerFaceColor','b','DisplayName','DG - default method')
-        elseif k<4 % baseline data and data from pre-runs
-                p1{k}=plot(e(1,:), e(2,:),'k');
-                scatter(X(idx,1),X(idx,2),...
-                    'k','DisplayName','Test data')
-            end
-            
+%         elseif k<4 % baseline data and data from pre-runs
+%             p1{k}=plot(e(1,:), e(2,:),'k');
+%             scatter(X(idx,1),X(idx,2),...
+%                 'k','DisplayName','Test data')
         end
+        
+    end
     
     xlabel('u'''),ylabel('v''')
 end

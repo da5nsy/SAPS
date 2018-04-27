@@ -36,51 +36,34 @@ clear i j
 %         
 %     end
 % end
-% 
-% %old version - works but conflicts with above use of variable 'filename'
-% 
-% % clear filename
-% % 
-% % filename=fullfile(rootdir,'MH','White');
-% % %change this section for each of the folders
-% % 
-% % cd(filename);
-% % files= dir('*.mat');
-% % 
-% % for file = 1:length(files)
-% %     load(files(file).name)
-% %     fig=figure; plot(spc(:,1),spc(:,2));
-% %     title(files(file).name);
-% %     
-% %     iname = fullfile(rootdir,sprintf('%s.tif',files(file).name(1:end-4)));
-% %     %saveas(fig,strcat(files(file).name(1:end-4),'.tif'))
-% %     close
-% %     
-% % end
 
 %% Load all data
 
 PV=0:15:255;
 data = zeros(101,length(PV),4); % 4 lighting conditions
 
-figure,
-for j=1:length(filename)
-    subplot(2,2,j), hold on
+
+for j=1:length(filename)    
     for i = 0:15:255
         load(fullfile(filename{j},sprintf('%03d', i)));
         data(:,i/15+1,j)=spc(:,2);
-        plot(spc(:,1),data(:,i/15+1,j))
     end
-    axis([380,780,0,0.0015]) %Focusing on low levels
-    title(titles{j})
-    %legend('show')
 end
-%suptitle('Raw data')
+
+% %Plot data
+% figure,
+% for j=1:length(filename)
+%     subplot(2,2,j), hold on
+%     for i = 0:15:255
+%         plot(spc(:,1),data(:,i/15+1,j))
+%         axis([380,780,0,0.0015]) %Focusing on low levels
+%         title(titles{j})
+%         %legend('show')
+%         %suptitle('Raw data')
+%     end
+% end
 
 lambda=spc(:,1);
-clear spc
-
-%clear i n spc
 
 %% Dark Field Correction
 
@@ -96,20 +79,23 @@ end, clear d
 
 %Calculate Average Dark Fields
 DF(DF==0)=nan; 
-    %means including zeros will be biased down
+    %Some measurements have more DF measurements than others. 
+    %Since this data is saved in a matrix the ones with less 
+    %measurements act as though there is an additional zero measurement.
+    %including zeros will be bias down the averages
     %so change 0s to NaNs, then use nanmean
 DFmean=zeros(101,4);
 
 for i=2:4 %#1 doesn't have DF measurements
     DFmean(:,i)=nanmean(DF(:,i,:),3);
 end
+DFmean(:,1)=nanmean(DF(:,4,:),3); %steal #4 for #1
+%figure, hold on; plot(DFmean); %plot DFCs
 
 data_dfc=data;
-for j=2:length(filename) %#1 doesn't have DF measurements
+for j=1:length(filename) 
     for i=1:size(data,2)
-        data_dfc(:,i,j)=data(:,i,j)-DFmean(:,j);
-        data_dfc(:,i,1)=data(:,i,1)-DFmean(:,4);
-        %#1 doesn't have DF measurements, stealing from 4 (both WW)
+        data_dfc(:,i,j)=data(:,i,j)-DFmean(:,j);        
     end
 end
 
@@ -122,11 +108,28 @@ for j=1:length(filename)
     end
     axis([380,780,0,0.0015])
     title(titles{j})
-    %legend('show')
+    legend({'0','15','30','45','60','75','90','105','120','135','150','165','180','195','210','225','240','255'})
 end
 %suptitle('DFC data')
 
 clear i j
+
+% %% TEMP, kill DFC
+% 
+% data_dfc=data;
+
+% %% Investigating the difference between WW1 and WW2
+% figure, hold on
+% 
+% for j=1:18
+%     for i=[1,4]
+%         if i==1
+%             plot(data_dfc(:,j,i),'r')
+%         elseif i==4
+%             plot(data_dfc(:,j,i),'b')
+%         end
+%     end
+% end
 
 %% Calculate Chromaticities
 
@@ -164,6 +167,8 @@ for i=1:4
     end
 end
 
+%save('C:\Users\cege-user\Dropbox\Documents\MATLAB\DFC_Y.mat')
+
 %% Plot chromaticities
 figure, hold on
 
@@ -171,22 +176,37 @@ figure, hold on
 % vbar=9.*ybar ./ (xbar + 15.*ybar + 3.*zbar);
 % plot(ubar,vbar)
 
+% %2D scatter, size scaled
 % for i=1:4
 %     scatter(uv(1,:,i),uv(2,:,i),[1:18]*4,'filled')
 % end
-% xlabel('u'''),ylabel('v'''),axis square
 
+% %3D scatter
 % for i=1:4
 %     scatter3(uv(1,:,i),uv(2,:,i),XYZ(2,:,i),'filled')
 % end
+% 
+% xlabel('u'''),ylabel('v'''),axis equal
 
+% %2D with annotations
+% annot={'0','15','30','45','60','75','90','105','120','135','150','165','180','195','210','225','240','255'};
+% for i=1:4
+%     scatter(uv(1,:,i),uv(2,:,i),'filled')
+%     maxTxtVl=60;
+%     text(uv(1,1:(maxTxtVl/15+1),i)+0.001,uv(2,1:(maxTxtVl/15+1),i),annot(1:(maxTxtVl/15+1)));
+% end
+% xlabel('u'''),ylabel('v'''),zlabel('Y'),axis equal
+
+%2D, just above 60
 annot={'0','15','30','45','60','75','90','105','120','135','150','165','180','195','210','225','240','255'};
 for i=1:4
-    scatter(uv(1,:,i),uv(2,:,i),'filled')
-    maxTxtVl=60;
-    text(uv(1,1:(maxTxtVl/15+1),i)+0.001,uv(2,1:(maxTxtVl/15+1),i),annot(1:(maxTxtVl/15+1)));
+    scatter(uv(1,6:end,i),uv(2,6:end,i),'filled')
+    minTxtVl=210;
+    maxTxtVl=255;
+    text(uv(1,(minTxtVl/15+1):(maxTxtVl/15+1),i)+0.001,uv(2,(minTxtVl/15+1):(maxTxtVl/15+1),i),annot((minTxtVl/15+1):(maxTxtVl/15+1)));
 end
-xlabel('u'''),ylabel('v'''),zlabel('Y'),axis square
+xlabel('u'''),ylabel('v'''),zlabel('Y'),axis equal
+
 legend(titles,'Location','Best')
 
 %% u'v' distance from average
@@ -322,7 +342,7 @@ for d=1:18
 end
 
 xlabel('u'''),ylabel('v'''),zlabel('Y'),
-axis square
+axis equal
 
 %% Plot 'representative gamut' (the gamut of the points actually displayed)
 %Requires previous section to have been run prior 
@@ -494,7 +514,7 @@ close all
     plot(ubar,vbar,'k')
   
     xlabel('u'''),ylabel('v'''),zlabel('Y')
-    axis square
+    axis equal
     
     u=cube_u_LUT(:);
     v=cube_v_LUT(:);
