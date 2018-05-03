@@ -5,6 +5,7 @@ clc, clear, close all
 
 % To do list
 
+
 % Add Grant data (different run length, should just be able to change n)
 % Clean up data, find a way to threshold and recognise duds
 % Threshold BM data
@@ -67,14 +68,30 @@ catch
     end
     toc
     
-    %-% Supplementary variables
-    n=size(TabletData,1); %how many trials
-    
     clear i
     save(sprintf('TabletData_%s',location))
 end
 
+% Set up baseline dummy data
+TabletData(:,:,end+1)=TabletData(:,:,end);
+TabletData(:,7:8,end)=zeros;
+
+%-% Supplementary variables
+n=size(TabletData,1); %how many trials
+n2=size(TabletData,3);
+
+files(length(files)+1)=files(length(files));
+for i=1:n2 %add date info onto top level for readability (has to come here)
+    files(i).date=files(i).Time.d;
+end
+files(length(files)).date=0;
+files(length(files)).participant='dummy';
+
+
+
+
 %% Processing
+
 
 whiteXYZ=[360.476; 394.674; 416.714];
 
@@ -83,11 +100,13 @@ L_star=65;
 % Get white point u and v
 uv0 = XYZTouv(whiteXYZ);
 
-for i=1:numel(sheets)
+for i=1:n2
     
     %Calculate systematic offset (spatial calibration)
     avXdp(i) = median(TabletData(end-10:end,7,i)-TabletData(end-10:end,1,i));
     avYdp(i) = median(TabletData(end-10:end,8,i)-TabletData(end-10:end,2,i));
+    avXdp(end)=0;
+    avYdp(end)=0;
     
     %Adjust data by spatial calibration, and recorded offsets
     TabletData(:,7,i)=TabletData(:,7,i)-avXdp(i)-TabletData(:,1,i);
@@ -179,9 +198,15 @@ if strcmp(location,'BM')
     spd(:,4)=mean(spd(:,22:end),2);
     spd=spd(:,1:4);
     
-%     for i=2:4
-%         figure, plot(spd(:,1),spd(:,i))
-%     end
+% figure, hold on
+% for i=[4,3,2]
+%     plot(spd(:,1),spd(:,i)/max(spd(:,i)))
+% end
+% 
+% legend({'Rooms 77/78','Room 25','Great Court'},'Location','east')
+% 
+% xlabel('Wavelength')
+% ylabel('Relative power')
     
     xbar2_GL=interp1(lambdaCie2,xbar2,spd(:,1),'spline');
     ybar2_GL=interp1(lambdaCie2,ybar2,spd(:,1),'spline');
@@ -252,36 +277,36 @@ xlabel('u'''),ylabel('v'''),zlabel('Y')
 % from http://stackoverflow.com/questions/3417028/ellipse-around-the-data-in-matlab
 
 G = 1*ones(n-10,1);
-for i=2:numel(sheets)
+for i=2:n2
     G = [G ; i*ones(n-10,1)];
 end
 
 X=reshape(permute([ TabletData(1:end-10,11,:), ...
     TabletData(1:end-10,12,:)],[1 3 2])...
-    ,[(n-10)*numel(sheets),2]);
+    ,[(n-10)*n2,2]);
 
 %PlotZeros = 1;
 if exist('PlotZeros','var')
     clear G X
     G = 1*ones(n,1);
-    for i=2:numel(sheets)
+    for i=2:n2
         G = [G ; i*ones(n,1)];
     end
     
     X=reshape(permute([ TabletData(1:end,11,:), ...
         TabletData(1:end,12,:)],[1 3 2])...
-        ,[(n)*numel(sheets),2]);
+        ,[(n)*n2,2]);
 end
 
 %gscatter(X(:,1), X(:,2), G)
 %gscatter(X(1:n-10,1), X(1:n-10,2), G(1:n-10))
 
-% for i=1:numel(sheets)
+% for i=1:n2
 %     kstd_u(i)=nanstd(TabletData(1:end-10,11,i));
 %     kstd_v(i)=nanstd(TabletData(1:end-10,12,i));
 % end
 
-for k=1:numel(sheets)
+for k=1:n2
     %# indices of points in this group
     idx = ( G == k );
 %     if kstd(k) > .013
@@ -337,7 +362,7 @@ for k=1:numel(sheets)
         
     elseif strcmp(location,'BM')
         %if strcmp(files(k).participant,'Public') %Exclude LM and DG
-            if files(k).Time.d==10||files(k).Time.d==11 %
+            if files(k).date==10||files(k).date==11 %
                 
                 %scatter mean
                 scatter(Mu(1),Mu(2),'rs','filled');
@@ -352,20 +377,23 @@ for k=1:numel(sheets)
 %                 [I_row, I_col] = ind2sub(size(e2),I);
 %                 plot([e(1,I_row),e(1,I_col)],[e(2,I_row),e(2,I_col)],'r:')
                 
-            elseif files(k).Time.d==12||files(k).Time.d==13 %Africa
+            elseif files(k).date==12||files(k).date==13 %Africa
                 scatter(Mu(1),Mu(2),'kv','filled');
                 %plot(e(1,:), e(2,:), 'Color','g');
 %                 e2=dist(e);
 %                 [~,I] = max(e2(:));
 %                 [I_row, I_col] = ind2sub(size(e2),I);
 %                 plot([e(1,I_row),e(1,I_col)],[e(2,I_row),e(2,I_col)],'k--')
-            elseif files(k).Time.d==14 %Great Court
+            elseif files(k).date==14 %Great Court
                 scatter(Mu(1),Mu(2),'bo','filled');
                 %plot(e(1,:), e(2,:), 'Color','b');
 %                 e2=dist(e);
 %                 [~,I] = max(e2(:));
 %                 [I_row, I_col] = ind2sub(size(e2),I);
 %                 plot([e(1,I_row),e(1,I_col)],[e(2,I_row),e(2,I_col)],'b-.')
+            elseif strcmp(files(k).participant,'dummy') %dummy data                
+                scatter(Mu(1),Mu(2),'gv','filled');
+                scatter(X(idx,1),X(idx,2),'g','filled')
             end
             %end
     elseif strcmp(location,'PAMELA_20180205')
@@ -464,24 +492,38 @@ end
 
 %% Plot standard deviation for each observer across runs
 
-for i=1:numel(sheets)
+for i=1:n2
     kstd_u(i)=nanstd(TabletData(1:end-10,11,i));
     kstd_v(i)=nanstd(TabletData(1:end-10,12,i));
 end
 
 kstd_mean=mean([kstd_u;kstd_v]);
+diffs=squeeze(sqrt((TabletData(3,11,:)-TabletData(8,11,:)).^2+(TabletData(3,12,:)-TabletData(8,12,:)).^2))';
 
-figure, hold on
-scatter(0,kstd_mean(1),'r','filled');
-plot([0,9],[kstd_mean(1),kstd_mean(1)],'r--');
-scatter(1:9,kstd_mean(2:10),'g','filled');
-scatter(1:9,kstd_mean(11:19),'b','filled');
-scatter(1:9,kstd_mean(20:28),'k','filled');
+if strcmp(location,'PAMELA_20180205')
+        figure, hold on
+        scatter(0,kstd_mean(1),'r','filled');
+        plot([0,9],[kstd_mean(1),kstd_mean(1)],'r--');
+        scatter(1:9,kstd_mean(2:10),'g','filled');
+        scatter(1:9,kstd_mean(11:19),'b','filled');
+        scatter(1:9,kstd_mean(20:28),'k','filled');
+        
+        xlabel('Observer')
+        %Replace numbers with participant identifiers
+        %xticklabels({files([2:10]).participant})
+        ylabel('Mean SD in u'' and v''')
+end
 
-xlabel('Observer')
-%Replace numbers with participant identifiers
-%xticklabels({files([2:10]).participant}) 
-ylabel('Mean SD in u'' and v''')
+if strcmp(location,'BM')
+    figure
+    bar([kstd_mean;diffs]')
+    figure
+    scatter(kstd_mean,diffs);
+    axis equal
+    xlabel('SD')
+    ylabel('differences between unnanounced repeats')
+end
+
 
 %% Analyse repeat values
 
@@ -501,20 +543,23 @@ xlim([0.14 0.25]),ylim([0.41 0.52]) %close to selectable gamut boundary
 colorbar
 xlabel('u'''),ylabel('v'''),zlabel('Y')
 
-
 repeats=[3,8];
+kstd_cutoff=0.012;
+kstd_ind=kstd_mean<0.012;
 
-% % Test I've got the right ones
-%TabletData(repeats,1:3,:);
+for i=1:n2
+    plot(TabletData(repeats,11,i),TabletData(repeats,12,i),'k')
+    scatter(TabletData(repeats(2),11,i),TabletData(repeats(2),12,i),kstd_mean(i)*10000,'k','filled')
+    %text(TabletData(repeats(2),11,i)+0.003,TabletData(repeats(2),12,i),files(i).participant)
+    if kstd_ind(i)
+        scatter(TabletData(repeats(2),11,i),TabletData(repeats(2),12,i),kstd_mean(i)*10000,'r','filled')
+    end
+end
 
-for i=length(sheets)
+% For PAMELA data
 %for i=2:10
 %for i=11:19
 %for i=20:28
-    plot(TabletData(repeats,11,i),TabletData(repeats,12,i),'k')
-    scatter(TabletData(repeats(2),11,i),TabletData(repeats(2),12,i),kstd_mean(i)*10000,'k','filled')
-    text(TabletData(repeats(2),11,i)+0.003,TabletData(repeats(2),12,i),files(i).participant)
-end
 
 % % Add Baseline data (essentially zero apart from the difference from
 % % input variability)
