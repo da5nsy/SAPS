@@ -251,9 +251,120 @@ if strcmp(location,'PAMELA')
     
 end
 
+%% Assess SD
 
+for i=1:n2
+    kstd_u(i)=nanstd(TabletData(1:end-10,11,i));
+    kstd_v(i)=nanstd(TabletData(1:end-10,12,i));
+end
+
+kstd_mean=mean([kstd_u;kstd_v]);
+kstd_min=min([kstd_u;kstd_v]);
+diffs=squeeze(sqrt((TabletData(3,11,:)-TabletData(8,11,:)).^2+(TabletData(3,12,:)-TabletData(8,12,:)).^2))';
+
+if strcmp(location,'PAMELA_20180205')
+        figure, hold on
+        scatter(0,kstd_mean(1),'r','filled');
+        plot([0,9],[kstd_mean(1),kstd_mean(1)],'r--');
+        scatter(1:9,kstd_mean(2:10),'g','filled');
+        scatter(1:9,kstd_mean(11:19),'b','filled');
+        scatter(1:9,kstd_mean(20:28),'k','filled');
+        
+        xlabel('Observer')
+        %Replace numbers with participant identifiers
+        %xticklabels({files([2:10]).participant})
+        ylabel('Mean SD in u'' and v''')
+end
+
+MinOrMean = 'Min'; %'Min' or 'Mean'
+thresh_SD = 0.01;
+thresh_DBUR = 0.018;
+
+if strcmp(location,'BM')
+    if strcmp(MinOrMean,'Min')
+        kstd=kstd_min;
+    else
+        kstd=kstd_mean;
+    end
+    %figure
+    %bar([kstd_mean;diffs]')
+    
+    figure, hold on
+    %scatter(kstd_mean,diffs); %plot all data, incl LM data, which is not
+    %included below
+    
+    scatter(kstd(5:28),diffs(5:28),'r','filled','DisplayName','Room 77/78'); 
+    scatter(kstd(29:54),diffs(29:54),'g','filled','DisplayName','Room 25'); 
+    scatter(kstd(55:end),diffs(55:end),'b','filled','DisplayName','Great Court');
+    
+    %scatter(kstd_mean(4),diffs(4),'k','filled','DisplayName','known dud');
+    scatter(kstd(66),diffs(66),'y','filled','DisplayName','Baseline Data');
+    
+    %plot([kstd(end),kstd(end)],[0,max(diffs)],'k:','DisplayName','Logical Threshold') 
+    
+    axis equal
+    
+    plot([thresh_SD,thresh_SD],[0,max(diffs)],'k:','DisplayName','SD > 0.01')     
+    plot([min(xlim),max(xlim)],[thresh_DBUR,thresh_DBUR],'k:','DisplayName','DBUR > 0.018') 
+    
+    f(1)=fill([min(xlim),max(xlim),max(xlim),min(xlim)],[thresh_DBUR,thresh_DBUR,max(ylim),max(ylim)],'k','LineStyle','none','FaceAlpha','0.1','DisplayName','Excluded Data');
+    f(2)=fill([thresh_SD,max(xlim),max(xlim),thresh_SD],[min(ylim),min(ylim),max(ylim),max(ylim)],'k','LineStyle','none','FaceAlpha','0.1','DisplayName','Excluded Data');
+    
+    if strcmp(MinOrMean,'Min')
+        xlabel('Min SD')
+    else
+        xlabel('Mean SD')
+    end
+    ylabel('differences between unnanounced repeats')
+    
+    set( get( get( f(1), 'Annotation'), 'LegendInformation' ), 'IconDisplayStyle', 'off' );    
+    set( get( get( f(2), 'Annotation'), 'LegendInformation' ), 'IconDisplayStyle', 'off' );
+    legend('Location','best') 
+    
+end
+
+% %% Analyse repeat values
+% 
+% fig=figure('Position', [50, 50, 800, 800]); hold on; 
+% locus=scatter(ubar,vbar,100,'filled');
+% LCol=xyz2rgb(ciedata2_10001);
+% LCol(LCol<0)=0;LCol(LCol>1)=1;
+% locus.CData=LCol;
+% axis square;
+% 
+% load('SAPS_SelectableColoursGamut.mat')
+% s=scatter(u(1:50:end),v(1:50:end),20,occ(1:50:end));
+% view(2)
+% axis('equal')
+% xlim([0.14 0.25]),ylim([0.41 0.52]) %close to selectable gamut boundary
+% colorbar
+% xlabel('u'''),ylabel('v'''),zlabel('Y')
+% 
+% repeats=[3,8];
+% kstd_cutoff=0.012;
+% kstd_ind=kstd_mean<0.012;
+% 
+% for i=1:n2
+%     plot(TabletData(repeats,11,i),TabletData(repeats,12,i),'k')
+%     scatter(TabletData(repeats(2),11,i),TabletData(repeats(2),12,i),kstd_mean(i)*10000,'k','filled')
+%     %text(TabletData(repeats(2),11,i)+0.003,TabletData(repeats(2),12,i),files(i).participant)
+%     if kstd_ind(i)
+%         scatter(TabletData(repeats(2),11,i),TabletData(repeats(2),12,i),kstd_mean(i)*10000,'r','filled')
+%     end
+% end
+% 
+% % For PAMELA data
+% %for i=2:10
+% %for i=11:19
+% %for i=20:28
+% 
+% % % Add Baseline data (essentially zero apart from the difference from
+% % % input variability)
+% % plot(TabletData(repeats,11,1),TabletData(repeats,12,1),'r')
+% % scatter(TabletData(repeats(2),11,1),TabletData(repeats(2),12,1),'r')
+ 
 %% Plot
-%figure, hold on
+figure, hold on
 %axis square
 
 %fig=figure('Position', [50, 50, 800, 800]); hold on
@@ -360,9 +471,11 @@ for k=1:n2
             p3=plot(e(1,:), e(2,:), 'Color','g','DisplayName','MH');
         end
         
-    elseif strcmp(location,'BM')
+    elseif strcmp(location,'BM') && kstd(k) < thresh_SD && diffs(k) < thresh_DBUR 
         %if strcmp(files(k).participant,'Public') %Exclude LM and DG
-            if files(k).date==10||files(k).date==11 %
+            if k==55 %from time-stamp this appears to be from before the data collection started, and so I assume it is not 'real' data
+                continue
+            elseif files(k).date==10||files(k).date==11 %
                 
                 %scatter mean
                 scatter(Mu(1),Mu(2),'rs','filled');
@@ -392,9 +505,13 @@ for k=1:n2
 %                 [I_row, I_col] = ind2sub(size(e2),I);
 %                 plot([e(1,I_row),e(1,I_col)],[e(2,I_row),e(2,I_col)],'b-.')
             elseif strcmp(files(k).participant,'dummy') %dummy data                
-                scatter(Mu(1),Mu(2),'gv','filled');
-                scatter(X(idx,1),X(idx,2),'g','filled')
+                %scatter(Mu(1),Mu(2),'gv','filled');
+                %scatter(X(idx,1),X(idx,2),'g','filled')
             end
+%             if k==55 %testing specific values
+%                 scatter(X(idx,1),X(idx,2),'g','filled')
+%             end
+%             text(Mu(1),Mu(2),num2str(k))
             %end
     elseif strcmp(location,'PAMELA_20180205')
         if strcmp(files(k).participant,'test, corners, colour & bw') ||...
@@ -489,81 +606,4 @@ end
 %legend 
 
 %close
-
-%% Plot standard deviation for each observer across runs
-
-for i=1:n2
-    kstd_u(i)=nanstd(TabletData(1:end-10,11,i));
-    kstd_v(i)=nanstd(TabletData(1:end-10,12,i));
-end
-
-kstd_mean=mean([kstd_u;kstd_v]);
-diffs=squeeze(sqrt((TabletData(3,11,:)-TabletData(8,11,:)).^2+(TabletData(3,12,:)-TabletData(8,12,:)).^2))';
-
-if strcmp(location,'PAMELA_20180205')
-        figure, hold on
-        scatter(0,kstd_mean(1),'r','filled');
-        plot([0,9],[kstd_mean(1),kstd_mean(1)],'r--');
-        scatter(1:9,kstd_mean(2:10),'g','filled');
-        scatter(1:9,kstd_mean(11:19),'b','filled');
-        scatter(1:9,kstd_mean(20:28),'k','filled');
-        
-        xlabel('Observer')
-        %Replace numbers with participant identifiers
-        %xticklabels({files([2:10]).participant})
-        ylabel('Mean SD in u'' and v''')
-end
-
-if strcmp(location,'BM')
-    figure
-    bar([kstd_mean;diffs]')
-    figure
-    scatter(kstd_mean,diffs);
-    axis equal
-    xlabel('SD')
-    ylabel('differences between unnanounced repeats')
-end
-
-
-%% Analyse repeat values
-
-
-fig=figure('Position', [50, 50, 800, 800]); hold on; 
-locus=scatter(ubar,vbar,100,'filled');
-LCol=xyz2rgb(ciedata2_10001);
-LCol(LCol<0)=0;LCol(LCol>1)=1;
-locus.CData=LCol;
-axis square;
-
-load('SAPS_SelectableColoursGamut.mat')
-s=scatter(u(1:50:end),v(1:50:end),20,occ(1:50:end));
-view(2)
-axis('equal')
-xlim([0.14 0.25]),ylim([0.41 0.52]) %close to selectable gamut boundary
-colorbar
-xlabel('u'''),ylabel('v'''),zlabel('Y')
-
-repeats=[3,8];
-kstd_cutoff=0.012;
-kstd_ind=kstd_mean<0.012;
-
-for i=1:n2
-    plot(TabletData(repeats,11,i),TabletData(repeats,12,i),'k')
-    scatter(TabletData(repeats(2),11,i),TabletData(repeats(2),12,i),kstd_mean(i)*10000,'k','filled')
-    %text(TabletData(repeats(2),11,i)+0.003,TabletData(repeats(2),12,i),files(i).participant)
-    if kstd_ind(i)
-        scatter(TabletData(repeats(2),11,i),TabletData(repeats(2),12,i),kstd_mean(i)*10000,'r','filled')
-    end
-end
-
-% For PAMELA data
-%for i=2:10
-%for i=11:19
-%for i=20:28
-
-% % Add Baseline data (essentially zero apart from the difference from
-% % input variability)
-% plot(TabletData(repeats,11,1),TabletData(repeats,12,1),'r')
-% scatter(TabletData(repeats(2),11,1),TabletData(repeats(2),12,1),'r')
-
 
