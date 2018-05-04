@@ -18,10 +18,10 @@ clc, clear, close all
 % both raw and numerical data is useful, but they require different excel
 % addresses to specify data)
 
-location='BM';  %changing this changes EVERYTHING
-                    %'PAMELA' or 'GRANT' or 'BM' or '200s' or
-                    %'PAMELA_20180205' or 'basement_rgby_test' or
-                    %'basement_greyCard_test'
+location='PAMELA_20180205';  %changing this changes EVERYTHING
+%'PAMELA' or 'GRANT' or 'BM' or '200s' or
+%'PAMELA_20180205' or 'basement_rgby_test' or
+%'basement_greyCard_test'
 
 rootdir = fullfile('C:','Users','cege-user','Dropbox','UCL','Data','Tablet',location);
 cd(rootdir)
@@ -41,7 +41,7 @@ catch
     
     for i=1:numel(sheets) %65 for BM, 20 for PAMELA
         i %to provide a progress update in command window, should take ~2mins
-        if strcmp(location,'200s')  
+        if strcmp(location,'200s')
             TabletData(:,:,i)=xlsread(TBfilename, i,'A2:H201');
         else
             TabletData(:,:,i)=xlsread(TBfilename, i,'A2:H41');
@@ -87,9 +87,6 @@ end
 files(length(files)).date=0;
 files(length(files)).participant='dummy';
 
-
-
-
 %% Processing
 
 
@@ -105,8 +102,9 @@ for i=1:n2
     %Calculate systematic offset (spatial calibration)
     avXdp(i) = median(TabletData(end-10:end,7,i)-TabletData(end-10:end,1,i));
     avYdp(i) = median(TabletData(end-10:end,8,i)-TabletData(end-10:end,2,i));
-    avXdp(end)=0;
-    avYdp(end)=0;
+    
+    avXdp(n2)=0;
+    avYdp(n2)=0;
     
     %Adjust data by spatial calibration, and recorded offsets
     TabletData(:,7,i)=TabletData(:,7,i)-avXdp(i)-TabletData(:,1,i);
@@ -157,7 +155,7 @@ locus=scatter(ubar,vbar,100,'filled');
 LCol=xyz2rgb(ciedata2_10001);
 LCol(LCol<0)=0;LCol(LCol>1)=1;
 locus.CData=LCol;
-axis square;
+axis equal;
 
 %% Pull light measurements
 
@@ -167,7 +165,7 @@ if strcmp(location,'BM')
     
     %rootdir = ('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\BM\GL'); %old measurements
     rootdir = ('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\BM\GL 20180427'); %new measurements
-
+    
     %rootdir = uigetdir; %select folder where .mmg (GL Optis) files stored
     cd(rootdir)
     mmg=dir('*.mmg');
@@ -186,7 +184,7 @@ if strcmp(location,'BM')
     % Grab wavelength data
     for i=0:255
         out(i+1,1)=str2double(xFile.getElementsByTagName('row').item(i).getAttribute('wavelength'));
-    end    
+    end
     
     spd=out(28:end,:);
     
@@ -198,15 +196,15 @@ if strcmp(location,'BM')
     spd(:,4)=mean(spd(:,22:end),2);
     spd=spd(:,1:4);
     
-% figure, hold on
-% for i=[4,3,2]
-%     plot(spd(:,1),spd(:,i)/max(spd(:,i)))
-% end
-% 
-% legend({'Rooms 77/78','Room 25','Great Court'},'Location','east')
-% 
-% xlabel('Wavelength')
-% ylabel('Relative power')
+    % figure, hold on
+    % for i=[4,3,2]
+    %     plot(spd(:,1),spd(:,i)/max(spd(:,i)))
+    % end
+    %
+    % legend({'Rooms 77/78','Room 25','Great Court'},'Location','east')
+    %
+    % xlabel('Wavelength')
+    % ylabel('Relative power')
     
     xbar2_GL=interp1(lambdaCie2,xbar2,spd(:,1),'spline');
     ybar2_GL=interp1(lambdaCie2,ybar2,spd(:,1),'spline');
@@ -215,25 +213,25 @@ if strcmp(location,'BM')
     GLXYZ=[xbar2_GL,ybar2_GL,zbar2_GL]'*spd(:,2:4);
     GLxy=[GLXYZ(1,:)./sum(GLXYZ);GLXYZ(2,:)./sum(GLXYZ)];
     GLuv=[4*GLxy(1,:)./(-2*GLxy(1,:)+12*GLxy(2,:)+3);9*GLxy(2,:)./(-2*GLxy(1,:)+12*GLxy(2,:)+3)];
-  
-%     for i=2:mmgl+1
-%         figure
-%         plot(out(:,1),out(:,i))
-%         title(mmg(i-1).name)
-%         drawnow
-%         %pause(0.5)
-%         %saveas(gcf,strcat(mmg(i-1).name(1:end-4),'.tif'))
-%     end
     
-%     for i=2:4
-%         figure
-%         plot(spd(:,1),spd(:,i))
-%     end
+    %     for i=2:mmgl+1
+    %         figure
+    %         plot(out(:,1),out(:,i))
+    %         title(mmg(i-1).name)
+    %         drawnow
+    %         %pause(0.5)
+    %         %saveas(gcf,strcat(mmg(i-1).name(1:end-4),'.tif'))
+    %     end
+    
+    %     for i=2:4
+    %         figure
+    %         plot(spd(:,1),spd(:,i))
+    %     end
     
     %figure, scatter(GLuv(1,:),GLuv(2,:),'k*');
-    %figure, 
-    scatter(GLuv(1,:),GLuv(2,:),'k*');
-    text(GLuv(1,:),GLuv(2,:),{'1','2','3'})    
+    %figure,
+    scatter(flip(GLuv(1,:)),flip(GLuv(2,:)),'k*');
+    text(flip(GLuv(1,:)),flip(GLuv(2,:)),{'1','2','3'})
 end
 
 if strcmp(location,'PAMELA')
@@ -263,17 +261,18 @@ kstd_min=min([kstd_u;kstd_v]);
 diffs=squeeze(sqrt((TabletData(3,11,:)-TabletData(8,11,:)).^2+(TabletData(3,12,:)-TabletData(8,12,:)).^2))';
 
 if strcmp(location,'PAMELA_20180205')
-        figure, hold on
-        scatter(0,kstd_mean(1),'r','filled');
-        plot([0,9],[kstd_mean(1),kstd_mean(1)],'r--');
-        scatter(1:9,kstd_mean(2:10),'g','filled');
-        scatter(1:9,kstd_mean(11:19),'b','filled');
-        scatter(1:9,kstd_mean(20:28),'k','filled');
-        
-        xlabel('Observer')
-        %Replace numbers with participant identifiers
-        %xticklabels({files([2:10]).participant})
-        ylabel('Mean SD in u'' and v''')
+    figure, hold on
+    scatter(0,kstd_mean(1),'r','filled');
+    plot([0,9],[kstd_mean(1),kstd_mean(1)],'r--');
+    plot([0,9],[kstd_mean(end),kstd_mean(end)],'g--');
+    scatter(1:9,kstd_mean(2:10),'g','filled');
+    scatter(1:9,kstd_mean(11:19),'b','filled');
+    scatter(1:9,kstd_mean(20:28),'k','filled');
+    
+    xlabel('Observer')
+    %Replace numbers with participant identifiers
+    %xticklabels({files([2:10]).participant})
+    ylabel('Mean SD in u'' and v''')
 end
 
 MinOrMean = 'Min'; %'Min' or 'Mean'
@@ -293,19 +292,19 @@ if strcmp(location,'BM')
     %scatter(kstd_mean,diffs); %plot all data, incl LM data, which is not
     %included below
     
-    scatter(kstd(5:28),diffs(5:28),'r','filled','DisplayName','Room 77/78'); 
-    scatter(kstd(29:54),diffs(29:54),'g','filled','DisplayName','Room 25'); 
+    scatter(kstd(5:28),diffs(5:28),'r','filled','DisplayName','Room 77/78');
+    scatter(kstd(29:54),diffs(29:54),'g','filled','DisplayName','Room 25');
     scatter(kstd(55:end),diffs(55:end),'b','filled','DisplayName','Great Court');
     
     %scatter(kstd_mean(4),diffs(4),'k','filled','DisplayName','known dud');
     scatter(kstd(66),diffs(66),'y','filled','DisplayName','Baseline Data');
     
-    %plot([kstd(end),kstd(end)],[0,max(diffs)],'k:','DisplayName','Logical Threshold') 
+    %plot([kstd(end),kstd(end)],[0,max(diffs)],'k:','DisplayName','Logical Threshold')
     
     axis equal
     
-    plot([thresh_SD,thresh_SD],[0,max(diffs)],'k:','DisplayName','SD > 0.01')     
-    plot([min(xlim),max(xlim)],[thresh_DBUR,thresh_DBUR],'k:','DisplayName','DBUR > 0.018') 
+    plot([thresh_SD,thresh_SD],[0,max(diffs)],'k:','DisplayName','SD > 0.01')
+    plot([min(xlim),max(xlim)],[thresh_DBUR,thresh_DBUR],'k:','DisplayName','DBUR > 0.018')
     
     f(1)=fill([min(xlim),max(xlim),max(xlim),min(xlim)],[thresh_DBUR,thresh_DBUR,max(ylim),max(ylim)],'k','LineStyle','none','FaceAlpha','0.1','DisplayName','Excluded Data');
     f(2)=fill([thresh_SD,max(xlim),max(xlim),thresh_SD],[min(ylim),min(ylim),max(ylim),max(ylim)],'k','LineStyle','none','FaceAlpha','0.1','DisplayName','Excluded Data');
@@ -317,21 +316,21 @@ if strcmp(location,'BM')
     end
     ylabel('differences between unnanounced repeats')
     
-    set( get( get( f(1), 'Annotation'), 'LegendInformation' ), 'IconDisplayStyle', 'off' );    
+    set( get( get( f(1), 'Annotation'), 'LegendInformation' ), 'IconDisplayStyle', 'off' );
     set( get( get( f(2), 'Annotation'), 'LegendInformation' ), 'IconDisplayStyle', 'off' );
-    legend('Location','best') 
+    legend('Location','best')
     
 end
 
 % %% Analyse repeat values
-% 
-% fig=figure('Position', [50, 50, 800, 800]); hold on; 
+%
+% fig=figure('Position', [50, 50, 800, 800]); hold on;
 % locus=scatter(ubar,vbar,100,'filled');
 % LCol=xyz2rgb(ciedata2_10001);
 % LCol(LCol<0)=0;LCol(LCol>1)=1;
 % locus.CData=LCol;
-% axis square;
-% 
+% axis equal;
+%
 % load('SAPS_SelectableColoursGamut.mat')
 % s=scatter(u(1:50:end),v(1:50:end),20,occ(1:50:end));
 % view(2)
@@ -339,11 +338,11 @@ end
 % xlim([0.14 0.25]),ylim([0.41 0.52]) %close to selectable gamut boundary
 % colorbar
 % xlabel('u'''),ylabel('v'''),zlabel('Y')
-% 
+%
 % repeats=[3,8];
 % kstd_cutoff=0.012;
 % kstd_ind=kstd_mean<0.012;
-% 
+%
 % for i=1:n2
 %     plot(TabletData(repeats,11,i),TabletData(repeats,12,i),'k')
 %     scatter(TabletData(repeats(2),11,i),TabletData(repeats(2),12,i),kstd_mean(i)*10000,'k','filled')
@@ -352,20 +351,20 @@ end
 %         scatter(TabletData(repeats(2),11,i),TabletData(repeats(2),12,i),kstd_mean(i)*10000,'r','filled')
 %     end
 % end
-% 
+%
 % % For PAMELA data
 % %for i=2:10
 % %for i=11:19
 % %for i=20:28
-% 
+%
 % % % Add Baseline data (essentially zero apart from the difference from
 % % % input variability)
 % % plot(TabletData(repeats,11,1),TabletData(repeats,12,1),'r')
 % % scatter(TabletData(repeats(2),11,1),TabletData(repeats(2),12,1),'r')
- 
+
 %% Plot
-figure, hold on
-%axis square
+%figure, hold on
+%axis equal
 
 %fig=figure('Position', [50, 50, 800, 800]); hold on
 fig=gcf; hold on
@@ -373,7 +372,7 @@ locus=scatter(ubar,vbar,100,'filled');
 LCol=xyz2rgb(ciedata2_10001);
 LCol(LCol<0)=0;LCol(LCol>1)=1;
 locus.CData=LCol;
-axis square;
+axis equal;
 
 %scatter(GLuv(1,:),GLuv(2,:),'k*');
 
@@ -381,7 +380,7 @@ load('SAPS_SelectableColoursGamut.mat')
 s=scatter(u(1:50:end),v(1:50:end),20,occ(1:50:end));
 view(2)
 axis('equal')
-xlim([0.14 0.25]),ylim([0.41 0.52]) %close to selectable gamut boundary
+%xlim([0.14 0.25]),ylim([0.41 0.52]) %close to selectable gamut boundary
 colorbar
 xlabel('u'''),ylabel('v'''),zlabel('Y')
 
@@ -420,17 +419,17 @@ end
 for k=1:n2
     %# indices of points in this group
     idx = ( G == k );
-%     if kstd(k) > .013
-%         continue
-%     end
+    %     if kstd(k) > .013
+    %         continue
+    %     end
     
     %# substract mean
     Mu = nanmean( X(idx,:) );
     X0 = bsxfun(@minus, X(idx,:), Mu);
     
     STD = 1;
-    conf = 2*normcdf(STD)-1;     
-    scale = chi2inv(conf,2);         
+    conf = 2*normcdf(STD)-1;
+    scale = chi2inv(conf,2);
     Cov = cov(X0,'omitrows') * scale;
     [V, D] = eig(Cov);
     
@@ -453,13 +452,13 @@ for k=1:n2
     %# plot
     if strcmp(location,'200s')
         p1=plot(e(1,:), e(2,:),'Color','k');
-    
-%         %Mod to pick out short adapt vs long adap
-%     elseif strcmp(location,'PAMELA')
-%         P='DG'; %specify participant
-%         if strcmp(files(k).Light(1:2),'WW') && strcmp(files(k).participant,P)
-%             p1{i}=plot(e(1,:), e(2,:),'DisplayName',files(k).Light);
-%         end
+        
+        %         %Mod to pick out short adapt vs long adap
+        %     elseif strcmp(location,'PAMELA')
+        %         P='DG'; %specify participant
+        %         if strcmp(files(k).Light(1:2),'WW') && strcmp(files(k).participant,P)
+        %             p1{i}=plot(e(1,:), e(2,:),'DisplayName',files(k).Light);
+        %         end
         
     elseif strcmp(location,'PAMELA')
         P='DG'; %specify participant
@@ -471,83 +470,89 @@ for k=1:n2
             p3=plot(e(1,:), e(2,:), 'Color','g','DisplayName','MH');
         end
         
-    elseif strcmp(location,'BM') && kstd(k) < thresh_SD && diffs(k) < thresh_DBUR 
+    elseif strcmp(location,'BM') && kstd(k) < thresh_SD && diffs(k) < thresh_DBUR
         %if strcmp(files(k).participant,'Public') %Exclude LM and DG
-            if k==55 %from time-stamp this appears to be from before the data collection started, and so I assume it is not 'real' data
-                continue
-            elseif files(k).date==10||files(k).date==11 %
-                
-                %scatter mean
-                scatter(Mu(1),Mu(2),'rs','filled');
-                
-                %plot elipse
-                %scatter(e(1,:), e(2,:))
-                %plot(e(1,:), e(2,:), 'Color','r');
-                
-                %plot line
-%                 e2=dist(e);
-%                 [~,I] = max(e2(:));
-%                 [I_row, I_col] = ind2sub(size(e2),I);
-%                 plot([e(1,I_row),e(1,I_col)],[e(2,I_row),e(2,I_col)],'r:')
-                
-            elseif files(k).date==12||files(k).date==13 %Africa
-                scatter(Mu(1),Mu(2),'kv','filled');
-                %plot(e(1,:), e(2,:), 'Color','g');
-%                 e2=dist(e);
-%                 [~,I] = max(e2(:));
-%                 [I_row, I_col] = ind2sub(size(e2),I);
-%                 plot([e(1,I_row),e(1,I_col)],[e(2,I_row),e(2,I_col)],'k--')
-            elseif files(k).date==14 %Great Court
-                scatter(Mu(1),Mu(2),'bo','filled');
-                %plot(e(1,:), e(2,:), 'Color','b');
-%                 e2=dist(e);
-%                 [~,I] = max(e2(:));
-%                 [I_row, I_col] = ind2sub(size(e2),I);
-%                 plot([e(1,I_row),e(1,I_col)],[e(2,I_row),e(2,I_col)],'b-.')
-            elseif strcmp(files(k).participant,'dummy') %dummy data                
-                %scatter(Mu(1),Mu(2),'gv','filled');
-                %scatter(X(idx,1),X(idx,2),'g','filled')
-            end
-%             if k==55 %testing specific values
-%                 scatter(X(idx,1),X(idx,2),'g','filled')
-%             end
-%             text(Mu(1),Mu(2),num2str(k))
-            %end
+        if k==55 %from time-stamp this appears to be from before the data collection started, and so I assume it is not 'real' data
+            continue
+        elseif files(k).date==10||files(k).date==11 %77/78
+            
+            %scatter mean
+            scatter(Mu(1),Mu(2),'rs','filled');
+            
+            %plot elipse
+            %scatter(e(1,:), e(2,:))
+            %plot(e(1,:), e(2,:), 'Color','r');
+            
+            %plot line
+            %                 e2=dist(e);
+            %                 [~,I] = max(e2(:));
+            %                 [I_row, I_col] = ind2sub(size(e2),I);
+            %                 plot([e(1,I_row),e(1,I_col)],[e(2,I_row),e(2,I_col)],'r:')
+            
+        elseif files(k).date==12||files(k).date==13 %Africa
+            scatter(Mu(1),Mu(2),'kv','filled');
+            %plot(e(1,:), e(2,:), 'Color','g');
+            %                 e2=dist(e);
+            %                 [~,I] = max(e2(:));
+            %                 [I_row, I_col] = ind2sub(size(e2),I);
+            %                 plot([e(1,I_row),e(1,I_col)],[e(2,I_row),e(2,I_col)],'k--')
+        elseif files(k).date==14 %Great Court
+            scatter(Mu(1),Mu(2),'bo','filled');
+            %plot(e(1,:), e(2,:), 'Color','b');
+            %                 e2=dist(e);
+            %                 [~,I] = max(e2(:));
+            %                 [I_row, I_col] = ind2sub(size(e2),I);
+            %                 plot([e(1,I_row),e(1,I_col)],[e(2,I_row),e(2,I_col)],'b-.')
+        elseif strcmp(files(k).participant,'dummy') %dummy data
+            %scatter(Mu(1),Mu(2),'gv','filled');
+            %scatter(X(idx,1),X(idx,2),'g','filled')
+        end
+        %             if k==55 %testing specific values
+        %                 scatter(X(idx,1),X(idx,2),'g','filled')
+        %             end
+        %             text(Mu(1),Mu(2),num2str(k))
+        %end
+        if k==1
+            scatter(flip(GLuv(1,:)),flip(GLuv(2,:)),'k*');
+            text(flip(GLuv(1,:))+0.005,flip(GLuv(2,:)),{'1','2','3'})
+            
+            %legend([p(1)...{'Spectral Locus','Practical Gamut'})
+        end
     elseif strcmp(location,'PAMELA_20180205')
         if strcmp(files(k).participant,'test, corners, colour & bw') ||...
                 strcmp(files(k).participant,'KW')
             %specify a single participant (also plots test case)
             if k==1
-                p1{k}=plot(e(1,:), e(2,:),'r'); 
+                p1{k}=plot(e(1,:), e(2,:),'r');
                 scatter(X(idx,1),X(idx,2),'r','filled')
                 %comet(X(idx,1),X(idx,2))
                 
             elseif (1<k) && (k<11)
-                p1{k}=plot(e(1,:), e(2,:),'g'); 
+                p1{k}=plot(e(1,:), e(2,:),'g');
                 scatter(X(idx,1),X(idx,2),'g','filled')
                 %comet(X(idx,1),X(idx,2))
             elseif (10<k) && (k<20)
-                p1{k}=plot(e(1,:), e(2,:),'b'); 
+                p1{k}=plot(e(1,:), e(2,:),'b');
                 scatter(X(idx,1),X(idx,2),'b','filled')
                 %comet(X(idx,1),X(idx,2))
             elseif (19<k)
                 p1{k}=plot(e(1,:), e(2,:),'k');
-                scatter(X(idx,1),X(idx,2),'k','filled') 
+                scatter(X(idx,1),X(idx,2),'k','filled')
                 %comet(X(idx,1),X(idx,2))
             end
-            %title(files(k).participant) 
+            %title(files(k).participant)
             %saveas(fig,strcat('bg',files(k).participant,'.tif'))
         end
-%     elseif strcmp(location,'PAMELA_20180205')
-%         if k==1
-%            p1{k}=plot(e(1,:), e(2,:),'r');
-%         elseif (1<k) && (k<11)
-%             p1{k}=plot(e(1,:), e(2,:),'g');
-%         elseif (10<k) && (k<20)
-%             p1{k}=plot(e(1,:), e(2,:),'b');
-%         elseif (19<k) 
-%             p1{k}=plot(e(1,:), e(2,:),'k');
-%         end
+        %     elseif strcmp(location,'PAMELA_20180205')
+        %         if k==1
+        %            p1{k}=plot(e(1,:), e(2,:),'r');
+        %         elseif (1<k) && (k<11)
+        %             p1{k}=plot(e(1,:), e(2,:),'g');
+        %         elseif (10<k) && (k<20)
+        %             p1{k}=plot(e(1,:), e(2,:),'b');
+        %         elseif (19<k)
+        %             p1{k}=plot(e(1,:), e(2,:),'k');
+        %         end
     elseif strcmp(location,'basement_rgby_test')
         if k==1
             p1{k}=plot(e(1,:), e(2,:),'r');
@@ -588,10 +593,10 @@ for k=1:n2
             p1{k}=plot(e(1,:), e(2,:),'b');
             scatter(X(idx,1),X(idx,2),'s',...
                 'MarkerFaceColor','b','DisplayName','DG - default method')
-%         elseif k<4 % baseline data and data from pre-runs
-%             p1{k}=plot(e(1,:), e(2,:),'k');
-%             scatter(X(idx,1),X(idx,2),...
-%                 'k','DisplayName','Test data')
+            %         elseif k<4 % baseline data and data from pre-runs
+            %             p1{k}=plot(e(1,:), e(2,:),'k');
+            %             scatter(X(idx,1),X(idx,2),...
+            %                 'k','DisplayName','Test data')
         end
         
     end
@@ -603,7 +608,7 @@ end
 %     legend([p1 p2 p3])
 % end
 
-%legend 
+%legend
 
 %close
 
