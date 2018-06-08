@@ -335,14 +335,19 @@ vbar=9.*ybar ./ (xbar + 15.*ybar + 3.*zbar);
 plot(ubar,vbar,'k')
 
 for d=1:18
-    scatter3(gamut_uv(1,:,d),gamut_uv(2,:,d),gamut_XYZ(2,:,d),[],[1,0,0;0,1,0;0,0,1;0,0,0],'*')
+    scatter3(gamut_uv(1,:,d),gamut_uv(2,:,d),gamut_XYZ(2,:,d),[],[1,0,0;0,1,0;0,0,1;0,0,0],'.')
     % Plot lines between gamut points:
-%     plot3([gamut_uv(1,1:3,d),gamut_uv(1,1,d)],[gamut_uv(2,1:3,d),gamut_uv(2,1,d)],...
-%         [gamut_XYZ(2,1:3,d),gamut_XYZ(2,1,d)],'k:')
+    if d==18
+        plot3([gamut_uv(1,1:3,d),gamut_uv(1,1,d)],[gamut_uv(2,1:3,d),gamut_uv(2,1,d)],...
+            [gamut_XYZ(2,1:3,d),gamut_XYZ(2,1,d)],'k:')
+    end
 end
 
-xlabel('u'''),ylabel('v'''),zlabel('Y'),
+xlabel('u'''),ylabel('v'''),zlabel('Y')
 axis equal
+xlim([0 0.6])
+ylim([0 0.6])
+
 
 %% Plot 'representative gamut' (the gamut of the points actually displayed)
 %Requires previous section to have been run prior 

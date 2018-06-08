@@ -5,10 +5,8 @@ clc, clear, close all
 
 % To do list
 
-
 % Add Grant data (different run length, should just be able to change n)
 % Clean up data, find a way to threshold and recognise duds
-% Threshold BM data
 % Replace dist function in BM plotting
 
 %% Load Data
@@ -18,10 +16,15 @@ clc, clear, close all
 % both raw and numerical data is useful, but they require different excel
 % addresses to specify data)
 
-location='200s';  %changing this changes EVERYTHING
+location='PAMELA';  %changing this changes EVERYTHING
 %'PAMELA' or 'GRANT' or 'BM' or '200s' or
 %'PAMELA_20180205' or 'basement_rgby_test' or
 %'basement_greyCard_test'
+
+%Warning: As far as I recall, for the 'GRANT' and '200s' data, a different
+%stimulus, defined in CIELAB was used, and no accounting for this is made
+%in the following analysis. If required, contact DG for access to previous
+%versions (pre-git) of this code.
 
 rootdir = fullfile('C:','Users','cege-user','Dropbox','UCL','Data','Tablet',location);
 cd(rootdir)
@@ -197,15 +200,15 @@ if strcmp(location,'BM')
     spd(:,4)=mean(spd(:,22:end),2);
     spd=spd(:,1:4);
     
-    % figure, hold on
-    % for i=[4,3,2]
-    %     plot(spd(:,1),spd(:,i)/max(spd(:,i)))
-    % end
-    %
-    % legend({'Rooms 77/78','Room 25','Great Court'},'Location','east')
-    %
-    % xlabel('Wavelength')
-    % ylabel('Relative power')
+    figure, hold on
+    for i=[4,3,2]
+        plot(spd(:,1),spd(:,i)/max(spd(:,i)))
+    end
+    
+    legend({'Rooms 77/78','Room 25','Great Court'},'Location','east')
+    
+    xlabel('Wavelength (nm)')
+    ylabel('Normalised power')
     
     xbar2_GL=interp1(lambdaCie2,xbar2,spd(:,1),'spline');
     ybar2_GL=interp1(lambdaCie2,ybar2,spd(:,1),'spline');
@@ -231,12 +234,13 @@ if strcmp(location,'BM')
     
     %figure, scatter(GLuv(1,:),GLuv(2,:),'k*');
     %figure,
-    scatter(flip(GLuv(1,:)),flip(GLuv(2,:)),'k*');
-    text(flip(GLuv(1,:)),flip(GLuv(2,:)),{'1','2','3'})
+    
+%     scatter(flip(GLuv(1,:)),flip(GLuv(2,:)),'k*');
+%     text(flip(GLuv(1,:)),flip(GLuv(2,:)),{'1','2','3'})
 end
 
 if strcmp(location,'PAMELA')
-    [spd_data,peak,lux,spd_uv] = read_UPRtek('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20170331 Spectra',1);
+    [spd_data,peak,lux,spd_uv] = read_UPRtek('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20170331 Spectra',0,0,0);
     
     % Plot chromaticities of light sources
     figure, hold on
@@ -246,6 +250,27 @@ if strcmp(location,'PAMELA')
     end
     legend
     axis equal
+    
+    % Note that the following pulls data from a specified measurement
+    % session, not neccessarily the one specified at the start of this
+    % script
+    
+    plt_ind_spd = 1;    
+    if plt_ind_spd
+        
+        rootdir=('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\2017 Spectra');
+        [data,peak,lux,spd_uv]=read_UPRtek(rootdir,0,0,0);
+        
+        figure,
+        h= plot(360:760,data(:,[1,3:8]));
+        set(h, {'color'}, {'k';'r';'g';'b';[0.9,0.9,0];'k';'k'});
+        set(h, {'LineStyle'}, {'-';'-';'-';'-';'-';':';'--'});
+        legend({'High output white','Red','Green','Blue','Amber','Warm White','Cool White'})
+        
+        xlabel('Wavelength (nm)')
+        ylabel('Normalised power')
+        %title('Normalised SPDs of PAMELA lighting channels')
+    end
     
     
 end
@@ -453,6 +478,9 @@ for k=1:n2
     %# plot
     if strcmp(location,'200s')
         p1=plot(e(1,:), e(2,:),'Color','k');
+        if strcmp(files(k).participant,'dummy')            
+            p1=plot(e(1,:), e(2,:),'Color','r');
+        end
         
         %         %Mod to pick out short adapt vs long adap
         %     elseif strcmp(location,'PAMELA')
@@ -616,52 +644,38 @@ end
 %% Assessing intra-observer variation
 % Nabbed script from 'AptialCAtestAnyalysis003_WIP.m'
 
-subsample_median=   zeros(size(u_prime_clean,1),numel(sheets),2);
-subsample_SD=       zeros(size(u_prime_clean,1),numel(sheets),2);
-SEM=                zeros(size(u_prime_clean,1),numel(sheets),2);
+clc, close all
 
-for j=1:numel(sheets)                                                  %For all the datasets...
-    for i=1:size(u_prime_clean,1)                                      %Using 'i' as a value from 1 to the 190 (the max number of trials)
-        subsample=u_prime_clean(1:i,j);
-        subsample_median(i,j,1)=nanmedian(subsample);
-        subsample_SD(i,j,1)=nanstd(subsample);                           %calculate the standard deviation of that sample
-        SEM(i,j,1)=nanstd(u_prime_clean(:,j))/sqrt(length(subsample)); %compute the SEM (SD of sample)/(sqrt(i))
+subsample_median=   zeros(n-10,2,n2-1); %n2-1 would exclude dummy
+subsample_SD=       zeros(n-10,2,n2-1); %n2-1 would exclude dummy
+
+for j=1:n2-1                                                         %For all the datasets (including dummy)
+    for i=1:n-10                                      %Using 'i' as a value from 1 to the 190 (the max number of trials)
+        clear subsample
+        subsample=TabletData(1:i,11,j);
+        subsample_median(i,1,j)=nanmedian(subsample);
+        subsample_SD(i,1,j)=nanstd(subsample);                           %calculate the standard deviation of that sample
     end
 end
 
-for j=1:numel(sheets)
-    for i=1:size(v_prime_clean,1)
-        subsample=v_prime_clean(1:i,j);
-        subsample_median(i,j,2)=nanmedian(subsample);
-        subsample_SD(i,j,2)=nanstd(subsample);
-        SEM(i,j,2)=nanstd(v_prime_clean(:,j))/sqrt(length(subsample));
+for j=1:n2-1 
+    for i=1:n-10 
+        clear subsample
+        subsample=TabletData(1:i,12,j);
+        subsample_median(i,2,j)=nanmedian(subsample);
+        subsample_SD(i,2,j)=nanstd(subsample);
     end
 end
-
-
-% figure, hold on
-% plot(10:size(u_prime_clean,1),(mean(subsample_median(10:end,:,1),2)),':r','LineWidth',3);
-% plot(10:size(v_prime_clean,1),(mean(subsample_median(10:end,:,2),2)),'--b','LineWidth',3);
-
-% plot(10:size(u_prime_clean,1),mean(subsample_SD(10:end,:,1),2),':r','LineWidth',3);
-% plot(10:size(v_prime_clean,1),mean(subsample_SD(10:end,:,2),2),'--b','LineWidth',3);
-
-% figure, hold on
-% for i=1:numel(sheets)
-%     subplot(4,4,i)
-%     plot(10:size(u_prime_clean,1),subsample_SD(10:end,i,1),':r','LineWidth',3);
-%     plot(10:size(v_prime_clean,1),subsample_SD(10:end,i,2),'--b','LineWidth',3);
-% end
 
 figure, hold on
-plot(10:size(u_prime_clean,1),mean(subsample_SD(10:end,:,1),2),':r','LineWidth',2);
-plot(10:size(v_prime_clean,1),mean(subsample_SD(10:end,:,2),2),'--b','LineWidth',2);
+plot(10:n-10,mean(subsample_SD(10:end,:,1),2),':r','LineWidth',2);
+plot(10:n-10,mean(subsample_SD(10:end,:,2),2),'--b','LineWidth',2);
 
-axis([10 size(u_prime,1) 3.2*10^-3 5.5*10^-3])
-xlabel('# of data points in subsample','FontSize',20)
-ylabel({'Standard Deviation (SD)','Median Across All Datasets'},'FontSize',20)
+%axis([10 n-1 3.2*10^-3 5.5*10^-3])
+xlabel('# of data points in subsample')
+ylabel({'Standard Deviation (SD)','Median Across All Datasets'})
 ax = gca; ax.XTick = [10:20:190];
-legend({'u''','v'''},'FontSize',20)
+legend({'u''','v'''})
 
 % %% Single run demo
 % 
