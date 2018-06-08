@@ -18,7 +18,7 @@ clc, clear, close all
 % both raw and numerical data is useful, but they require different excel
 % addresses to specify data)
 
-location='BM';  %changing this changes EVERYTHING
+location='200s';  %changing this changes EVERYTHING
 %'PAMELA' or 'GRANT' or 'BM' or '200s' or
 %'PAMELA_20180205' or 'basement_rgby_test' or
 %'basement_greyCard_test'
@@ -29,7 +29,7 @@ cd(rootdir)
 try
     load(sprintf('TabletData_%s',location))
 catch
-    disp('Reading from excel. Wait ~42.3 seconds (PAMELA), and 171.3 seconds for BM')
+    disp('Reading from excel. Wait 42 seconds (PAMELA), and 171 seconds for BM')
     tic
     TBfilename = fullfile(rootdir,location);
     [~,sheets] = xlsfinfo(TBfilename);
@@ -84,8 +84,9 @@ files(length(files)+1)=files(length(files));
 for i=1:n2 %add date info onto top level for readability (has to come here)
     files(i).date=files(i).Time.d;
 end
-files(length(files)).date=0;
-files(length(files)).participant='dummy';
+
+files(length(files)).date=0; %Set the final dataset (dummy data) date to 0 so that it can be specially treated when plotting
+files(length(files)).participant='dummy'; %As above
 
 %% Processing
 
@@ -612,3 +613,61 @@ end
 
 %close
 
+%% Assessing intra-observer variation
+% Nabbed script from 'AptialCAtestAnyalysis003_WIP.m'
+
+subsample_median=   zeros(size(u_prime_clean,1),numel(sheets),2);
+subsample_SD=       zeros(size(u_prime_clean,1),numel(sheets),2);
+SEM=                zeros(size(u_prime_clean,1),numel(sheets),2);
+
+for j=1:numel(sheets)                                                  %For all the datasets...
+    for i=1:size(u_prime_clean,1)                                      %Using 'i' as a value from 1 to the 190 (the max number of trials)
+        subsample=u_prime_clean(1:i,j);
+        subsample_median(i,j,1)=nanmedian(subsample);
+        subsample_SD(i,j,1)=nanstd(subsample);                           %calculate the standard deviation of that sample
+        SEM(i,j,1)=nanstd(u_prime_clean(:,j))/sqrt(length(subsample)); %compute the SEM (SD of sample)/(sqrt(i))
+    end
+end
+
+for j=1:numel(sheets)
+    for i=1:size(v_prime_clean,1)
+        subsample=v_prime_clean(1:i,j);
+        subsample_median(i,j,2)=nanmedian(subsample);
+        subsample_SD(i,j,2)=nanstd(subsample);
+        SEM(i,j,2)=nanstd(v_prime_clean(:,j))/sqrt(length(subsample));
+    end
+end
+
+
+% figure, hold on
+% plot(10:size(u_prime_clean,1),(mean(subsample_median(10:end,:,1),2)),':r','LineWidth',3);
+% plot(10:size(v_prime_clean,1),(mean(subsample_median(10:end,:,2),2)),'--b','LineWidth',3);
+
+% plot(10:size(u_prime_clean,1),mean(subsample_SD(10:end,:,1),2),':r','LineWidth',3);
+% plot(10:size(v_prime_clean,1),mean(subsample_SD(10:end,:,2),2),'--b','LineWidth',3);
+
+% figure, hold on
+% for i=1:numel(sheets)
+%     subplot(4,4,i)
+%     plot(10:size(u_prime_clean,1),subsample_SD(10:end,i,1),':r','LineWidth',3);
+%     plot(10:size(v_prime_clean,1),subsample_SD(10:end,i,2),'--b','LineWidth',3);
+% end
+
+figure, hold on
+plot(10:size(u_prime_clean,1),mean(subsample_SD(10:end,:,1),2),':r','LineWidth',2);
+plot(10:size(v_prime_clean,1),mean(subsample_SD(10:end,:,2),2),'--b','LineWidth',2);
+
+axis([10 size(u_prime,1) 3.2*10^-3 5.5*10^-3])
+xlabel('# of data points in subsample','FontSize',20)
+ylabel({'Standard Deviation (SD)','Median Across All Datasets'},'FontSize',20)
+ax = gca; ax.XTick = [10:20:190];
+legend({'u''','v'''},'FontSize',20)
+
+% %% Single run demo
+% 
+% figure,
+% plot(1:190,u_prime(:,10))
+% axis([1 190 -inf inf])
+% xlabel('Trial #','FontSize',20)
+% ylabel('u''','FontSize',20)
+% 
