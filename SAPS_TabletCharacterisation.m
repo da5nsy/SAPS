@@ -347,7 +347,7 @@ axis equal
 %% Plot 'representative gamut' (the gamut of the points actually displayed)
 %Requires previous section to have been run prior 
 close all
-%for kspec=1%:30
+for kspec=1%:30
     
     %clearvars -except kspec rootdir chan gamut_filename files file gamut_data lambda ciefile cie2 CIEwavelength xbar ybar zbar
     clc, 
@@ -396,25 +396,25 @@ close all
     
     %This code is really really slow. For now I'll save and load cubennzsum
     %but I really should try to find a better way to do it.
-    load('cubennzsum.mat')
-%     cubennzsum= zeros(256,256,256);
-%     for i=1:256
-%         for j=1:256
-%             for k=1:256
-%                 cubennzsum(i,j,k)=nnz(cube(i,j,k,:));
-%                 
-%             end
-%         end
-%         i
-%     end
+    %load('cubennzsum.mat')
+    cubennzsum= zeros(256,256,256);
+    for i=1:256
+        for j=1:256
+            for k=1:256
+                cubennzsum(i,j,k)=nnz(cube(i,j,k,:));
+                
+            end
+        end
+        i
+    end
     
-%     %create a cube and add each time a specific triplet is seen to that area
-%     %(like a 3D histogram)
-%     cube=zeros(256,256,256);
-%     for i=1:length(i2)
-%         cube(i2(i,1)+1,i2(i,2)+1,i2(i,3)+1)=...
-%         cube(i2(i,1)+1,i2(i,2)+1,i2(i,3)+1)+1;
-%     end
+    %create a cube and add each time a specific triplet is seen to that area
+    %(like a 3D histogram)
+    cube=zeros(256,256,256);
+    for i=1:length(i2)
+        cube(i2(i,1)+1,i2(i,2)+1,i2(i,3)+1)=...
+        cube(i2(i,1)+1,i2(i,2)+1,i2(i,3)+1)+1;
+    end
     
     %Calculate spectrum for each pixel value
     gamut_data_int=zeros(101,4,256);
@@ -531,8 +531,18 @@ close all
     % xlim([0.1482 0.2403])
     % ylim([0.4217 0.5007])
     % zlim([0.046 0.051])
-%end
+end
 colorbar
+
+%% %Plot single stimulus
+clc
+scatter(u(1:end),v(1:end),'k','filled')
+xlabel('u''')
+ylabel('v''')
+%axis([0.14 0.24, 0.41,0.51])
+axis equal
+grid on
+xlim([0.14 0.25]),ylim([0.41 0.52])
 
 %% Focus on the first stimulus
 xlim([0.1482 0.2403])
@@ -550,4 +560,4 @@ axis('equal')
 daspect([1,1,0.1]) %This isn't exactly what I want to do but it'll suffice
 xlim([0.14 0.25]),ylim([0.41 0.52]),zlim([0.046 0.06])
 colorbar
-xlabel('u'''),ylabel('v'''),zlabel('Y')
+xlabel('u'''),ylabel('v'''),zlabel('Y') 

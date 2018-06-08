@@ -2,6 +2,9 @@
 %Writing to sub out from SAPS_DataAnalysis.m but not got time
 %Ideally should be similar to read_UPRtek
 
+% SEAHA has a GL Optis device, which I used to take measurements at the
+% British Museum and elsewhere
+
 function [spd] = read_GL(folder,plt,sv_plt)
 
 cd(folder)

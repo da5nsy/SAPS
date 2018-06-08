@@ -1,8 +1,10 @@
 clc, clear, close all
 % Requires Psychtoolbox and read_UPRtek
 
+%Add some text here that says what this does
+
 %% Load lighting measurements
-[spectral_data,peak,lux_fromExcel]=read_UPRtek('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20180205 Spectra',[]);
+[spectral_data,peak,lux_fromExcel]=read_UPRtek('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20180205 Spectra',[],[]);
 S_spectral_data=[360,1,401];
 
 for i=1:size(spectral_data,2)
@@ -139,7 +141,7 @@ text(MH.xy_1964(1),MH.xy_1964(2),'MH\_1964')
 % A: Yes, only out by <1.3
 
 % Load lighting measurements
-[spectral_data,peak,lux_fromExcel]=read_UPRtek('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20180205 Spectra',[]);
+[spectral_data,peak,lux_fromExcel]=read_UPRtek('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20180205 Spectra',[],[]);
 S_spectral_data=[360,1,401];
 
 for i=1:size(spectral_data,2)
