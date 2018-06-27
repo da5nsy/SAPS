@@ -4,8 +4,14 @@ clc, clear, close all
 %Add some text here that says what this does
 
 %% Load lighting measurements
-[spectral_data,peak,lux_fromExcel]=read_UPRtek('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20180205 Spectra',[],[]);
-S_spectral_data=[360,1,401];
+
+try
+    load('PAMELA_ChromData')
+catch
+    [spectral_data,peak,lux_fromExcel]=read_UPRtek('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20180205 Spectra',[],[],[]);
+    S_spectral_data=[360,1,401];
+    save('PAMELA_ChromData')
+end
 
 for i=1:size(spectral_data,2)
     spectral_data_UnNormalised(:,i) = spectral_data(:,i).*peak(i);
@@ -14,10 +20,11 @@ end
 % figure; plot(SToWls(S_spectral_data),spectral_data)
 % figure; plot(SToWls(S_spectral_data),spectral_data_UnNormalised)
 
-%mel_low = 0; 
-%mel_high = 1
+%comment: mel_low = 0; 
+%comment: mel_high = 1
 index=[ones(1,6),zeros(1,7),ones(1,6)];
 
+% %Plot each SPD
 % figure; plot(SToWls(S_spectral_data),spectral_data(:,index==0))
 % figure; plot(SToWls(S_spectral_data),spectral_data(:,index==1))
 
@@ -51,8 +58,13 @@ MH.int271=SplineSpd(S_spectral_data, MH.mean,[390:660]', 1);
 % plot(380:5:780,ML.int81);
 % plot(390:830,ML.int441,'--');
 
-% figure; plot(SToWls(S_spectral_data),ML.mean);title('ML');
-% figure; plot(SToWls(S_spectral_data),MH.mean);title('MH');
+%% Plot SPDs
+figure; hold on
+plot(SToWls(S_spectral_data),ML.mean,'r','DisplayName','ML');
+plot(SToWls(S_spectral_data),MH.mean,'b','DisplayName','MH');
+xlabel('Wavelength (nm)')
+%ylabel('?')!!!!!!!!
+legend
 
 %% Calculate chromaticities
 
@@ -63,6 +75,12 @@ ML.xy_1931 = [ML.XYZ_1931(1)/sum(ML.XYZ_1931),ML.XYZ_1931(2)/sum(ML.XYZ_1931)];
 MH.xy_1931 = [MH.XYZ_1931(1)/sum(MH.XYZ_1931),MH.XYZ_1931(2)/sum(MH.XYZ_1931)];
 ML.lum = ML.XYZ_1931(2)*683;
 MH.lum = MH.XYZ_1931(2)*683;
+
+ML.lum_fromExcel = mean(lux_fromExcel(index==0));
+MH.lum_fromExcel = mean(lux_fromExcel(index==1));
+
+% %How representative are the averages of the actual measurements over time?
+%figure, plot(lux_fromExcel)
 
 load T_xyz1964
 ML.XYZ_1964 = T_xyz1964*ML.int81;
@@ -99,17 +117,15 @@ MH.mel = T_melanopsin*MH.int271;
 
 %% Plot CIE 1931 xy chromaticity diagram
 
-clear plotx ploty
-
 % I think the data that ships with Psychtoolbox disagrees with the CIE data
 % and creates some funky bits at the end of the spectrum because of
 % rounding error bits
-plotx=T_xyz1931(1,1:73)./sum(T_xyz1931(:,1:73));    %plotx(end+1)=plotx(1);
-ploty=T_xyz1931(2,1:73)./sum(T_xyz1931(:,1:73));    %ploty(end+1)=ploty(1);
+plotx_31=T_xyz1931(1,1:73)./sum(T_xyz1931(:,1:73));    %plotx(end+1)=plotx(1);
+ploty_31=T_xyz1931(2,1:73)./sum(T_xyz1931(:,1:73));    %ploty(end+1)=ploty(1);
 
 figure, hold on
-plot(plotx,ploty,'k');
-scatter(plotx,ploty,'k');
+plot(plotx_31,ploty_31,'k');
+scatter(plotx_31,ploty_31,'k');
 axis equal
 
 scatter(ML.xy_1931(1),ML.xy_1931(2),'k','filled')
@@ -120,13 +136,12 @@ text(MH.xy_1931(1),MH.xy_1931(2),'MH\_1931')
 
 %% 1964
 
-clear plotx ploty
-plotx=T_xyz1964(1,1:73)./sum(T_xyz1964(:,1:73));    %plotx(end+1)=plotx(1);
-ploty=T_xyz1964(2,1:73)./sum(T_xyz1964(:,1:73));    %ploty(end+1)=ploty(1);
+plotx_64=T_xyz1964(1,1:73)./sum(T_xyz1964(:,1:73));    %plotx(end+1)=plotx(1);
+ploty_64=T_xyz1964(2,1:73)./sum(T_xyz1964(:,1:73));    %ploty(end+1)=ploty(1);
 
 figure, hold on
-plot(plotx,ploty,'k');
-scatter(plotx,ploty,'k');
+plot(plotx_64,ploty_64,'k');
+scatter(plotx_64,ploty_64,'k');
 axis equal
 
 scatter(ML.xy_1964(1),ML.xy_1964(2),'k','filled')

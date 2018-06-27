@@ -16,7 +16,7 @@ clc, clear, close all
 % both raw and numerical data is useful, but they require different excel
 % addresses to specify data)
 
-location='PAMELA';  %changing this changes EVERYTHING
+location='PAMELA_20180205';  %changing this changes EVERYTHING
 %'PAMELA' or 'GRANT' or 'BM' or '200s' or
 %'PAMELA_20180205' or 'basement_rgby_test' or
 %'basement_greyCard_test'
