@@ -235,8 +235,8 @@ if strcmp(location,'BM')
     %figure, scatter(GLuv(1,:),GLuv(2,:),'k*');
     %figure,
     
-%     scatter(flip(GLuv(1,:)),flip(GLuv(2,:)),'k*');
-%     text(flip(GLuv(1,:)),flip(GLuv(2,:)),{'1','2','3'})
+    %     scatter(flip(GLuv(1,:)),flip(GLuv(2,:)),'k*');
+    %     text(flip(GLuv(1,:)),flip(GLuv(2,:)),{'1','2','3'})
 end
 
 if strcmp(location,'PAMELA')
@@ -255,7 +255,7 @@ if strcmp(location,'PAMELA')
     % session, not neccessarily the one specified at the start of this
     % script
     
-    plt_ind_spd = 1;    
+    plt_ind_spd = 1;
     if plt_ind_spd
         
         rootdir=('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\2017 Spectra');
@@ -275,7 +275,7 @@ if strcmp(location,'PAMELA')
     
 end
 
-%% Assess SD
+%% Assess variance
 
 for i=1:n2
     kstd_u(i)=nanstd(TabletData(1:end-10,11,i));
@@ -288,18 +288,27 @@ diffs=squeeze(sqrt((TabletData(3,11,:)-TabletData(8,11,:)).^2+(TabletData(3,12,:
 
 if strcmp(location,'PAMELA_20180205')
     figure, hold on
-    scatter(0,kstd_mean(1),'r','filled');
-    plot([0,9],[kstd_mean(1),kstd_mean(1)],'r--');
-    plot([0,9],[kstd_mean(end),kstd_mean(end)],'g--');
-    scatter(1:9,kstd_mean(2:10),'g','filled');
-    scatter(1:9,kstd_mean(11:19),'b','filled');
-    scatter(1:9,kstd_mean(20:28),'k','filled');
-    
+    %scatter(1,kstd_mean(1),'k','filled');
+    plot([1,9],[kstd_mean(1),kstd_mean(1)],'k--','DisplayName','Real touch baseline data');
+    plot([1,9],[kstd_mean(end),kstd_mean(end)],'k:','DisplayName','Computed basline data');
+    sc(1)=scatter(1:9,kstd_mean(2:10),'r','filled','DisplayName','MH1');
+    sc(2)=scatter(1:9,kstd_mean(11:19),'g','filled','DisplayName','ML');
+    sc(3)=scatter(1:9,kstd_mean(20:28),'b','filled','DisplayName','MH2');
+    xlim([0 10])
+    xticklabels({[],1:9})
     xlabel('Observer')
-    %Replace numbers with participant identifiers
-    %xticklabels({files([2:10]).participant})
     ylabel('Mean SD in u'' and v''')
+    % %Replace numbers with participant identifiers
+    %xticklabels({[],files([2:10]).participant})
+    legend
+    
+    % %Plot DBUR
+    %     figure, hold on
+    %     scatter(1:9,diffs(2:10),'r','filled','DisplayName','MH1');
+    %     scatter(1:9,diffs(11:19),'g','filled','DisplayName','ML');
+    %     scatter(1:9,diffs(20:28),'b','filled','DisplayName','MH2');
 end
+
 
 MinOrMean = 'Min'; %'Min' or 'Mean'
 thresh_SD = 0.01;
@@ -478,7 +487,7 @@ for k=1:n2
     %# plot
     if strcmp(location,'200s')
         p1=plot(e(1,:), e(2,:),'Color','k');
-        if strcmp(files(k).participant,'dummy')            
+        if strcmp(files(k).participant,'dummy')
             p1=plot(e(1,:), e(2,:),'Color','r');
         end
         
@@ -548,25 +557,31 @@ for k=1:n2
             %legend([p(1)...{'Spectral Locus','Practical Gamut'})
         end
     elseif strcmp(location,'PAMELA_20180205')
-        if strcmp(files(k).participant,'test, corners, colour & bw') ||...
+        %specify a single participant (+dummy)
+        if strcmp(files(k).participant,'dummy') ||...
                 strcmp(files(k).participant,'KW')
-            %specify a single participant (also plots test case)
-            if k==1
-                p1{k}=plot(e(1,:), e(2,:),'r');
-                scatter(X(idx,1),X(idx,2),'r','filled')
+            
+            % plots all, excluding SP, BG, NPG
+            %         if ~(strcmp(files(k).participant,'SP') ||...
+            %                 strcmp(files(k).participant,'BG') ||...
+            %                 strcmp(files(k).participant,'NPG'))
+            
+            if k==29 || k==1
+                h1=plot(e(1,:), e(2,:),'k','DisplayName','Baseline');
+                %scatter(X(idx,1),X(idx,2),'r','filled')
                 %comet(X(idx,1),X(idx,2))
                 
-            elseif (1<k) && (k<11)
-                p1{k}=plot(e(1,:), e(2,:),'g');
-                scatter(X(idx,1),X(idx,2),'g','filled')
+            elseif (1<k) & (k<11)
+                h2=plot(e(1,:), e(2,:),'r','DisplayName','MH1');
+                %scatter(X(idx,1),X(idx,2),'g','filled')
                 %comet(X(idx,1),X(idx,2))
-            elseif (10<k) && (k<20)
-                p1{k}=plot(e(1,:), e(2,:),'b');
-                scatter(X(idx,1),X(idx,2),'b','filled')
+            elseif (10<k) & (k<20)
+                h3=plot(e(1,:), e(2,:),'g','DisplayName','ML');
+                %scatter(X(idx,1),X(idx,2),'b','filled')
                 %comet(X(idx,1),X(idx,2))
-            elseif (19<k)
-                p1{k}=plot(e(1,:), e(2,:),'k');
-                scatter(X(idx,1),X(idx,2),'k','filled')
+            elseif (19<k<29)
+                h4=plot(e(1,:), e(2,:),'b','DisplayName','MH1');
+                %scatter(X(idx,1),X(idx,2),'k','filled')
                 %comet(X(idx,1),X(idx,2))
             end
             %title(files(k).participant)
@@ -638,6 +653,7 @@ end
 % end
 
 %legend
+legend([h1 h2 h3 h4],{'Basline','MH1','ML','MH2'})
 
 %close
 
@@ -658,8 +674,8 @@ for j=1:n2-1                                                         %For all th
     end
 end
 
-for j=1:n2-1 
-    for i=1:n-10 
+for j=1:n2-1
+    for i=1:n-10
         clear subsample
         subsample=TabletData(1:i,12,j);
         subsample_median(i,2,j)=nanmedian(subsample);
@@ -678,10 +694,10 @@ ax = gca; ax.XTick = [10:20:190];
 legend({'u''','v'''})
 
 % %% Single run demo
-% 
+%
 % figure,
 % plot(1:190,u_prime(:,10))
 % axis([1 190 -inf inf])
 % xlabel('Trial #','FontSize',20)
 % ylabel('u''','FontSize',20)
-% 
+%

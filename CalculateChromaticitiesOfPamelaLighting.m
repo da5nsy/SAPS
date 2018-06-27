@@ -59,11 +59,21 @@ MH.int271=SplineSpd(S_spectral_data, MH.mean,[390:660]', 1);
 % plot(390:830,ML.int441,'--');
 
 %% Plot SPDs
+
+norm = 1; %normalise SPDs
+
 figure; hold on
-plot(SToWls(S_spectral_data),ML.mean,'r','DisplayName','ML');
-plot(SToWls(S_spectral_data),MH.mean,'b','DisplayName','MH');
-xlabel('Wavelength (nm)')
-%ylabel('?')!!!!!!!!
+if norm
+    plot(SToWls(S_spectral_data),ML.mean/max(ML.mean),'r','DisplayName','ML');
+    plot(SToWls(S_spectral_data),MH.mean/max(MH.mean),'b','DisplayName','MH');
+    xlabel('Wavelength (nm)')
+    ylabel('Normalised Power')
+else
+    plot(SToWls(S_spectral_data),ML.mean,'r','DisplayName','ML');
+    plot(SToWls(S_spectral_data),MH.mean,'b','DisplayName','MH');
+    xlabel('Wavelength (nm)')
+    %ylabel('?')!!!!!!!!
+end
 legend
 
 %% Calculate chromaticities
@@ -73,8 +83,8 @@ ML.XYZ_1931 = T_xyz1931*ML.int81;
 MH.XYZ_1931 = T_xyz1931*MH.int81;
 ML.xy_1931 = [ML.XYZ_1931(1)/sum(ML.XYZ_1931),ML.XYZ_1931(2)/sum(ML.XYZ_1931)];
 MH.xy_1931 = [MH.XYZ_1931(1)/sum(MH.XYZ_1931),MH.XYZ_1931(2)/sum(MH.XYZ_1931)];
-ML.lum = ML.XYZ_1931(2)*683;
-MH.lum = MH.XYZ_1931(2)*683;
+ML.lum = ML.XYZ_1931(2)*683/1000; %not sure where the factor of 1000 comes from
+MH.lum = MH.XYZ_1931(2)*683/1000; %not sure where the factor of 1000 comes from
 
 ML.lum_fromExcel = mean(lux_fromExcel(index==0));
 MH.lum_fromExcel = mean(lux_fromExcel(index==1));
