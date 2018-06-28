@@ -228,4 +228,41 @@ text(xy_mean_MH(1),xy_mean_MH(2),'ML\_1931')
 axis equal
 
 
+%% Assessing how much light the tablet emits compared to the ambient lighting
+
+clc, clear, close all
+
+% I measured 3 repeats of 3 different stimuli. 
+% Then 3 with the display turned off. 
+% Then 3 with the display on, but lights off.
+% Then 3 with display and lights off.
+
+try
+    load('PAMELA_Tablet_Emission')
+catch
+    [spectral_data,peak,lux_fromExcel,spd_uv,spd_xy]=read_UPRtek('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20180207 Spectra',1,1,1);
+    S_spectral_data=[360,1,401];
+    save('PAMELA_Tablet_Emission')
+end
+
+spectral_data_UnNormalised = spectral_data.*peak;
+%figure, plot(spectral_data)
+figure, hold on
+
+%Two sets of plot calls to make the legend work correctly.
+%There's probably a neater way to do this.
+p1 = plot(SToWls(S_spectral_data),spectral_data_UnNormalised(:,1),'r');
+p2 = plot(SToWls(S_spectral_data),spectral_data_UnNormalised(:,10),'g'); %Looks like I accidentally only took 2 of these rather than 3
+p3 = plot(SToWls(S_spectral_data),spectral_data_UnNormalised(:,12),'b');
+p4 = plot(SToWls(S_spectral_data),spectral_data_UnNormalised(:,15),'k');
+
+plot(SToWls(S_spectral_data),spectral_data_UnNormalised(:,1:9),'r');
+plot(SToWls(S_spectral_data),spectral_data_UnNormalised(:,10:11),'g'); %Looks like I accidentally only took 2 of these rather than 3
+plot(SToWls(S_spectral_data),spectral_data_UnNormalised(:,12:14),'b');
+plot(SToWls(S_spectral_data),spectral_data_UnNormalised(:,15:17),'k');
+
+legend([p1 p2 p3 p4], {'Light, with stimuli','Light, no stimuli','No light, with stimuli','No light, no stimuli'})
+
+xlabel('Wavelength (nm)')
+ylabel('Spectral irradiance (W·m?2·nm?1)')
 

@@ -4,13 +4,17 @@
 % I use this for reading the spectral data from UCL PAMELA
 
 % Note, before use, all files were opened in excel and resaved as '.xlsx'
-% files due to unusual '.XLS' files (probably a more efficient way to do 
+% files due to unusual '.XLS' files (probably a more efficient way to do
 % this could be found).
 
 function [data,peak,lux,spd_uv, spd_xy] = read_UPRtek(folder,plt,sv_plt,norm)
 
 cd(folder)
 xlsx=dir('*.xlsx');
+
+if plt == 1
+    figure, hold on
+end
 
 for i=1:length(xlsx)
     %figure,
@@ -51,7 +55,6 @@ for i=1:length(xlsx)
     clear txt words
     
     if plt==1
-        figure, hold on
         if norm
             if i>1 %plot previous in black, to make new ones show up in red
                 plot(360:760,data(:,i-1),'k');
