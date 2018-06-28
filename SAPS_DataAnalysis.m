@@ -559,7 +559,7 @@ for k=1:n2
     elseif strcmp(location,'PAMELA_20180205')
         %specify a single participant (+dummy)
         if strcmp(files(k).participant,'dummy') ||...
-                strcmp(files(k).participant,'KW')
+                strcmp(files(k).participant,'LM')
             
             % plots all, excluding SP, BG, NPG
             %         if ~(strcmp(files(k).participant,'SP') ||...
@@ -654,6 +654,8 @@ end
 
 %legend
 legend([h1 h2 h3 h4],{'Basline','MH1','ML','MH2'})
+xlim([0.15 0.25])
+ylim([0.43 0.51])
 
 %close
 

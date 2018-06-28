@@ -8,7 +8,7 @@ clc, clear, close all
 try
     load('PAMELA_ChromData')
 catch
-    [spectral_data,peak,lux_fromExcel]=read_UPRtek('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20180205 Spectra',[],[],[]);
+    [spectral_data,peak,lux_fromExcel,spd_uv,spd_xy]=read_UPRtek('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20180205 Spectra',[],[],[]);
     S_spectral_data=[360,1,401];
     save('PAMELA_ChromData')
 end
@@ -60,7 +60,7 @@ MH.int271=SplineSpd(S_spectral_data, MH.mean,[390:660]', 1);
 
 %% Plot SPDs
 
-norm = 1; %normalise SPDs
+norm = 1; %normalise SPDs to max=1
 
 figure; hold on
 if norm
@@ -203,6 +203,29 @@ for i=1:size(spectral_data,2)
 %    M(i).lux-(M(i).lum/1000)
 end
 
+%% Compare spreadsheet chromaticity values with computed values
+uv_mean_ML=mean(spd_uv(index==0,:));
+uv_mean_MH=mean(spd_uv(index==1,:));
+
+xy_mean_ML=mean(spd_xy(index==0,:));
+xy_mean_MH=mean(spd_xy(index==1,:));
+
+figure, hold on
+plot(plotx_31, ploty_31)
+
+scatter(ML.xy_1931(1),ML.xy_1931(2),'k','filled')
+text(ML.xy_1931(1),ML.xy_1931(2),'ML\_1931')
+
+scatter(xy_mean_ML(1),xy_mean_ML(2),'r','filled')
+text(xy_mean_ML(1),xy_mean_ML(2),'ML\_1931')
+
+scatter(MH.xy_1931(1),MH.xy_1931(2),'b','filled')
+text(MH.xy_1931(1),MH.xy_1931(2),'MH\_1931')
+
+scatter(xy_mean_MH(1),xy_mean_MH(2),'r','filled')
+text(xy_mean_MH(1),xy_mean_MH(2),'ML\_1931')
+
+axis equal
 
 
 
