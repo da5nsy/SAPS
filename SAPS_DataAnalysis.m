@@ -16,7 +16,7 @@ clc, clear, close all
 % both raw and numerical data is useful, but they require different excel
 % addresses to specify data)
 
-location='PAMELA_20180205';  %changing this changes EVERYTHING
+location='PAMELA';  %changing this changes EVERYTHING
 %'PAMELA' or 'GRANT' or 'BM' or '200s' or
 %'PAMELA_20180205' or 'basement_rgby_test' or
 %'basement_greyCard_test'
@@ -247,15 +247,24 @@ if strcmp(location,'PAMELA')
     for i=1:18
         scatter(spd_uv(i,1),spd_uv(i,2),'filled')
         text(spd_uv(i,1)+(i/300),spd_uv(i,2)+(i/300),string(i))
+        % 8:10 seem to be something that was not actually used in the
+        % experiment, probably just me fiddling around trying to make the
+        % MH setting
+        % [1,5:7]   == CW
+        % [2:4]     == WW
+        % [11:18]   == MH              
     end
     legend
     axis equal
+    spd_uv_CW=mean(spd_uv([1,5:7],:));
+    spd_uv_WW=mean(spd_uv(2:4,:));
+    spd_uv_MH=mean(spd_uv(11:18,:));
     
     % Note that the following pulls data from a specified measurement
     % session, not neccessarily the one specified at the start of this
     % script
     
-    plt_ind_spd = 1;
+    plt_ind_spd = 0;
     if plt_ind_spd
         
         rootdir=('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\2017 Spectra');
@@ -398,8 +407,8 @@ end
 % % scatter(TabletData(repeats(2),11,1),TabletData(repeats(2),12,1),'r')
 
 %% Plot
-%figure, hold on
-%axis equal
+close all
+figure, hold on
 
 %fig=figure('Position', [50, 50, 800, 800]); hold on
 fig=gcf; hold on
@@ -414,8 +423,8 @@ axis equal;
 load('SAPS_SelectableColoursGamut.mat')
 s=scatter(u(1:50:end),v(1:50:end),20,occ(1:50:end));
 view(2)
-axis('equal')
-%xlim([0.14 0.25]),ylim([0.41 0.52]) %close to selectable gamut boundary
+axis equal
+xlim([0.14 0.25]),ylim([0.41 0.52]) %close to selectable gamut boundary
 colorbar
 xlabel('u'''),ylabel('v'''),zlabel('Y')
 
@@ -499,13 +508,34 @@ for k=1:n2
         %         end
         
     elseif strcmp(location,'PAMELA')
+        OM = 0; %Original or mod? O=0, M=1;
+        %Mod plots means as squares, with low alpha so that overlapping
+        %points are visible
+        
         P='DG'; %specify participant
-        if strcmp(files(k).Light(1:2),'CW') && strcmp(files(k).participant,P)
-            p1=plot(e(1,:), e(2,:), 'Color','b','DisplayName','CW');
-        elseif strcmp(files(k).Light(1:2),'WW') && strcmp(files(k).participant,P)
-            p2=plot(e(1,:), e(2,:), 'Color','r','DisplayName','WW');
-        elseif strcmp(files(k).Light(1:2),'MH') && strcmp(files(k).participant,P)
-            p3=plot(e(1,:), e(2,:), 'Color','g','DisplayName','MH');
+        %Original
+        if OM
+            if strcmp(files(k).Light(1:2),'CW') && strcmp(files(k).participant,P)
+                p1=plot(e(1,:), e(2,:), 'Color','g','DisplayName','CW');
+            elseif strcmp(files(k).Light(1:2),'WW') && strcmp(files(k).participant,P)
+                p2=plot(e(1,:), e(2,:), 'Color','b','DisplayName','WW');
+            elseif strcmp(files(k).Light(1:2),'MH') && strcmp(files(k).participant,P)
+                p3=plot(e(1,:), e(2,:), 'Color','r','DisplayName','MH');
+            elseif strcmp(files(k).participant,'dummy')
+                p4=plot(e(1,:), e(2,:), 'Color','k','DisplayName','Baseline');
+            end
+        end
+        %Mod
+        if ~OM
+            if strcmp(files(k).Light(1:2),'CW') && strcmp(files(k).participant,P)
+                p1=scatter(Mu(1),Mu(2),'sg','filled','DisplayName','CW','MarkerFaceAlpha',.7);
+            elseif strcmp(files(k).Light(1:2),'WW') && strcmp(files(k).participant,P)
+                p2=scatter(Mu(1),Mu(2),'sb','filled','DisplayName','WW','MarkerFaceAlpha',.7);
+            elseif strcmp(files(k).Light(1:2),'MH') && strcmp(files(k).participant,P)
+                p3=scatter(Mu(1),Mu(2),'sr','filled','DisplayName','MH','MarkerFaceAlpha',.7);
+            elseif strcmp(files(k).participant,'dummy')
+                p4=scatter(Mu(1),Mu(2),'sk','filled','DisplayName','Baseline','MarkerFaceAlpha',.7);
+            end
         end
         
     elseif strcmp(location,'BM') && kstd(k) < thresh_SD && diffs(k) < thresh_DBUR
@@ -648,14 +678,39 @@ for k=1:n2
     xlabel('u'''),ylabel('v''')
 end
 
-% if strcmp(location,'PAMELA')
-%     legend([p1 p2 p3])
-% end
+% Here goes all the stuff that you don't need to be applied for each run of
+% the data, like graph formatting
+if strcmp(location,'PAMELA_20180205')
+    legend([h1 h2 h3 h4],{'Basline','MH1','ML','MH2'})
+    xlim([0.15 0.25])
+    ylim([0.43 0.51])    
+end
 
-%legend
-legend([h1 h2 h3 h4],{'Basline','MH1','ML','MH2'})
-xlim([0.15 0.25])
-ylim([0.43 0.51])
+if strcmp(location,'PAMELA')
+    legend([p4 p1 p2 p3],'Location','northwest')
+%     xlim([0.175 0.23])
+%     ylim([0.455 0.5])
+   % xticks(0.15:0.01:0.25)
+   % yticks(0.43:0.01:0.51)
+    
+    %Plot light chromaticities
+    if exist('spd_uv_CW','var')
+        scatter(spd_uv_CW(1),spd_uv_CW(2),'g','filled','DisplayName','CW','MarkerEdgeColor','k')        
+        scatter(spd_uv_WW(1),spd_uv_WW(2),'b','filled','DisplayName','WW','MarkerEdgeColor','k')        
+        scatter(spd_uv_MH(1),spd_uv_MH(2),'r','filled','DisplayName','MH','MarkerEdgeColor','k')
+        xlim([0.175 0.255])
+        ylim([0.455 0.53])
+    end
+   
+end
+
+%         if strcmp(files(k).Light(1:2),'CW') && strcmp(files(k).participant,P)
+%             p1=plot(e(1,:), e(2,:), 'Color','g','DisplayName','CW');
+%         elseif strcmp(files(k).Light(1:2),'WW') && strcmp(files(k).participant,P)
+%             p2=plot(e(1,:), e(2,:), 'Color','b','DisplayName','WW');
+%         elseif strcmp(files(k).Light(1:2),'MH') && strcmp(files(k).participant,P)
+%             p3=plot(e(1,:), e(2,:), 'Color','r','DisplayName','MH');
+%             
 
 %close
 

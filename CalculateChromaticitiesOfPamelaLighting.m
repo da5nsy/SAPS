@@ -227,7 +227,6 @@ text(xy_mean_MH(1),xy_mean_MH(2),'ML\_1931')
 
 axis equal
 
-
 %% Assessing how much light the tablet emits compared to the ambient lighting
 
 clc, clear, close all
