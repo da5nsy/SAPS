@@ -16,7 +16,7 @@ clc, clear, close all
 % both raw and numerical data is useful, but they require different excel
 % addresses to specify data)
 
-location='PAMELA';  %changing this changes EVERYTHING
+location='BM';  %changing this changes EVERYTHING
 %'PAMELA' or 'GRANT' or 'BM' or '200s' or
 %'PAMELA_20180205' or 'basement_rgby_test' or
 %'basement_greyCard_test'
@@ -104,8 +104,11 @@ uv0 = XYZTouv(whiteXYZ);
 for i=1:n2
     
     %Calculate systematic offset (spatial calibration)
-    avXdp(i) = median(TabletData(end-10:end,7,i)-TabletData(end-10:end,1,i));
-    avYdp(i) = median(TabletData(end-10:end,8,i)-TabletData(end-10:end,2,i));
+    avXdp(i) = median(TabletData(end-9:end,7,i)-TabletData(end-9:end,1,i));
+    avYdp(i) = median(TabletData(end-9:end,8,i)-TabletData(end-9:end,2,i));
+    
+    Xdp(:,i) = TabletData(end-9:end,7,i)-TabletData(end-9:end,1,i);
+    Ydp(:,i) = TabletData(end-9:end,8,i)-TabletData(end-9:end,2,i);
     
     avXdp(n2)=0;
     avYdp(n2)=0;
@@ -126,7 +129,9 @@ for i=1:n2
     TabletData(:,10,i) = (TabletData(:,5,i)).*sind(TabletData(:,4,i)); %y
     
     % spatial xy --> u*v*
-    TabletData(:,9,i)   =   (TabletData(:,9,i)./21.88); %u*
+    % (the figure 21.88 relates the pixel dimensions of the stimulus to the 
+    % colorimetric definition of that stimulus)
+    TabletData(:,9,i)   =   (TabletData(:,9,i)./21.88); %u* 
     TabletData(:,10,i)  =   (TabletData(:,10,i)./21.88); %v*
     
     % u*v* --> u'v'
@@ -289,11 +294,23 @@ end
 for i=1:n2
     kstd_u(i)=nanstd(TabletData(1:end-10,11,i));
     kstd_v(i)=nanstd(TabletData(1:end-10,12,i));
+    Mu_ind_u(i)=nanmean(TabletData(1:end-10,11,i));
+    Mu_ind_v(i)=nanmean(TabletData(1:end-10,12,i));
 end
 
 kstd_mean=mean([kstd_u;kstd_v]);
 kstd_min=min([kstd_u;kstd_v]);
 diffs=squeeze(sqrt((TabletData(3,11,:)-TabletData(8,11,:)).^2+(TabletData(3,12,:)-TabletData(8,12,:)).^2))';
+
+if strcmp(location,'PAMELA')
+    %calc means for DG data for specific lighting conditions
+    Mu_u_CW=mean(Mu_ind_u([1,2,6,8,15,17]));
+    Mu_u_WW=mean(Mu_ind_u([3,5,9,10]));
+    Mu_u_MH=mean(Mu_ind_u([12,14,19]));
+    Mu_v_CW=mean(Mu_ind_v([1,2,6,8,15,17]));
+    Mu_v_WW=mean(Mu_ind_v([3,5,9,10]));
+    Mu_v_MH=mean(Mu_ind_v([12,14,19]));
+end
 
 if strcmp(location,'PAMELA_20180205')
     figure, hold on
@@ -365,6 +382,54 @@ if strcmp(location,'BM')
     legend('Location','best')
     
 end
+
+if strcmp(location,'BM')
+    figure, hold on
+    clc
+    clear sdcoll
+    for i=1:n2
+        if strcmp(files(i).participant, 'Public') %only include public (also excludes dummy)
+            if avXdp(i) < 100 % exclude ones which were clearly duds
+                if ~exist('sdcoll','var'),sdcoll=[];end %collect sd
+                %sdcoll=[sdcoll; nanstd(TabletData(end-9:end,11,i)),nanstd((TabletData(end-9:end,12,i)))];
+                sdcoll=[sdcoll; nanstd(Xdp(:,i)),nanstd(Ydp(:,i))];
+                if sdcoll(end,1)>15 %annotate outliers
+                    text(sdcoll(end,1),sdcoll(end,2),string(i),'FontSize',14)
+                end
+            end
+        end
+    end
+    scatter(sdcoll(:,1),sdcoll(:,2))
+    axis equal
+    xlim([0 inf])
+    ylim([0 inf])    
+    xlabel('SD in x axis during checkerboard (pixels)')
+    ylabel('SD in y axis during checkerboard (pixels)')
+    
+    figure, hold on  %scatter excluding outliers
+    scatter(sdcoll(sdcoll(:,1)<15,1),sdcoll(sdcoll(:,1)<15,2),'k','filled','MarkerFaceAlpha',.5)
+    axis equal
+    xlim([0 inf])
+    ylim([0 inf])
+    %title('(Excluding 4 outliers)')
+    xlabel('SD in x axis during checkerboard (pixels)')
+    ylabel('SD in y axis during checkerboard (pixels)')    
+    plot([0,10],[0,10],'k--')
+end
+
+% hold on
+% scatter(kstd([10,18,54,48]),diffs([10,18,54,48]),'k', 'filled')
+
+% clc %print out the ones which are thrown up as anomolies above
+% Xdp(:,[10,18,54,48])
+% Ydp(:,[10,18,54,48])
+
+% figure, hold on 
+% for i=1:n2
+%     scatter(Xdp(:,i),Ydp(:,i),'filled')
+%     text(Xdp(end,i),Ydp(end,i),string(i))
+% end
+% legend
 
 % %% Analyse repeat values
 %
@@ -529,6 +594,8 @@ for k=1:n2
         if ~OM
             if strcmp(files(k).Light(1:2),'CW') && strcmp(files(k).participant,P)
                 p1=scatter(Mu(1),Mu(2),'sg','filled','DisplayName','CW','MarkerFaceAlpha',.7);
+                if ~exist('CW_catch','var'), CW_catch=[]; end
+                CW_catch = [CW_catch; Mu];
             elseif strcmp(files(k).Light(1:2),'WW') && strcmp(files(k).participant,P)
                 p2=scatter(Mu(1),Mu(2),'sb','filled','DisplayName','WW','MarkerFaceAlpha',.7);
             elseif strcmp(files(k).Light(1:2),'MH') && strcmp(files(k).participant,P)
@@ -537,6 +604,7 @@ for k=1:n2
                 p4=scatter(Mu(1),Mu(2),'sk','filled','DisplayName','Baseline','MarkerFaceAlpha',.7);
             end
         end
+        %text(Mu(1),Mu(2),string(k))
         
     elseif strcmp(location,'BM') && kstd(k) < thresh_SD && diffs(k) < thresh_DBUR
         %if strcmp(files(k).participant,'Public') %Exclude LM and DG
@@ -701,7 +769,17 @@ if strcmp(location,'PAMELA')
         xlim([0.175 0.255])
         ylim([0.455 0.53])
     end
-   
+    
+    stats=1;
+    if stats
+        scatter(Mu_u_CW,Mu_v_CW,'g^','DisplayName','CW')
+        scatter(Mu_u_WW,Mu_v_WW,'b^','DisplayName','WW')
+        scatter(Mu_u_MH,Mu_v_MH,'r^','DisplayName','MH')
+        
+    end
+   % offset
+   disp(Mu_u_WW-Mu_u_CW)
+   disp(Mu_v_WW-Mu_v_CW)
 end
 
 %         if strcmp(files(k).Light(1:2),'CW') && strcmp(files(k).participant,P)

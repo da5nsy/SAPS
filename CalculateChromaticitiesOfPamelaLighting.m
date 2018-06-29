@@ -5,6 +5,8 @@ clc, clear, close all
 
 %% Load lighting measurements
 
+cd('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20180205 Spectra')
+
 try
     load('PAMELA_ChromData')
 catch
