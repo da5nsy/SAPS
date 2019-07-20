@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<measurement_group>
+<measurement version="0.0.1">
+<status>
+<parameter caption="date" name="date">2016-12-07T10:32:24</parameter>
+<parameter caption="device sensor temperature" name="device sensor temperature">27.75</parameter>
+<parameter caption="device serial number" name="device serial number">GLX10t C13W0037</parameter>
+<parameter caption="integration time.." name="integration time">1050097</parameter>
+<parameter caption="repeat count.." name="repeat count">10</parameter>
+<parameter caption="calibration date" name="calibration date">2015-04-11 21:00</parameter>
+<parameter caption="measuring head" name="measuring head">010</parameter>
+<parameter caption="maximum measurement" name="maximum measurement">52694.000</parameter>
+<parameter caption="device type" name="device type">GL SPECTIS 1.0 touch</parameter>
+<parameter caption="uvVisPeakRatio" name="uvVisPeakRatio">0.0</parameter>
+<parameter caption="coefficient_y" name="coefficient_y">3.415</parameter>
+<parameter caption="internalSignalLevel" name="internalSignalLevel">78.77154969382948</parameter>
+<parameter caption="uvVisPoint" name="uvVisPoint">0.0</parameter>
+<parameter caption="minimum wavelength" name="minimum wavelength">378.306</parameter>
+<parameter caption="flicker frequency" name="flicker frequency">0.0</parameter>
+<parameter caption="sensor number" name="sensor number">C13W0037</parameter>
+<parameter caption="temperature" name="temperature">27.75</parameter>
+<parameter caption="signalLevel" name="signalLevel">78.772</parameter>
+<parameter caption="background temperature" name="background temperature">24.50</parameter>
+<parameter caption="minimum measurement" name="minimum measurement">10902.000</parameter>
+<parameter caption="ambient level" name="ambient level">0.0</parameter>
+<parameter caption="deltaTBase" name="deltaTBase">7.7</parameter>
+<parameter caption="uvVisEnergyRatio" name="uvVisEnergyRatio">0.0</parameter>
+<parameter caption="maximum measurement linearized" name="maximum measurement linearized">52733</parameter>
+<parameter caption="correction characteristic file" name="correction characteristic file">010</parameter>
+<parameter caption="maximum wavelength" name="maximum wavelength">544.526</parameter>
+<parameter caption="repeat count" name="repeat count">10</parameter>
+<parameter caption="integration time" name="integration time">1050097</parameter>
+<parameter caption="coefficient_y_unit1" name="coefficient_y_unit1">mW/m^2/nm</parameter>
+<parameter caption="coefficient_y_unit2" name="coefficient_y_unit2">lx</parameter>
+</status>
+<data>
+<range minimum="340" maximum="750"/>
+<coefficient_y value="3.415" unit1="mW/m^2/nm" unit2="lx"/>
+<interpolation type="NN"/>
+ <row wavelength="329.50375443283883" value="0.09947885317576939"/>
+ <row wavelength="331.38908610420617" value="0.07698232071655921"/>
+ <row wavelength="333.27372082166244" value="0.0553044603279814"/>
+ <row wavelength="335.15766466720015" value="0.07784194533083226"/>
+ <row wavelength="337.0409233014768" value="0.06606760867726998"/>
+ <row wavelength="338.9235019680482" value="0.06626213794386139"/>
+ <row wavelength="340.8054054976014" value="0.0667935196261403"/>
+ <row wavelength="342.68663831218754" value="0.06403363177116075"/>
+ <row wavelength="344.5672044294552" value="0.04345296755342186"/>
+ <row wavelength="346.4471074668832" value="0.0443788486636453"/>
+ <row wavelength="348.3263506460139" value="0.05219055077946665"/>
+ <row wavelength="350.20493679668596" value="0.03462167921325035"/>
+ <row wavelength="352.08286836126763" value="0.035779810133395776"/>
+ <row wavelength="353.96014739888955" value="0.040647584124655314"/>
+ <row wavelength="355.8367755896781" value="0.04247597296010818"/>
+ <row wavelength="357.7127542389882" value="0.038245164237637796"/>
+ <row wavelength="359.58808428163667" value="0.039025915095573654"/>
+ <row wavelength="361.4627662861347" value="0.03255240706063226"/>
+ <row wavelength="363.33680045892135" value="0.03868589151846218"/>
+ <row wavelength="365.21018664859673" value="0.03905239324320713"/>
+ <row wavelength="367.08292435015466" value="0.0317334809754601"/>
+ <row wavelength="368.9550127092157" value="0.034856856733932434"/>
+ <row wavelength="370.8264505262606" value="0.019918091164838832"/>
+ <row wavelength="372.69723626086306" value="0.021910600346669744"/>
+ <row wavelength="374.56736803592287" value="0.027400142342819834"/>
+ <row wavelength="376.43684364189875" value="0.03288144213979595"/>
+ <row wavelength="378.3056605410418" value="0.03052871583417941"/>
+ <row wavelength="380.173815871628" value="0.03054514265537506"/>
+ <row wavelength="382.041306452192" value="0.029408382913024278"/>
+ <row wavelength="383.9081287857593" value="0.03665742045597393"/>
+ <row wavelength="385.77427906408013" value="0.030612321391160168"/>
+ <row wavelength="387.63975317186174" value="0.03456030289400091"/>
+ <row wavelength="389.504546691002" value="0.03077580332445425"/>
+ <row wavelength="391.3686549048222" value="0.03099438648536628"/>
+ <row wavelength="393.2320728023003" value="0.029477755666783772"/>
+ <row wavelength="395.0947950823036" value="0.028287485011660177"/>
+ <row wavelength="396.9568161578222" value="0.03337256249406055"/>
+ <row wavelength="398.8181301602015" value="0.13824244175167874"/>
+ <row wavelength="400.67873094337625" value="0.49098722669142303"/>
+ <row wavelength="402.5386120881023" value="0.5324739376568702"/>
+ <row wavelength="404.39776690619084" value="0.5502789924908692"/>
+ <row wavelength="406.25618844474053" value="0.5573378719880142"/>
+ <row wavelength="408.113869490371" value="0.5631544706457698"/>
+ <row wavelength="409.97080257345584" value="0.465652548116286"/>
+ <row wavelength="411.8269799723558" value="0.23392608999303585"/>
+ <row wavelength="413.68239371765145" value="0.22585172479336393"/>
+ <row wavelength="415.5370355963766" value="0.2564855375111075"/>
+ <row wavelength="417.390897156251" value="0.29442024087158497"/>
+ <row wavelength="419.24396970991387" value="0.3411602308934382"/>
+ <row wavelength="421.0962443391562" value="0.3946363407854171"/>
+ <row wavelength="422.9477118991548" value="0.4544663971479271"/>
+ <row wavelength="424.7983630227043" value="0.5072774859934697"/>
+ <row wavelength="426.648188124451" value="0.5735587304960068"/>
+ <row wavelength="428.4971774051256" value="0.6707005400449036"/>
+ <row wavelength="430.34532085577604" value="1.8862409396624746"/>
+ <row wavelength="432.19260826200104" value="3.312028916604013"/>
+ <row wavelength="434.0390292081827" value="3.2964967631059348"/>
+ <row wavelength="435.8845730817197" value="3.2868589634120666"/>
+ <row wavelength="437.7292290772604" value="3.251705624203469"/>
+ <row wavelength="439.57298620093604" value="3.177670498715385"/>
+ <row wavelength="441.4158332745931" value="2.23031581317669"/>
+ <row wavelength="443.2577589400276" value="1.0469406462492195"/>
+ <row wavelength="445.0987516632167" value="1.0046664360925324"/>
+ <row wavelength="446.9387997385528" value="1.0044884570888901"/>
+ <row wavelength="448.777891293076" value="1.0012414141986425"/>
+ <row wavelength="450.61601429070777" value="1.0033715744541714"/>
+ <row wavelength="452.45315653648305" value="1.0031624183844616"/>
+ <row wavelength="454.28930568078437" value="0.9880095927602438"/>
+ <row wavelength="456.12444922357395" value="0.972904283181106"/>
+ <row wavelength="457.9585745186276" value="0.9528049300359798"/>
+ <row wavelength="459.79166877776674" value="0.9329567051985642"/>
+ <row wavelength="461.62371907509265" value="0.9137660226529334"/>
+ <row wavelength="463.45471235121875" value="0.888141117786254"/>
+ <row wavelength="465.2846354175036" value="0.8610034018098192"/>
+ <row wavelength="467.1134749602842" value="0.8312631185029719"/>
+ <row wavelength="468.94121754510905" value="0.7998824883366573"/>
+ <row wavelength="470.76784962097133" value="0.764544096469873"/>
+ <row wavelength="472.5933575245415" value="0.73960910177161"/>
+ <row wavelength="474.4177274844006" value="0.7320553477019677"/>
+ <row wavelength="476.2409456252736" value="0.7751004027339305"/>
+ <row wavelength="478.06299797226166" value="0.9441300945059585"/>
+ <row wavelength="479.88387045507613" value="1.3306020083102086"/>
+ <row wavelength="481.7035489122709" value="1.9337109141514983"/>
+ <row wavelength="483.52201909547546" value="2.565555578659304"/>
+ <row wavelength="485.3392666736288" value="3.1151806572123086"/>
+ <row wavelength="487.15527723721124" value="3.541945810801614"/>
+ <row wavelength="488.9700363024782" value="3.7807282172705095"/>
+ <row wavelength="490.78352931569316" value="3.738328338490024"/>
+ <row wavelength="492.5957416573608" value="3.407378462174714"/>
+ <row wavelength="494.40665864645956" value="2.919497529684017"/>
+ <row wavelength="496.21626554467537" value="2.382159863833424"/>
+ <row wavelength="498.024547560634" value="1.8766880350811512"/>
+ <row wavelength="499.83148985413493" value="1.4314196377063222"/>
+ <row wavelength="501.6370775403833" value="1.066015866458259"/>
+ <row wavelength="503.44129569422404" value="0.7551806873727308"/>
+ <row wavelength="505.2441293543745" value="0.5202056578562928"/>
+ <row wavelength="507.0455635276571" value="0.382379118348219"/>
+ <row wavelength="508.84558319323315" value="0.3110683865414471"/>
+ <row wavelength="510.644173306835" value="0.27534951654769263"/>
+ <row wavelength="512.4413188049999" value="0.2480784859506229"/>
+ <row wavelength="514.2370046093027" value="0.23437190017123524"/>
+ <row wavelength="516.031215630589" value="0.21533404738134074"/>
+ <row wavelength="517.8239367732077" value="0.19906497873040188"/>
+ <row wavelength="519.6151529392449" value="0.1870151971085186"/>
+ <row wavelength="521.4048490327561" value="0.17869558777771022"/>
+ <row wavelength="523.1930099639999" value="0.17641701887330558"/>
+ <row wavelength="524.9796206536708" value="0.18793838910343286"/>
+ <row wavelength="526.7646660371324" value="0.2259200644420554"/>
+ <row wavelength="528.54813106865" value="0.3296239168720213"/>
+ <row wavelength="530.3300007256238" value="0.4960793106278256"/>
+ <row wavelength="532.1102600128222" value="0.8126476332270061"/>
+ <row wavelength="533.8888939666155" value="1.4747624176465743"/>
+ <row wavelength="535.6658876592066" value="2.833162220171802"/>
+ <row wavelength="537.4412262028673" value="5.478522209725835"/>
+ <row wavelength="539.2148947541682" value="8.761771896633329"/>
+ <row wavelength="540.9868785182148" value="11.89863172975075"/>
+ <row wavelength="542.7571627528772" value="13.736781684217355"/>
+ <row wavelength="544.5257327730261" value="14.495888731067632"/>
+ <row wavelength="546.2925739547647" value="14.396888916425281"/>
+ <row wavelength="548.0576717396608" value="12.8234642672433"/>
+ <row wavelength="549.8210116389815" value="9.924892827246683"/>
+ <row wavelength="551.5825792379254" value="6.746174773383434"/>
+ <row wavelength="553.3423601998555" value="4.301188407473835"/>
+ <row wavelength="555.1003402705328" value="2.9482954302890376"/>
+ <row wavelength="556.8565052823487" value="1.9494782220145743"/>
+ <row wavelength="558.6108411585584" value="1.214278233888743"/>
+ <row wavelength="560.3633339175146" value="0.7509302435816467"/>
+ <row wavelength="562.1139696768988" value="0.516788756504114"/>
+ <row wavelength="563.8627346579563" value="0.4042346540151861"/>
+ <row wavelength="565.6096151897278" value="0.34899728403160635"/>
+ <row wavelength="567.3545977132834" value="0.3469766640287002"/>
+ <row wavelength="569.0976687859555" value="0.39378194291407237"/>
+ <row wavelength="570.8388150855708" value="0.5596583108506822"/>
+ <row wavelength="572.5780234146848" value="0.8770740010428796"/>
+ <row wavelength="574.3152807048141" value="1.3144787849517796"/>
+ <row wavelength="576.0505740206693" value="1.8400653629268484"/>
+ <row wavelength="577.7838905643885" value="2.438099654005712"/>
+ <row wavelength="579.5152176797701" value="3.097347262573919"/>
+ <row wavelength="581.244542856506" value="3.7157814529267172"/>
+ <row wavelength="582.9718537344145" value="4.243138023467525"/>
+ <row wavelength="584.6971381076731" value="4.496801494372681"/>
+ <row wavelength="586.4203839290524" value="4.519817239947523"/>
+ <row wavelength="588.1415793141479" value="4.449444076126643"/>
+ <row wavelength="589.8607125456144" value="4.130502746623771"/>
+ <row wavelength="591.5777720773979" value="3.683707068607936"/>
+ <row wavelength="593.2927465389696" value="3.174983174538049"/>
+ <row wavelength="595.0056247395576" value="2.713799618747129"/>
+ <row wavelength="596.716395672382" value="2.3609368767808494"/>
+ <row wavelength="598.4250485188854" value="2.0606402375021418"/>
+ <row wavelength="600.1315726529688" value="1.8815714575974103"/>
+ <row wavelength="601.8359576452218" value="2.0066868890063296"/>
+ <row wavelength="603.5381932671579" value="2.5529456937964"/>
+ <row wavelength="605.2382694954463" value="4.128450802341963"/>
+ <row wavelength="606.9361765161452" value="6.797807803219887"/>
+ <row wavelength="608.6319047289354" value="8.631524482887384"/>
+ <row wavelength="610.3254447513523" value="9.792451753411113"/>
+ <row wavelength="612.0167874230199" value="10.410129286736955"/>
+ <row wavelength="613.7059238098835" value="10.613314847601679"/>
+ <row wavelength="615.3928452084425" value="10.185946816632384"/>
+ <row wavelength="617.0775431499839" value="8.575665224063032"/>
+ <row wavelength="618.7600094048152" value="6.442720062660497"/>
+ <row wavelength="620.4402359864966" value="5.075671933253586"/>
+ <row wavelength="622.1182151560762" value="4.2240726391098695"/>
+ <row wavelength="623.7939394263203" value="3.72970881533132"/>
+ <row wavelength="625.4674015659489" value="3.4606046297980053"/>
+ <row wavelength="627.1385946038666" value="3.1673080214535876"/>
+ <row wavelength="628.8075118333978" value="2.772036553529949"/>
+ <row wavelength="630.4741468165176" value="2.3973637518879696"/>
+ <row wavelength="632.1384933880871" value="2.0557657748683127"/>
+ <row wavelength="633.800545660084" value="1.7418431332848654"/>
+ <row wavelength="635.4602980258378" value="1.4033279830297531"/>
+ <row wavelength="637.1177451642612" value="1.029119350418746"/>
+ <row wavelength="638.7728820440846" value="0.7483664114898935"/>
+ <row wavelength="640.4257039280881" value="0.6236042405949326"/>
+ <row wavelength="642.076206377335" value="0.5787789068209986"/>
+ <row wavelength="643.7243852554044" value="0.5818900302275688"/>
+ <row wavelength="645.3702367326248" value="0.6430118826288284"/>
+ <row wavelength="647.0137572903071" value="0.6980378449049539"/>
+ <row wavelength="648.6549437249773" value="0.7307400156391352"/>
+ <row wavelength="650.2937931526096" value="0.737111262315588"/>
+ <row wavelength="651.9303030128597" value="0.7154616607035813"/>
+ <row wavelength="653.5644710732977" value="0.6924417471361937"/>
+ <row wavelength="655.1962954336411" value="0.6467042561827462"/>
+ <row wavelength="656.825774529988" value="0.5930570947930708"/>
+ <row wavelength="658.4529071390499" value="0.5592797512377604"/>
+ <row wavelength="660.0776923823853" value="0.5314135262449449"/>
+ <row wavelength="661.7001297306316" value="0.5291720832321093"/>
+ <row wavelength="663.3202190077396" value="0.5274736339585998"/>
+ <row wavelength="664.9379603952052" value="0.5343225976876473"/>
+ <row wavelength="666.5533544363042" value="0.5290831297451195"/>
+ <row wavelength="668.1664020403226" value="0.510097816984184"/>
+ <row wavelength="669.7771044867924" value="0.4776058609076122"/>
+ <row wavelength="671.3854634297236" value="0.4552973177440734"/>
+ <row wavelength="672.9914809018368" value="0.44261720990803716"/>
+ <row wavelength="674.5951593187964" value="0.4362749628426372"/>
+ <row wavelength="676.1965014834442" value="0.4310328013552352"/>
+ <row wavelength="677.7955105900321" value="0.4274319013584101"/>
+ <row wavelength="679.392190228455" value="0.41878202356102723"/>
+ <row wavelength="680.9865443884842" value="0.42098136040976647"/>
+ <row wavelength="682.5785774639999" value="0.44770309653804147"/>
+ <row wavelength="684.1682942572254" value="0.45694008022981697"/>
+ <row wavelength="685.7556999829582" value="0.4543429197861771"/>
+ <row wavelength="687.3408002728053" value="0.44552188674204984"/>
+ <row wavelength="688.9236011794142" value="0.44077861046202066"/>
+ <row wavelength="690.5041091807079" value="0.4312125866774355"/>
+ <row wavelength="692.0823311841156" value="0.4095778381809947"/>
+ <row wavelength="693.6582745308085" value="0.3702036025031653"/>
+ <row wavelength="695.2319469999302" value="0.3430706003223025"/>
+ <row wavelength="696.803356812832" value="0.3142790564188513"/>
+ <row wavelength="698.3725126373041" value="0.3281881612963516"/>
+ <row wavelength="699.9394235918103" value="0.38448451308152826"/>
+ <row wavelength="701.504099249719" value="0.50564171979321"/>
+ <row wavelength="703.066549643539" value="0.6794985763712951"/>
+ <row wavelength="704.6267852691497" value="0.861582349074653"/>
+ <row wavelength="706.1848170900362" value="1.0120938060126825"/>
+ <row wavelength="707.740656541521" value="1.1279878653089463"/>
+ <row wavelength="709.2943155349985" value="1.1704103921094073"/>
+ <row wavelength="710.8458064621665" value="1.155211139409996"/>
+ <row wavelength="712.3951421992601" value="1.0364482145009333"/>
+ <row wavelength="713.9423361112848" value="0.8863653866879098"/>
+ <row wavelength="715.4874020562489" value="0.7011839448762047"/>
+ <row wavelength="717.0303543893976" value="0.5278560301399007"/>
+ <row wavelength="718.5712079674448" value="0.379676226973294"/>
+ <row wavelength="720.1099781528071" value="0.26714545949693613"/>
+ <row wavelength="721.6466808178368" value="0.17919497006608542"/>
+ <row wavelength="723.1813323490542" value="0.1518443338926867"/>
+ <row wavelength="724.7139496513811" value="0.13887752952733248"/>
+ <row wavelength="726.2445501523744" value="0.12151471598887739"/>
+ <row wavelength="727.7731518064577" value="0.11590540942326098"/>
+ <row wavelength="729.2997730991564" value="0.09946037262387061"/>
+ <row wavelength="730.8244330513286" value="0.11454589712521868"/>
+ <row wavelength="732.3471512233998" value="0.11940984997040444"/>
+ <row wavelength="733.8679477195951" value="0.0943242239430751"/>
+ <row wavelength="735.3868431921725" value="0.10174918445889476"/>
+ <row wavelength="736.9038588456553" value="0.11871511021598942"/>
+ <row wavelength="738.4190164410669" value="0.12573332504084547"/>
+ <row wavelength="739.9323383001617" value="0.11690085785895556"/>
+ <row wavelength="741.4438473096594" value="0.12403951399581768"/>
+ <row wavelength="742.9535669254778" value="0.11257460269189436"/>
+ <row wavelength="744.4615211769662" value="0.11812262960138624"/>
+ <row wavelength="745.9677346711378" value="0.09795871801506215"/>
+ <row wavelength="747.4722325969025" value="0.12257242879857821"/>
+ <row wavelength="748.9750407293012" value="0.1366170656636111"/>
+ <row wavelength="750.4761854337379" value="0.12708801686709256"/>
+ <row wavelength="751.9756936702128" value="0.1336924087549983"/>
+ <row wavelength="753.4735929975557" value="0.10092340705463214"/>
+ <row wavelength="754.9699115776588" value="0.11355304762364568"/>
+ <row wavelength="756.4646781797095" value="0.12213888231444253"/>
+ <row wavelength="757.9579221844245" value="0.11658903695725588"/>
+ <row wavelength="759.4496735882813" value="0.13079387932308695"/>
+ <row wavelength="760.9399630077523" value="0.11706254263511934"/>
+ <row wavelength="762.4288216835379" value="0.11597372345506349"/>
+ <row wavelength="763.9162814847987" value="0.11445664941437618"/>
+ <row wavelength="765.4023749133897" value="0.10971876226346308"/>
+ <row wavelength="766.8871351080921" value="0.1136139189601586"/>
+ <row wavelength="768.3705958488475" value="0.19871883264117504"/>
+</data>
+<results>
+<parameter name="x2" caption="x2">0.407508</parameter>
+<parameter name="y2" caption="y2">0.420236</parameter>
+<parameter name="Y2" caption="Y2">255.789820</parameter>
+<parameter name="u2" caption="u2">0.225522</parameter>
+<parameter name="v2" caption="v2">0.348849</parameter>
+<parameter name="u2'" caption="u2'">0.225522</parameter>
+<parameter name="v2'" caption="v2'">0.523273</parameter>
+<parameter name="CCT" caption="CCT">3675.000000</parameter>
+<parameter name="ColPeak" caption="ColPeak">544.525733</parameter>
+<parameter name="Radiometric" caption="Radiometric">689.550270</parameter>
+<parameter name="Ra" caption="Ra">78.737256</parameter>
+<parameter name="R01" caption="R01">88.761277</parameter>
+<parameter name="R02" caption="R02">88.092338</parameter>
+<parameter name="R03" caption="R03">56.179850</parameter>
+<parameter name="R04" caption="R04">85.286217</parameter>
+<parameter name="R05" caption="R05">78.299477</parameter>
+<parameter name="R06" caption="R06">72.147671</parameter>
+<parameter name="R07" caption="R07">91.558458</parameter>
+<parameter name="R08" caption="R08">69.572758</parameter>
+<parameter name="R09" caption="R09">-1.396273</parameter>
+<parameter name="R10" caption="R10">40.920036</parameter>
+<parameter name="R11" caption="R11">64.344676</parameter>
+<parameter name="R12" caption="R12">43.094601</parameter>
+<parameter name="R13" caption="R13">90.482735</parameter>
+<parameter name="R14" caption="R14">70.884606</parameter>
+</results>
+</measurement></measurement_group>

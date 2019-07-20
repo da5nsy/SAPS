@@ -75,6 +75,11 @@ catch
     save(sprintf('TabletData_%s',location))
 end
 
+if strcmp(location,'BM') %correct for poor data collection
+    files(33).participant = 'DG';
+    files(14).participant = 'DG';
+end
+
 % Set up baseline dummy data
 TabletData(:,:,end+1)=TabletData(:,:,end);
 TabletData(:,7:8,end)=zeros;
@@ -415,6 +420,28 @@ if strcmp(location,'BM')
     xlabel('SD in x axis during checkerboard (pixels)')
     ylabel('SD in y axis during checkerboard (pixels)')    
     plot([0,10],[0,10],'k--')
+end
+
+%%
+if strcmp(location,'BM')
+    figure, hold on
+    for i=1:n2
+        if strcmp(files(i).Gallery,'Africa')
+            if strcmp(files(i).participant,'LM')
+                h1=scatter(kstd_u(i),kstd_v(i),'r','filled','DisplayName','LM');
+            elseif strcmp(files(i).participant,'DG')
+                h2=scatter(kstd_u(i),kstd_v(i),'g','filled','DisplayName','DG');
+            elseif strcmp(files(i).participant,'Public')                
+                h3=scatter(kstd_u(i),kstd_v(i),'b','filled','DisplayName','Public');
+            end
+        end
+    end
+    legend([h1 h2 h3])
+    axis equal
+    xlim([0 0.015])
+    ylim([0 0.015])
+    xlabel('SD in u'' dimension')
+    ylabel('SD in v'' dimension')
 end
 
 % hold on

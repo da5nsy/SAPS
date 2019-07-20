@@ -1,0 +1,384 @@
+/*****************************************************************************
+ *	Copyright(c) 2010,  RealTeK Technology Inc. All Right Reserved.
+ *  
+ *	Realtek RTL8192C PCI-E 802.11B/G/N 300M Wireless NIC Release Note. 
+ *	
+ *	Description:	
+ *					N.VVVV.DDDD.YYYY
+ *					N		-	NDIS number
+ *					VVVV	-	Version	1001	-->
+ *					DDDD	-	Data	10/19	-->
+ *					YYYY	-	Year	2007	-->	
+ * 
+ *****************************************************************************/
+
+
+############################################################################
+	Version:		
+	1000.0.0205.2010
+	
+	Reason:			
+	1. Formal Release
+----------------------------------------------------------------------------
+	Version:		
+	1000.1.0212.2010
+	
+	Reason:			
+	1. Improve IBSS stability.
+----------------------------------------------------------------------------
+	Version:		
+	1000.2.0226.2010
+	
+	Reason:			
+	1. Improve 1 pair downlink throughput.
+----------------------------------------------------------------------------
+	Version:		
+	1000.3.0323.2010
+	
+	Reason:			
+	1. Support 1x2 and 2x2 product.
+	2. Improve CPU utilization.
+	3. Improve G mode IOT.
+----------------------------------------------------------------------------
+	Version:		
+	1000.4.0329.2010
+	
+	Reason:			
+	1. Improve DTM test stability.
+----------------------------------------------------------------------------
+	Version:		
+	1000.5.0330.2010
+	
+	Reason:			
+	1. Revise for HW/SW radio off LED.
+----------------------------------------------------------------------------
+	Version:		
+	1001.0.0408.2010
+	
+	Reason:			
+	1. Improve 2T2R throughput.
+----------------------------------------------------------------------------
+	Version:		
+	1001.1.0409.2010
+	
+	Reason:			
+	1. Improve throughput for middle range.
+----------------------------------------------------------------------------
+	Version:		
+	1002.0.0415.2010
+	
+	Reason:			
+	1. Add BT3.0+HS support.
+----------------------------------------------------------------------------
+	Version:		
+	1002.1.0427.2010
+	
+	Reason:			
+	1. Improve BT3.0+HS stability.
+----------------------------------------------------------------------------
+	Version:		
+	1002.2.0428.2010
+	
+	Reason:			
+	1. Fix interoperability with Security software.
+----------------------------------------------------------------------------
+	Version:		
+	1002.3.0430.2010
+	
+	Reason:			
+	1. Improve BT/Wifi coexist mechanism.
+----------------------------------------------------------------------------
+	Version:		
+	1003.0.0518.2010
+	
+	Reason:			
+	1. Fixed BT/Wifi concurrent issue reported by Motorola.
+	2. Fix BT3.0 IOT issue.
+----------------------------------------------------------------------------
+	Version:		
+	1003.1.0520.2010
+	
+	Reason:			
+	1. Improve 1T2R performance.
+----------------------------------------------------------------------------
+	Version:		
+	1003.2.0526.2010
+	
+	Reason:			
+	1. Improve network application interoperability.
+----------------------------------------------------------------------------
+	Version:		
+	1003.3.0611.2010
+	
+	Reason:			
+	1. Improve connection stability issue.
+	2. Improve driver stability issue.	
+----------------------------------------------------------------------------
+	Version:		
+	1003.4.0621.2010
+	
+	Reason:			
+	1. Revise vwifibus installation section in inf.
+	2. Support Open-Drain led arrangement.	
+----------------------------------------------------------------------------
+	Version:		
+	1003.5.0623.2010
+	
+	Reason:			
+	1. Improve BT throughput under IBSS mode.
+	2. Velocity test verified.
+----------------------------------------------------------------------------
+	Version:		
+	1003.6.0709.2010
+	
+	Reason:			
+	1. Improve Rx throughput stability.
+	2. Fix Cisco WPA2-Enterprise special setting connection issue.
+----------------------------------------------------------------------------
+	Version:		
+	1004.0.0701.2010
+	
+	Reason:			
+	1. Bluetooth UPF 36 bug fixing.
+	2. Revise customized LED strategy.
+----------------------------------------------------------------------------
+	Version:		
+	1004.1.0712.2010
+	
+	Reason:			
+	1. Improve Tx/Rx throughput issue.
+	2. Improve BT coexistence.
+	3. Improve BT 3.0 + HS multiple card stability.
+----------------------------------------------------------------------------
+	Version:		
+	1004.2.0716.2010
+	
+	Reason:			
+	1. Improve BT coexistence.
+	2. Fix Radio configuration problem after S3 for some specific platform.
+----------------------------------------------------------------------------
+	Version:		
+	1005.0.0730.2010
+	
+	Reason:			
+	1. Improve BT coexistence preformance.
+----------------------------------------------------------------------------
+	Version:		
+	1005.1.0804.2010
+	
+	Reason:			
+	1. Add LED behavior for customer.
+----------------------------------------------------------------------------
+	Version:		
+	1005.2.0816.2010
+	
+	Reason:			
+	1. Improve IOT performance.
+	2. Revise for longrun stability.
+----------------------------------------------------------------------------
+	Version:		
+	1005.3.0910.2010
+	
+	Reason:			
+	1. LED behavior for custmers.
+	2. Customize Samsung specific behavior.
+	3. Fix throughput issue with some AP from long range to short range.
+	4. Enhance BT coexist.
+----------------------------------------------------------------------------
+	Version:		
+	1005.4.0921.2010
+	
+	Reason:			
+	1. Customize link speed indication.
+	2. Customize link ANY AP behavioer.
+	3. Customize power policy.
+----------------------------------------------------------------------------
+	Version:		
+	1005.5.1004.2010
+	
+	Reason:			
+	1. Improve combo card S3/S4 stability.
+	2. Improve BT coexistence with BT A2DP/HID condition.
+----------------------------------------------------------------------------
+	Version:		
+	1005.6.1015.2010
+	
+	Reason:			
+	1. Revise BT related functionality.
+	2. Fix WPS connection fail issue.
+----------------------------------------------------------------------------
+	Version:		
+	1005.7.1027.2010
+	
+	Reason:			
+	1. Revise LED Open-Drain arrangement.h
+----------------------------------------------------------------------------
+	Version:		
+	1005.8.1101.2010
+	
+	Reason:			
+	1. Improve throughput and CPU utilization for weak CPU platform.
+----------------------------------------------------------------------------
+----------------------------------------------------------------------------
+	Version:		
+	1005.9.1112.2010
+	
+	Reason:			
+	1. Revise some 802.1X behavior for customer.
+	2. Improve BlueTooth and WiFi coexistence quality.
+----------------------------------------------------------------------------
+	Version:		
+	1005.10.1123.2010
+	
+	Reason:			
+	1. Fix 11nTKIP/11nWEP option setting.
+----------------------------------------------------------------------------
+	Version:		
+	1005.11.1203.2010
+	
+	Reason:			
+	1. Fix LED issue reported by customer.
+	2. Improve WiFi/BT coexist issue in HID and A2DP condition.
+----------------------------------------------------------------------------
+	Version:		
+	1005.12.0105.2011
+	
+	Reason:			
+	1. Fix LED issue reported by customer.
+	2. Improve channel 12~13 hidden AP connection issue.
+----------------------------------------------------------------------------
+	Version:		
+	1005.14.0221.2011
+	
+	Reason:			
+	1. Improve boot up behavior for customer.
+----------------------------------------------------------------------------
+	Version:		
+	1005.15.0223.2011
+	
+	Reason:			
+	1. Improve long run stability with some Marvell AP.
+----------------------------------------------------------------------------
+	Version:		
+	1005.16.0309.2011
+	
+	Reason:			
+	1. LPS option for customer.
+	2. Add debug tool support in driver.
+----------------------------------------------------------------------------
+	Version:		
+	1005.17.0329.2011
+	
+	Reason:			
+	1. Fix Radio off function when VWiFi is turned on.
+----------------------------------------------------------------------------
+	Version:		
+	1005.18.0413.2011
+	
+	Reason:			
+	1. Fix WoWLan capability.
+----------------------------------------------------------------------------
+	Version:		
+	1005.20.0511.2011
+	
+	Reason:			
+	1. Add specific function for customer.
+	2. Improve WoWLan stability.
+----------------------------------------------------------------------------
+	Version:		
+	1005.21.0523.2011
+	
+	Reason:			
+	1. Fix Intel specific function performance issue.
+	2. Fix IRP multiple complete issue.
+----------------------------------------------------------------------------
+	Version:		
+	1005.22.0608.2011
+	
+	Reason:			
+	1. Improve VWiFi IOT issue.
+	2. Fix RSSI value when supporting antenna test tool.
+----------------------------------------------------------------------------
+	Version:		
+	1005.23.0623.2011
+	
+	Reason:			
+	1. Improve BT3.0 high speed interoperability with Intel solution.
+----------------------------------------------------------------------------
+	Version:		
+	1005.24.0712.2011
+	
+	Reason:			
+	1. Improve Velocity test result.
+	2. Improve B mode throughput.
+----------------------------------------------------------------------------	
+	Version:		
+	1005.25.0825.2011
+	
+	Reason:			
+	1. Add ID for RTL8188CE-VL+BC8 Combo card.
+	2. Enhance Win7 boot time.
+----------------------------------------------------------------------------
+	Version:		
+	1005.26.0902.2011
+	
+	Reason:	
+	1. Correct LED behavior during booting time.
+----------------------------------------------------------------------------
+	Version:		
+	1005.27.0928.2011
+	
+	Reason:	
+	1. Improve stability for BT3.0+HS.
+----------------------------------------------------------------------------
+	Version:		
+	1005.28.1006.2011
+	
+	Reason:	
+	1. Improve BT-Coexist stability.
+	2. Improve WoWLan function.
+----------------------------------------------------------------------------
+	Version:		
+	1005.30.1201.2011
+	
+	Reason:	
+	1. Fix bugs reported from LC for sofeAP.
+	2. Add XAVI LED behavior.
+----------------------------------------------------------------------------
+	Version:		
+	1005.31.1222.2011
+	
+	Reason:	
+	1. Improve throughput for chamber test.
+	2. Fix softAP connection failed issue.
+----------------------------------------------------------------------------
+	Version:		
+	1005.32.0313.2012
+	
+	Reason:	
+	1. IAuto detect antenna connection
+----------------------------------------------------------------------------
+	Version:		
+	1005.33.0313.2012
+	
+	Reason:	
+	1. Add Dual/Single antenna detection mechanism
+----------------------------------------------------------------------------
+	Version:		
+	1005.34.0328.2012
+	
+	Reason:	
+	1. Improve platform interoperability.
+----------------------------------------------------------------------------
+	Version:		
+	1005.35.0410.2012
+	
+	Reason:	
+	1. Improve stability for the fast transition from boot to sleep.
+----------------------------------------------------------------------------
+	Version:		
+	1005.36.0417.2012
+	
+	Reason:	
+	1. Fix the issue that hang on init process while system is going to suspend
+----------------------------------------------------------------------------

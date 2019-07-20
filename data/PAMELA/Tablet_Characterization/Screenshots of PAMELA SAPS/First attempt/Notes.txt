@@ -1,0 +1,3 @@
+I think I was clicking print screen too fast.
+This set has a corresponding excel read out whereas the next (successful) attempt does not, since excel was accientally open.
+I touched roughly the bottom left corner of the screen throughout.

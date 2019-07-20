@@ -1,0 +1,23 @@
+20180425 Trying to work out what each of these are. Wishing I'd made better notes on the day. Cross referencing with the notes, and looking at the SPDs to try to work out what is what.
+The question mark readings in the middle may be from when I was messing around trying to set up the MH setting.
+The time setting on the UPRtek was wrong, which I shall never neglect ever ever ever again.
+
+'ESPD2016_0328_131820.xlsx' CW (25)
+'ESPD2016_0328_132934.xlsx' WW (4.5)
+'ESPD2016_0328_132948.xlsx' WW (4.5)
+'ESPD2016_0328_133022.xlsx' WW (4.5)
+'ESPD2016_0328_143350.xlsx' CW (25)
+'ESPD2016_0328_143401.xlsx' CW (25)
+'ESPD2016_0328_143410.xlsx' CW (25)
+'ESPD2016_0328_151806.xlsx' CW? (45)
+'ESPD2016_0328_151855.xlsx' CW? (45)
+'ESPD2016_0328_151905.xlsx' CW? (45)
+'ESPD2016_0328_153831.xlsx' MH (30)
+'ESPD2016_0328_153841.xlsx' MH (30)
+'ESPD2016_0328_153854.xlsx' MH (30)
+'ESPD2016_0328_163502.xlsx' MH (30)
+'ESPD2016_0328_163520.xlsx' MH (30)
+'ESPD2016_0328_163531.xlsx' MH (30)
+'ESPD2016_0328_171726.xlsx' MH (30)
+'ESPD2016_0328_171737.xlsx' MH (30)
+'ESPD2016_0328_171746.xlsx' MH (30)

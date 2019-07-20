@@ -7,8 +7,7 @@ clear, clc, close all
 
 
 %% Pre run commands:
-rootdir = fullfile('C:','Users','cege-user','Dropbox','UCL','Data',...
-    'Tablet','PAMELA','tablet_characterization');
+rootdir = 'C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\PAMELA\Tablet_Characterization';
 
 titles={'WW','CW','MH','WW2'};
 
@@ -243,8 +242,7 @@ plot(B,'b'), legend(' Red channel','Green channel','Blue channel');
 
 clear, clc, close all 
 
-rootdir = fullfile('C:','Users','cege-user','Dropbox','UCL','Data',...
-    'Tablet','PAMELA','tablet_characterization');
+rootdir = 'C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\PAMELA\Tablet_Characterization';
 
 gamut_data = zeros(101,3); %101 spectral bins, 3=RGB
 chan={'Red','Green','Blue','White'};
@@ -328,28 +326,73 @@ for i=1:length(chan)
 end
 
 % Plot
-figure, hold on
+figure('Position',[[100,100], [500,309]],...
+    'defaultLineLineWidth',2,...
+    'defaultAxesFontSize',12,...
+    'defaultAxesFontName', 'Courier',...
+    'Renderer','Painters',...
+    'color','white'); 
+hold on
 
 ubar=4.*xbar ./ (xbar + 15.*ybar + 3.*zbar);
 vbar=9.*ybar ./ (xbar + 15.*ybar + 3.*zbar);
-plot(ubar,vbar,'k')
+
+sRGB_dcs = XYZToSRGBPrimary([xbar,ybar,zbar]'); %sRGB display colours
+sRGB_dcs(sRGB_dcs>1) = 1;
+sRGB_dcs(sRGB_dcs<0) = 0;
+for i=1:3
+    for j=1:size(sRGB_dcs,2)-1
+        t(i,j) = (sRGB_dcs(i,j)+sRGB_dcs(i,j+1))/2;
+    end    
+end
+sRGB_dcs = t;
+
+%plt(1) = 
+%,'DisplayName','Spectral Locus'
+for i = 1:size(xbar,1)-1
+    plot([ubar(i),ubar(i+1)],[vbar(i),vbar(i+1)],'Color',sRGB_dcs(:,i));
+end
+% 
 
 for d=1:18
     scatter3(gamut_uv(1,:,d),gamut_uv(2,:,d),gamut_XYZ(2,:,d),[],[1,0,0;0,1,0;0,0,1;0,0,0],'.')
     % Plot lines between gamut points:
-    if d==18
-        plot3([gamut_uv(1,1:3,d),gamut_uv(1,1,d)],[gamut_uv(2,1:3,d),gamut_uv(2,1,d)],...
-            [gamut_XYZ(2,1:3,d),gamut_XYZ(2,1,d)],'k:')
-    end
+%     if d==18
+%         plot3([gamut_uv(1,1:3,d),gamut_uv(1,1,d)],[gamut_uv(2,1:3,d),gamut_uv(2,1,d)],...
+%             [gamut_XYZ(2,1:3,d),gamut_XYZ(2,1,d)],'k','DisplayName','Device Gamut')
+%     end
 end
+
+plt(1) = plot([gamut_uv(1,1:3,18),gamut_uv(1,1,18)],[gamut_uv(2,1:3,18),gamut_uv(2,1,18)],'k','DisplayName','Device Gamut');
 
 xlabel('u'''),ylabel('v'''),zlabel('Y')
 axis equal
 xlim([0 0.6])
 ylim([0 0.6])
 
+% Add sRGB
+sRGB_R_xy = [0.6400,0.3300];
+sRGB_G_xy = [0.3000,0.6000];
+sRGB_B_xy = [0.1500,0.0600];
 
+sRGB_R_uv = xyTouv(sRGB_R_xy'); %Uses PsychToolbox function
+sRGB_G_uv = xyTouv(sRGB_G_xy');
+sRGB_B_uv = xyTouv(sRGB_B_xy');
+
+% scatter(sRGB_R_uv(1),sRGB_R_uv(2),'r*');
+% scatter(sRGB_G_uv(1),sRGB_G_uv(2),'g*');
+% scatter(sRGB_B_uv(1),sRGB_B_uv(2),'b*');
+
+plt(2) = plot([sRGB_R_uv(1),sRGB_G_uv(1)],[sRGB_R_uv(2),sRGB_G_uv(2)],'k:','DisplayName','sRGB Gamut');
+plot([sRGB_G_uv(1),sRGB_B_uv(1)],[sRGB_G_uv(2),sRGB_B_uv(2)],'k:')
+plot([sRGB_B_uv(1),sRGB_R_uv(1)],[sRGB_B_uv(2),sRGB_R_uv(2)],'k:')
 %save('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\SAPS_TabletGamut.mat')
+
+legend(plt,'Location','best')
+
+cleanTicks
+%save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\gamut.pdf')
+
 
 %% Plot 'representative gamut' (the gamut of the points actually displayed)
 %Requires previous section to have been run prior 
@@ -560,6 +603,15 @@ ylim([0.4217 0.5007])
 
 %save('SAPS_SelectableColoursGamut.mat','u','v','Y','occ')
 clc, clear, close all
+
+figure('Position',[[100,100], [500,309]],...
+    'defaultLineLineWidth',2,...
+    'defaultAxesFontSize',12,...
+    'defaultAxesFontName', 'Courier',...
+    'Renderer','Painters',...
+    'color','white'); 
+hold on
+
 load('SAPS_SelectableColoursGamut.mat')
 s=scatter3(u(1:50:end),v(1:50:end),Y(1:50:end),20,occ(1:50:end),'filled');
 view(2)
@@ -569,11 +621,21 @@ xlim([0.14 0.25]),ylim([0.41 0.52]),zlim([0.046 0.06])
 colorbar
 xlabel('u'''),ylabel('v'''),zlabel('Y') 
 
+cleanTicks
+save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\practical_gamut.pdf')
+
 
 % with gamut:
 
 load('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\SAPS_TabletGamut.mat')
-figure, hold on
+
+figure('Position',[[100,100], [500,309]],...
+    'defaultLineLineWidth',2,...
+    'defaultAxesFontSize',12,...
+    'defaultAxesFontName', 'Courier',...
+    'Renderer','Painters',...
+    'color','white'); 
+hold on
 
 ubar=4.*xbar ./ (xbar + 15.*ybar + 3.*zbar);
 vbar=9.*ybar ./ (xbar + 15.*ybar + 3.*zbar);
@@ -594,4 +656,5 @@ axis equal
 xlim([0 0.6])
 ylim([0 0.6])
 
-
+cleanTicks
+save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\practical_gamut2.pdf')

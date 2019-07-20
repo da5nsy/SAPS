@@ -1,0 +1,2 @@
+This appears to be the full set of spectra available at PAMELA. 
+There seem to be 6 LED spectra plus the super bright, but there are 8 recordings total. Go figure.

@@ -1,0 +1,68 @@
+Notes from Google Keep:
+
+Woke at 742
+Read news on phone for roughly half an hour
+Had porridge with tinned peaches for breakfast
+Left 915, walk to Tottenham Hale - cloudy/overcast day, but quite bright
+930 board underground
+Roughly 950 - short walk to UCL from Euston, looks like rain coming
+Changed from red glasses to black glasses (thru have a subtle brass coloured interior)
+1050 left UCL
+Bought lunch and a snack of a raspberry muffin
+1100 boarded underground at Euston 
+1115 arrive Tuffnel Park
+5 minute walk (heavy cloud but dry) to PAMELA
+Setting up space- under standard house lights (fluorescent?)
+
+Notes from notebook. 
+(Where a time is followed by a ')' this means that it was written out of order in notebook)
+(Where a time is followed by a '~' this means 'roughly')
+
+1145	Switching to written log to avoid screen exposure
+1145	Begin adaptation to 'cool white' preset
+1150	First run of experiment after 5 mins adaptation. Called (using mobile) to ask Tatsuto for a clock so as to avoid telling time by an emissive clock (phone). From now on will only use phone in emergency.
+
+Plans for rest of day:
+Aims:
+Test SAPS in controlled environment
+- Do different lighting conditions (and assumed different states of chromatic adaptation) influence responses in SAPS?
+- How much of the effect is instantaneous vs caused by longer time?
+- Is there a mel-high vs mel-low effect (if there's time to test)
+
+1215	Cool white 2
+1218	End, change to warm white. Took 3 repeat measurements with UPtrek (after dark calibration). WW seems substantially dimmer than CW.
+1223	WW1. Screen of tablet doesn't appear green cast as it did before.
+1230	(roughly) Tatsuto does a run of the experiment. I spend a minute adding name in python and changing previous names in excel.
+1248	Filled in Health & Safety forms
+1248)	WW2?
+1251	CW lights on
+1256	CW3
+1252)	Started eating lunch - 'superfood salad'
+1308	Started reading Olafur Elliasson book
+1310	Decided against reading- the pages, whilst achromatic, are subtly yellowed with age, and fill a large area of my vision whilst reading. Opted instead to spend 5 seconds turning on radio on my phone. (Admittedly, the notedbook in which I write this is also slightly yellow)
+1318	Tatsuto CW ('yellow + green appear darker')
+1321	CW4
+1325	3 x spectro (CW) (After dark calibration)
+1326 	WW on
+1332	WW3
+1328)	Went back through log and realised '1248 WW2' had been missed. I checked excel to see whether the session had been missed and it had not, I must have just forgotten to note it.
+1340	Note: Tatsuto had roughly 5 minutes adaptation time
+1357	WW4
+1400	Fiddling around with the controller to make 'mel-high'
+1411	Took 3x mel high spec measurements (and again?)
+1440~	Mel high on
+1445	Katherine under mel high(1)
+1450~	DG Mel High 1
+1520	KC MH2 -'aiming more for point where colours come together'
+1523	DG MH2. 3x spec MH
+1527	CW on (mel low)
+1535	KC CW/ML 1
+1539	DG CW/ML 1
+1557	KC CW/ML 2
+1603~	MH lights on
+1609	3 x spec measurements
+1611	Corrected the time and date on UPtrek
+1636	DG MH2 (messed up, excel was open so failed to save)
+1645~	Repeat of above, but having stared angrily at a screen for several minutes
+1700~	Tatsuto MH
+	

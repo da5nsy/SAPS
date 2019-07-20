@@ -1,0 +1,17 @@
+Started taking measurements under warm white at 1521
+
+1529 finish white under warm white
+Last one of red was actually white (code) screen)
+Did a few extra as above for green (repeatability)
+1546 started blue
+
+1553 turned on cool white
+Started white
+
+19/20/21 is a dark field (two pairs of clicks for each one)
+
+For MH (Mel high) 1 and 2 are dark field
+21 is accidental code screen
+
+Then did CW > White2 (later edit: I think I meant WW here rather than CW)
+19/20/21 DF
