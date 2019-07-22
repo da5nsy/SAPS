@@ -3,14 +3,16 @@ clc, clear, close all
 
 %Add some text here that says what this does
 
+data_folder = 'C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data';
+
 %% Load lighting measurements
 
-cd('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20180205 Spectra')
+cd([data_folder,'\PAMELA\20180205 Spectra'])
 
 try
     load('PAMELA_ChromData')
 catch
-    [spectral_data,peak,lux_fromExcel,spd_uv,spd_xy]=read_UPRtek('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20180205 Spectra',[],[],[]);
+    [spectral_data,peak,lux_fromExcel,spd_uv,spd_xy]=read_UPRtek([data_folder,'PAMELA\20180205 Spectra'],[],[],[]);
     S_spectral_data=[360,1,401];
     save('PAMELA_ChromData')
 end
@@ -168,7 +170,7 @@ text(MH.xy_1964(1),MH.xy_1964(2),'MH\_1964')
 % A: Yes, only out by <1.3
 
 % Load lighting measurements
-[spectral_data,peak,lux_fromExcel]=read_UPRtek('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20180205 Spectra',[],[]);
+[spectral_data,peak,lux_fromExcel]=read_UPRtek([data_folder,'\PAMELA\20180205 Spectra'],[],[]);
 S_spectral_data=[360,1,401];
 
 for i=1:size(spectral_data,2)
@@ -231,7 +233,8 @@ axis equal
 
 %% Assessing how much light the tablet emits compared to the ambient lighting
 
-clc, clear, close all
+clc, clearvars -except 'data_folder'
+close all
 
 % I measured 3 repeats of 3 different stimuli. 
 % Then 3 with the display turned off. 
@@ -241,7 +244,7 @@ clc, clear, close all
 try
     load('PAMELA_Tablet_Emission')
 catch
-    [spectral_data,peak,lux_fromExcel,spd_uv,spd_xy]=read_UPRtek('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20180207 Spectra',1,1,1);
+    [spectral_data,peak,lux_fromExcel,spd_uv,spd_xy]=read_UPRtek([data_folder,'\PAMELA\20180207 Spectra'],1,1,1);
     S_spectral_data=[360,1,401];
     save('PAMELA_Tablet_Emission')
 end

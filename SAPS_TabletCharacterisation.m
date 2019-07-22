@@ -660,7 +660,8 @@ end
 %             [gamut_XYZ(2,1:3,d),gamut_XYZ(2,1,d)],'k:')
 %     end
 % end
-s=scatter3(u(1:50:end),v(1:50:end),Y(1:50:end),10,occ(1:50:end),'filled');
+%s=scatter3(u(u~=0),v(u~=0),Y(u~=0),10,occ(u~=0),'filled');
+s=scatter(u(u~=0),v(u~=0),2,occ(u~=0),'filled');
 plot([gamut_uv(1,1:3,18),gamut_uv(1,1,18)],[gamut_uv(2,1:3,18),gamut_uv(2,1,18)],'k--','DisplayName','Device Gamut');
 
 xlabel('u'''),ylabel('v'''),zlabel('Y')
@@ -670,4 +671,4 @@ ylim([0 0.65])
 
 cleanTicks
 colorbar
-save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\practical_gamut2.pdf')
+save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\practical_gamut.pdf')

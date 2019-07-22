@@ -26,7 +26,7 @@ location='BM';  %changing this changes EVERYTHING
 %in the following analysis. If required, contact DG for access to previous
 %versions (pre-git) of this code.
 
-rootdir = fullfile('C:','Users','cege-user','Dropbox','UCL','Data','Tablet',location);
+rootdir = fullfile('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data',location);
 cd(rootdir)
 
 try
@@ -177,8 +177,8 @@ if strcmp(location,'BM')
     
     clear out
     
-    %rootdir = ('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\BM\GL'); %old measurements
-    rootdir = ('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\BM\GL 20180427'); %new measurements
+    %rootdir = ('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\BM\GL'); %old measurements
+    rootdir = ('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\BM\GL 20180427'); %new measurements
     
     %rootdir = uigetdir; %select folder where .mmg (GL Optis) files stored
     cd(rootdir)
@@ -210,15 +210,23 @@ if strcmp(location,'BM')
     spd(:,4)=mean(spd(:,22:end),2);
     spd=spd(:,1:4);
     
-    figure, hold on
+    figure('Position',[[100,100], [500,309]],...
+        'defaultLineLineWidth',2,...
+        'defaultAxesFontSize',12,...
+        'defaultAxesFontName', 'Courier',...
+        'color','white');
+    hold on
     for i=[4,3,2]
         plot(spd(:,1),spd(:,i)/max(spd(:,i)))
     end
     
-    legend({'Rooms 77/78','Room 25','Great Court'},'Location','east')
+    legend({'Rooms 77/78','Room 25','Great Court'},'Location','eastoutside')
     
     xlabel('Wavelength (nm)')
     ylabel('Normalised power')
+    axis tight
+    ylim([0 1])
+    yticks(ylim)
     
     xbar2_GL=interp1(lambdaCie2,xbar2,spd(:,1),'spline');
     ybar2_GL=interp1(lambdaCie2,ybar2,spd(:,1),'spline');
@@ -247,13 +255,20 @@ if strcmp(location,'BM')
     
     %     scatter(flip(GLuv(1,:)),flip(GLuv(2,:)),'k*');
     %     text(flip(GLuv(1,:)),flip(GLuv(2,:)),{'1','2','3'})
+    
+    save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\BM_SPD.pdf')
 end
 
 if strcmp(location,'PAMELA')
-    [spd_data,peak,lux,spd_uv] = read_UPRtek('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\20170331 Spectra',0,0,0);
+    [spd_data,peak,lux,spd_uv] = read_UPRtek('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\PAMELA\20170331 Spectra',0,0,0);
     
     % Plot chromaticities of light sources
-    figure, hold on
+    figure('Position',[[100,100], [500,309]],...
+        'defaultLineLineWidth',2,...
+        'defaultAxesFontSize',12,...
+        'defaultAxesFontName', 'Courier',...
+        'color','white');
+    hold on
     for i=1:18
         scatter(spd_uv(i,1),spd_uv(i,2),'filled')
         text(spd_uv(i,1)+(i/300),spd_uv(i,2)+(i/300),string(i))
@@ -274,21 +289,31 @@ if strcmp(location,'PAMELA')
     % session, not neccessarily the one specified at the start of this
     % script
     
-    plt_ind_spd = 0;
+    plt_ind_spd = 1;
     if plt_ind_spd
         
-        rootdir=('C:\Users\cege-user\Dropbox\UCL\Data\Tablet\PAMELA\2017 Spectra');
+        rootdir=('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\PAMELA\2017 Spectra');
         [data,peak,lux,spd_uv]=read_UPRtek(rootdir,0,0,0);
         
-        figure,
+        figure('Position',[[100,100], [500,309]],...
+            'defaultLineLineWidth',2,...
+            'defaultAxesFontSize',12,...
+            'defaultAxesFontName', 'Courier',...
+            'color','white');
+        hold on
         h= plot(360:760,data(:,[1,3:8]));
         set(h, {'color'}, {'k';'r';'g';'b';[0.9,0.9,0];'k';'k'});
         set(h, {'LineStyle'}, {'-';'-';'-';'-';'-';':';'--'});
-        legend({'High output white','Red','Green','Blue','Amber','Warm White','Cool White'})
+        legend({'High output','Red','Green','Blue','Amber','Warm White','Cool White'},'Location','eastoutside')
         
         xlabel('Wavelength (nm)')
         ylabel('Normalised power')
+        axis tight
+        ylim([0 1])
+        yticks(ylim)
         %title('Normalised SPDs of PAMELA lighting channels')
+        
+        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\PAMELA_SPD.pdf')
     end
     
     
