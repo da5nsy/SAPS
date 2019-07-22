@@ -326,7 +326,7 @@ for i=1:length(chan)
 end
 
 % Plot
-figure('Position',[[100,100], [500,309]],...
+figure('Position',[[100,100], [500,400]],...
     'defaultLineLineWidth',2,...
     'defaultAxesFontSize',12,...
     'defaultAxesFontName', 'Courier',...
@@ -347,12 +347,10 @@ for i=1:3
 end
 sRGB_dcs = t;
 
-%plt(1) = 
-%,'DisplayName','Spectral Locus'
 for i = 1:size(xbar,1)-1
     plot([ubar(i),ubar(i+1)],[vbar(i),vbar(i+1)],'Color',sRGB_dcs(:,i));
 end
-% 
+plt(1) = plot([ubar(i),ubar(i+1)],[vbar(i),vbar(i+1)],'Color',sRGB_dcs(:,i),'DisplayName','Spectral Locus');
 
 for d=1:18
     scatter3(gamut_uv(1,:,d),gamut_uv(2,:,d),gamut_XYZ(2,:,d),[],[1,0,0;0,1,0;0,0,1;0,0,0],'.')
@@ -363,12 +361,12 @@ for d=1:18
 %     end
 end
 
-plt(1) = plot([gamut_uv(1,1:3,18),gamut_uv(1,1,18)],[gamut_uv(2,1:3,18),gamut_uv(2,1,18)],'k','DisplayName','Device Gamut');
+plt(2) = plot([gamut_uv(1,1:3,18),gamut_uv(1,1,18)],[gamut_uv(2,1:3,18),gamut_uv(2,1,18)],'k--','DisplayName','Device Gamut');
 
 xlabel('u'''),ylabel('v'''),zlabel('Y')
 axis equal
-xlim([0 0.6])
-ylim([0 0.6])
+xlim([0 0.65])
+ylim([0 0.65])
 
 % Add sRGB
 sRGB_R_xy = [0.6400,0.3300];
@@ -383,12 +381,12 @@ sRGB_B_uv = xyTouv(sRGB_B_xy');
 % scatter(sRGB_G_uv(1),sRGB_G_uv(2),'g*');
 % scatter(sRGB_B_uv(1),sRGB_B_uv(2),'b*');
 
-plt(2) = plot([sRGB_R_uv(1),sRGB_G_uv(1)],[sRGB_R_uv(2),sRGB_G_uv(2)],'k:','DisplayName','sRGB Gamut');
+plt(3) = plot([sRGB_R_uv(1),sRGB_G_uv(1)],[sRGB_R_uv(2),sRGB_G_uv(2)],'k:','DisplayName','sRGB Gamut');
 plot([sRGB_G_uv(1),sRGB_B_uv(1)],[sRGB_G_uv(2),sRGB_B_uv(2)],'k:')
 plot([sRGB_B_uv(1),sRGB_R_uv(1)],[sRGB_B_uv(2),sRGB_R_uv(2)],'k:')
 %save('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\SAPS_TabletGamut.mat')
 
-legend(plt,'Location','best')
+legend(plt,'Location','southeast')
 
 cleanTicks
 %save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\gamut.pdf')
@@ -585,7 +583,7 @@ end
 colorbar
 
 %% %Plot single stimulus
-clc
+
 scatter(u(1:end),v(1:end),'k','filled')
 xlabel('u''')
 ylabel('v''')
@@ -604,32 +602,32 @@ ylim([0.4217 0.5007])
 %save('SAPS_SelectableColoursGamut.mat','u','v','Y','occ')
 clc, clear, close all
 
-figure('Position',[[100,100], [500,309]],...
-    'defaultLineLineWidth',2,...
-    'defaultAxesFontSize',12,...
-    'defaultAxesFontName', 'Courier',...
-    'Renderer','Painters',...
-    'color','white'); 
-hold on
+% figure('Position',[[100,100], [500,309]],...
+%     'defaultLineLineWidth',2,...
+%     'defaultAxesFontSize',12,...
+%     'defaultAxesFontName', 'Courier',...
+%     'Renderer','Painters',...
+%     'color','white'); 
+% hold on
 
-load('SAPS_SelectableColoursGamut.mat')
-s=scatter3(u(1:50:end),v(1:50:end),Y(1:50:end),20,occ(1:50:end),'filled');
-view(2)
-axis('equal')
-daspect([1,1,0.1]) %This isn't exactly what I want to do but it'll suffice
-xlim([0.14 0.25]),ylim([0.41 0.52]),zlim([0.046 0.06])
-colorbar
-xlabel('u'''),ylabel('v'''),zlabel('Y') 
-
-cleanTicks
-save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\practical_gamut.pdf')
+ load('SAPS_SelectableColoursGamut.mat')
+% s=scatter3(u(1:50:end),v(1:50:end),Y(1:50:end),20,occ(1:50:end),'filled');
+% view(2)
+% axis('equal')
+% daspect([1,1,0.1]) %This isn't exactly what I want to do but it'll suffice
+% xlim([0.14 0.25]),ylim([0.41 0.52]),zlim([0.046 0.06])
+% colorbar
+% xlabel('u'''),ylabel('v'''),zlabel('Y') 
+% 
+% cleanTicks
+%save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\practical_gamut.pdf')
 
 
 % with gamut:
 
 load('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\SAPS_TabletGamut.mat')
 
-figure('Position',[[100,100], [500,309]],...
+figure('Position',[[100,100], [500,400]],...
     'defaultLineLineWidth',2,...
     'defaultAxesFontSize',12,...
     'defaultAxesFontName', 'Courier',...
@@ -639,22 +637,37 @@ hold on
 
 ubar=4.*xbar ./ (xbar + 15.*ybar + 3.*zbar);
 vbar=9.*ybar ./ (xbar + 15.*ybar + 3.*zbar);
-plot(ubar,vbar,'k')
 
-for d=1:18
-    scatter3(gamut_uv(1,:,d),gamut_uv(2,:,d),gamut_XYZ(2,:,d),[],[1,0,0;0,1,0;0,0,1;0,0,0],'.')
-    % Plot lines between gamut points:
-    if d==18
-        plot3([gamut_uv(1,1:3,d),gamut_uv(1,1,d)],[gamut_uv(2,1:3,d),gamut_uv(2,1,d)],...
-            [gamut_XYZ(2,1:3,d),gamut_XYZ(2,1,d)],'k:')
-    end
+sRGB_dcs = XYZToSRGBPrimary([xbar,ybar,zbar]'); %sRGB display colours
+sRGB_dcs(sRGB_dcs>1) = 1;
+sRGB_dcs(sRGB_dcs<0) = 0;
+for i=1:3
+    for j=1:size(sRGB_dcs,2)-1
+        t(i,j) = (sRGB_dcs(i,j)+sRGB_dcs(i,j+1))/2;
+    end    
 end
-s=scatter3(u(1:50:end),v(1:50:end),Y(1:50:end),20,occ(1:50:end),'filled');
+sRGB_dcs = t;
+
+for i = 1:size(xbar,1)-1
+    plot([ubar(i),ubar(i+1)],[vbar(i),vbar(i+1)],'Color',sRGB_dcs(:,i));
+end
+
+% for d=1:18
+%     scatter3(gamut_uv(1,:,d),gamut_uv(2,:,d),gamut_XYZ(2,:,d),[],[1,0,0;0,1,0;0,0,1;0,0,0],'.')
+%     % Plot lines between gamut points:
+%     if d==18
+%         plot3([gamut_uv(1,1:3,d),gamut_uv(1,1,d)],[gamut_uv(2,1:3,d),gamut_uv(2,1,d)],...
+%             [gamut_XYZ(2,1:3,d),gamut_XYZ(2,1,d)],'k:')
+%     end
+% end
+s=scatter3(u(1:50:end),v(1:50:end),Y(1:50:end),10,occ(1:50:end),'filled');
+plot([gamut_uv(1,1:3,18),gamut_uv(1,1,18)],[gamut_uv(2,1:3,18),gamut_uv(2,1,18)],'k--','DisplayName','Device Gamut');
 
 xlabel('u'''),ylabel('v'''),zlabel('Y')
 axis equal
-xlim([0 0.6])
-ylim([0 0.6])
+xlim([0 0.65])
+ylim([0 0.65])
 
 cleanTicks
+colorbar
 save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\practical_gamut2.pdf')
