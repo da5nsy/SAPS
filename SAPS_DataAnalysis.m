@@ -34,7 +34,7 @@ try
 catch
     disp('Reading from excel. Wait 42 seconds (PAMELA), and 171 seconds for BM')
     tic
-    TBfilename = fullfile(rootdir,location);
+    TBfilename = [rootdir,'\',location,'.xlsx'];
     [~,sheets] = xlsfinfo(TBfilename);
     if strcmp(location,'200s')
         TabletData = zeros(200,8,numel(sheets));
@@ -157,19 +157,33 @@ xbar2=cie2(:,2);
 ybar2=cie2(:,3);
 zbar2=cie2(:,4);
 
-ciedata2_10001=interp1(lambdaCie2,cie2(:,2:4),380:.04:780);
-xbar2_10001=interp1(lambdaCie2,xbar2,380:.04:780);
-ybar2_10001=interp1(lambdaCie2,ybar2,380:.04:780);
-zbar2_10001=interp1(lambdaCie2,zbar2,380:.04:780);
-ubar=4*xbar2_10001./(xbar2_10001 + 15*ybar2_10001 + 3*zbar2_10001);
-vbar=9*ybar2_10001./(xbar2_10001 + 15*ybar2_10001 + 3*zbar2_10001);
+figure('Position',[[100,100], [500,400]],...
+    'defaultLineLineWidth',2,...
+    'defaultAxesFontSize',12,...
+    'defaultAxesFontName', 'Courier',...
+    'Renderer','Painters',...
+    'color','white'); 
+hold on
+axis equal
 
-figure, hold on
-locus=scatter(ubar,vbar,100,'filled');
-LCol=xyz2rgb(ciedata2_10001);
-LCol(LCol<0)=0;LCol(LCol>1)=1;
-locus.CData=LCol;
-axis equal;
+ubar=4.*xbar2 ./ (xbar2 + 15.*ybar2 + 3.*zbar2);
+vbar=9.*ybar2 ./ (xbar2 + 15.*ybar2 + 3.*zbar2);
+
+sRGB_dcs = XYZToSRGBPrimary([xbar2,ybar2,zbar2]'); %sRGB display colours
+sRGB_dcs(sRGB_dcs>1) = 1;
+sRGB_dcs(sRGB_dcs<0) = 0;
+for i=1:3
+    for j=1:size(sRGB_dcs,2)-1
+        t(i,j) = (sRGB_dcs(i,j)+sRGB_dcs(i,j+1))/2;
+    end    
+end
+sRGB_dcs = t;
+
+for i = 1:size(xbar2,1)-1
+    plot([ubar(i),ubar(i+1)],[vbar(i),vbar(i+1)],'Color',sRGB_dcs(:,i));
+end
+plt(1) = plot([ubar(i),ubar(i+1)],[vbar(i),vbar(i+1)],'Color',sRGB_dcs(:,i),'DisplayName','Spectral Locus'); %Repeat just for legened
+
 
 %% Pull light measurements
 
@@ -177,11 +191,8 @@ if strcmp(location,'BM')
     
     clear out
     
-    %rootdir = ('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\BM\GL'); %old measurements
-    rootdir = ('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\BM\GL 20180427'); %new measurements
-    
-    %rootdir = uigetdir; %select folder where .mmg (GL Optis) files stored
-    cd(rootdir)
+    %cd('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\BM\GL'); %old measurements
+    cd('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\BM\GL 20180427') %new measurements
     mmg=dir('*.mmg');
     mmgl=length(mmg);
     
@@ -210,23 +221,26 @@ if strcmp(location,'BM')
     spd(:,4)=mean(spd(:,22:end),2);
     spd=spd(:,1:4);
     
-    figure('Position',[[100,100], [500,309]],...
-        'defaultLineLineWidth',2,...
-        'defaultAxesFontSize',12,...
-        'defaultAxesFontName', 'Courier',...
-        'color','white');
-    hold on
-    for i=[4,3,2]
-        plot(spd(:,1),spd(:,i)/max(spd(:,i)))
+    plt_spd = 0;
+    if plt_spd
+        figure('Position',[[100,100], [500,400]],...
+            'defaultLineLineWidth',2,...
+            'defaultAxesFontSize',12,...
+            'defaultAxesFontName', 'Courier',...
+            'color','white');
+        hold on
+        for i=[4,3,2]
+            plot(spd(:,1),spd(:,i)/max(spd(:,i)))
+        end
+        
+        legend({'Rooms 77/78','Room 25','Great Court'},'Location','northoutside')
+        
+        xlabel('Wavelength (nm)')
+        ylabel('Normalised power')
+        axis tight
+        ylim([0 1])
+        yticks(ylim)
     end
-    
-    legend({'Rooms 77/78','Room 25','Great Court'},'Location','eastoutside')
-    
-    xlabel('Wavelength (nm)')
-    ylabel('Normalised power')
-    axis tight
-    ylim([0 1])
-    yticks(ylim)
     
     xbar2_GL=interp1(lambdaCie2,xbar2,spd(:,1),'spline');
     ybar2_GL=interp1(lambdaCie2,ybar2,spd(:,1),'spline');
@@ -235,6 +249,23 @@ if strcmp(location,'BM')
     GLXYZ=[xbar2_GL,ybar2_GL,zbar2_GL]'*spd(:,2:4);
     GLxy=[GLXYZ(1,:)./sum(GLXYZ);GLXYZ(2,:)./sum(GLXYZ)];
     GLuv=[4*GLxy(1,:)./(-2*GLxy(1,:)+12*GLxy(2,:)+3);9*GLxy(2,:)./(-2*GLxy(1,:)+12*GLxy(2,:)+3)];
+    
+    %scatter(spd_uv(:,1),spd_uv(:,2),'*') %all
+    plt(2) = scatter(GLuv(1,1),GLuv(2,1),'*','DisplayName','Great Court');
+    plt(3) = scatter(GLuv(1,2),GLuv(2,2),'*','DisplayName','Room 25');
+    plt(4) = scatter(GLuv(1,3),GLuv(2,3),'*','DisplayName','Room 77/78');
+    
+    %text(spd_uv(:,1)'+([1:size(spd_uv,1)]/300),spd_uv(:,2)'+([1:size(spd_uv,1)]/300),string([1:size(spd_uv,1)]))
+    
+    axis equal
+    xlim([0 0.65])
+    ylim([0 0.65])
+    cleanTicks
+    legend(plt,'Location','southeast')
+    xlabel('u'''),ylabel('v''')
+    if 1
+    save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\BM_chromaticities.pdf')
+    end
     
     %     for i=2:mmgl+1
     %         figure
@@ -256,31 +287,38 @@ if strcmp(location,'BM')
     %     scatter(flip(GLuv(1,:)),flip(GLuv(2,:)),'k*');
     %     text(flip(GLuv(1,:)),flip(GLuv(2,:)),{'1','2','3'})
     
-    save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\BM_SPD.pdf')
+    %save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\BM_SPD.pdf')
 end
 
 if strcmp(location,'PAMELA')
-    [spd_data,peak,lux,spd_uv] = read_UPRtek('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\PAMELA\20170331 Spectra',0,0,0);
+    try
+        load('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\PAMELA\20170331 Spectra\PAMELA_SPD_data.mat')
+    catch
+        [spd_data,~,~,spd_uv] = read_UPRtek('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\PAMELA\20170331 Spectra',0,0,0);
+        save('PAMELA_SPD_data.mat','spd_data','spd_uv')
+    end    
     
-    % Plot chromaticities of light sources
-    figure('Position',[[100,100], [500,309]],...
-        'defaultLineLineWidth',2,...
-        'defaultAxesFontSize',12,...
-        'defaultAxesFontName', 'Courier',...
-        'color','white');
-    hold on
-    for i=1:18
-        scatter(spd_uv(i,1),spd_uv(i,2),'filled')
-        text(spd_uv(i,1)+(i/300),spd_uv(i,2)+(i/300),string(i))
-        % 8:10 seem to be something that was not actually used in the
-        % experiment, probably just me fiddling around trying to make the
-        % MH setting
-        % [1,5:7]   == CW
-        % [2:4]     == WW
-        % [11:18]   == MH              
-    end
-    legend
+    %scatter(spd_uv(:,1),spd_uv(:,2),'*') %all
+    plt(2) = scatter(spd_uv([1,5:7],1),spd_uv([1,5:7],2),'*','DisplayName','CW');
+    plt(3) = scatter(spd_uv([2:4],1),spd_uv([2:4],2),'*','DisplayName','WW');
+    plt(4) = scatter(spd_uv([11:18],1),spd_uv([11:18],2),'*','DisplayName','MH');
+    
+    %text(spd_uv(:,1)'+([1:size(spd_uv,1)]/300),spd_uv(:,2)'+([1:size(spd_uv,1)]/300),string([1:size(spd_uv,1)]))
+    
     axis equal
+    xlim([0 0.65])
+    ylim([0 0.65])
+    cleanTicks
+    legend(plt,'Location','southeast')
+    xlabel('u'''),ylabel('v''')
+    if 0
+        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\PAMELA_chromaticities.pdf')
+    end
+        
+    % [1,5:7]   == CW
+    % [2:4]     == WW
+    % [11:18]   == MH   
+    
     spd_uv_CW=mean(spd_uv([1,5:7],:));
     spd_uv_WW=mean(spd_uv(2:4,:));
     spd_uv_MH=mean(spd_uv(11:18,:));
@@ -289,11 +327,10 @@ if strcmp(location,'PAMELA')
     % session, not neccessarily the one specified at the start of this
     % script
     
-    plt_ind_spd = 1;
+    plt_ind_spd = 0; %plot individual SPD
     if plt_ind_spd
         
-        rootdir=('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\PAMELA\2017 Spectra');
-        [data,peak,lux,spd_uv]=read_UPRtek(rootdir,0,0,0);
+        [data,peak,lux,spd_uv]=read_UPRtek('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\PAMELA\2017 Spectra',0,0,0);
         
         figure('Position',[[100,100], [500,309]],...
             'defaultLineLineWidth',2,...
@@ -313,7 +350,7 @@ if strcmp(location,'PAMELA')
         yticks(ylim)
         %title('Normalised SPDs of PAMELA lighting channels')
         
-        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\PAMELA_SPD.pdf')
+        %save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\PAMELA_SPD.pdf')
     end
     
     
@@ -486,10 +523,9 @@ end
 % %% Analyse repeat values
 %
 % fig=figure('Position', [50, 50, 800, 800]); hold on;
-% locus=scatter(ubar,vbar,100,'filled');
-% LCol=xyz2rgb(ciedata2_10001);
-% LCol(LCol<0)=0;LCol(LCol>1)=1;
-% locus.CData=LCol;
+% for i = 1:size(xbar2,1)-1
+%     plot([ubar(i),ubar(i+1)],[vbar(i),vbar(i+1)],'Color',sRGB_dcs(:,i));
+% end
 % axis equal;
 %
 % load('SAPS_SelectableColoursGamut.mat')
@@ -527,13 +563,9 @@ end
 close all
 figure, hold on
 
-%fig=figure('Position', [50, 50, 800, 800]); hold on
-fig=gcf; hold on
-locus=scatter(ubar,vbar,100,'filled');
-LCol=xyz2rgb(ciedata2_10001);
-LCol(LCol<0)=0;LCol(LCol>1)=1;
-locus.CData=LCol;
-axis equal;
+for i = 1:size(xbar2,1)-1
+    plot([ubar(i),ubar(i+1)],[vbar(i),vbar(i+1)],'Color',sRGB_dcs(:,i));
+end
 
 %scatter(GLuv(1,:),GLuv(2,:),'k*');
 
