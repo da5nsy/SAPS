@@ -11,6 +11,15 @@ clc, clear, close all
 % Replace full paths with relative ones using rootdir and something like
 % 'fig_output_folder'
 
+set(groot,'defaultfigureposition',[100 100 500 400]); 
+set(groot,'defaultLineLineWidth',2);
+set(groot,'defaultAxesFontName', 'Courier');
+set(groot,'defaultAxesFontSize',12);
+set(groot,'defaultFigureRenderer', 'painters') %renders pdfs as vectors
+set(groot,'defaultfigurecolor','white')
+
+saveFigs = 0;
+
 %% Load Data
 
 %-% Tablet Data
@@ -18,7 +27,7 @@ clc, clear, close all
 % both raw and numerical data is useful, but they require different excel
 % addresses to specify data)
 
-location='PAMELA';  %changing this changes EVERYTHING
+location='PAMELA_20180205';  %changing this changes EVERYTHING
 %'PAMELA' or 'GRANT' or 'BM' or '200s' or
 %'PAMELA_20180205' or 'basement_rgby_test' or
 %'basement_greyCard_test'
@@ -159,12 +168,7 @@ xbar2=cie2(:,2);
 ybar2=cie2(:,3);
 zbar2=cie2(:,4);
 
-figure('Position',[[100,100], [500,400]],...
-    'defaultLineLineWidth',2,...
-    'defaultAxesFontSize',12,...
-    'defaultAxesFontName', 'Courier',...
-    'Renderer','Painters',...
-    'color','white'); 
+figure
 hold on
 axis equal
 
@@ -225,12 +229,7 @@ if strcmp(location,'BM')
     
     plt_spd = 0;
     if plt_spd
-        figure('Position',[[100,100], [500,400]],...
-            'defaultLineLineWidth',2,...
-            'defaultAxesFontSize',12,...
-            'defaultAxesFontName', 'Courier',...
-            'color','white');
-        hold on
+        figure, hold on
         for i=[4,3,2]
             plot(spd(:,1),spd(:,i)/max(spd(:,i)))
         end
@@ -265,7 +264,7 @@ if strcmp(location,'BM')
     cleanTicks
     legend(plt,'Location','southeast')
     xlabel('u'''),ylabel('v''')
-    if 1
+    if saveFigs
     save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\BM_chromaticities.pdf')
     end
     
@@ -313,7 +312,7 @@ if strcmp(location,'PAMELA')
     cleanTicks
     legend(plt,'Location','southeast')
     xlabel('u'''),ylabel('v''')
-    if 0
+    if saveFigs
         save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\PAMELA_chromaticities.pdf')
     end
         
@@ -334,17 +333,12 @@ if strcmp(location,'PAMELA')
         try
             load('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\PAMELA\2017 Spectra\PAMELA_SPD_data.mat')
         catch
-            [data,peak,lux,spd_uv]=read_UPRtek('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\PAMELA\2017 Spectra',0,0,0);
+            [spd_data,peak,lux,spd_uv]=read_UPRtek('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\PAMELA\2017 Spectra',0,0,0);
             save('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\PAMELA\2017 Spectra\PAMELA_SPD_data.mat','spd_data','spd_uv')
         end
         
-        figure('Position',[[100,100], [500,400]],...
-            'defaultLineLineWidth',2,...
-            'defaultAxesFontSize',12,...
-            'defaultAxesFontName', 'Courier',...
-            'color','white');
-        hold on
-        h= plot(360:760,data(:,[1,3:8]));
+        figure, hold on
+        h= plot(360:760,spd_data(:,[1,3:8]));
         set(h, {'color'}, {'k';'r';'g';'b';[0.9,0.9,0];'k';'k'});
         set(h, {'LineStyle'}, {'-';'-';'-';'-';'-';':';'--'});
         legend({'High output','Red','Green','Blue','Amber','Warm White','Cool White'},'Location','northoutside')
@@ -356,7 +350,7 @@ if strcmp(location,'PAMELA')
         yticks(ylim)
         %title('Normalised SPDs of PAMELA lighting channels')
         
-        if 1
+        if saveFigs
             save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\PAMELA_SPD.pdf')
         end
     end
@@ -391,14 +385,16 @@ if strcmp(location,'PAMELA_20180205')
     figure, hold on
     %scatter(1,kstd_mean(1),'k','filled');
     plot([1,9],[kstd_mean(1),kstd_mean(1)],'k--','DisplayName','Real touch baseline data');
-    plot([1,9],[kstd_mean(end),kstd_mean(end)],'k:','DisplayName','Computed basline data');
+    plot([1,9],[kstd_mean(end),kstd_mean(end)],'k:','DisplayName','Computed baseline data');
     sc(1)=scatter(1:9,kstd_mean(2:10),'r','filled','DisplayName','MH1');
     sc(2)=scatter(1:9,kstd_mean(11:19),'g','filled','DisplayName','ML');
     sc(3)=scatter(1:9,kstd_mean(20:28),'b','filled','DisplayName','MH2');
     xlim([0 10])
-    xticklabels({[],1:9})
+    xticks(1:9)
     xlabel('Observer')
     ylabel('Mean SD in u'' and v''')
+    ylim([0, 0.02])
+    yticks([0, 0.02])
     % %Replace numbers with participant identifiers
     %xticklabels({[],files([2:10]).participant})
     legend
@@ -408,6 +404,9 @@ if strcmp(location,'PAMELA_20180205')
     %     scatter(1:9,diffs(2:10),'r','filled','DisplayName','MH1');
     %     scatter(1:9,diffs(11:19),'g','filled','DisplayName','ML');
     %     scatter(1:9,diffs(20:28),'b','filled','DisplayName','MH2');
+    if saveFigs
+        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\exp3excl.pdf')
+    end
 end
 
 
@@ -568,7 +567,7 @@ end
 % % scatter(TabletData(repeats(2),11,1),TabletData(repeats(2),12,1),'r')
 
 %% Plot
-close all
+
 figure, hold on
 
 for i = 1:size(xbar2,1)-1
@@ -578,7 +577,7 @@ end
 %scatter(GLuv(1,:),GLuv(2,:),'k*');
 
 load('SAPS_SelectableColoursGamut.mat')
-s=scatter(u(1:50:end),v(1:50:end),20,occ(1:50:end));
+s=scatter(u(1:50:end),v(1:50:end),20,occ(1:50:end),'.');
 view(2)
 axis equal
 xlim([0.14 0.25]),ylim([0.41 0.52]) %close to selectable gamut boundary
@@ -665,7 +664,7 @@ for k=1:n2
         %         end
         
     elseif strcmp(location,'PAMELA')
-        OM = 0; %Original or mod? O=0, M=1;
+        OM = 1; %Original or mod? O=0, M=1;
         %Mod plots means as squares, with low alpha so that overlapping
         %points are visible
         
@@ -673,27 +672,27 @@ for k=1:n2
         %Original
         if OM
             if strcmp(files(k).Light(1:2),'CW') && strcmp(files(k).participant,P)
-                p1=plot(e(1,:), e(2,:), 'Color','g','DisplayName','CW');
+                p(1)=plot(e(1,:), e(2,:), 'Color','g','DisplayName','CW');
             elseif strcmp(files(k).Light(1:2),'WW') && strcmp(files(k).participant,P)
-                p2=plot(e(1,:), e(2,:), 'Color','b','DisplayName','WW');
+                p(2)=plot(e(1,:), e(2,:), 'Color','b','DisplayName','WW');
             elseif strcmp(files(k).Light(1:2),'MH') && strcmp(files(k).participant,P)
-                p3=plot(e(1,:), e(2,:), 'Color','r','DisplayName','MH');
+                p(3)=plot(e(1,:), e(2,:), 'Color','r','DisplayName','MH');
             elseif strcmp(files(k).participant,'dummy')
-                p4=plot(e(1,:), e(2,:), 'Color','k','DisplayName','Baseline');
+                p(4)=plot(e(1,:), e(2,:),':','Color','k','DisplayName','BL');
             end
         end
         %Mod
         if ~OM
             if strcmp(files(k).Light(1:2),'CW') && strcmp(files(k).participant,P)
-                p1=scatter(Mu(1),Mu(2),'sg','filled','DisplayName','CW','MarkerFaceAlpha',.7);
+                p(1)=scatter(Mu(1),Mu(2),'g','filled','DisplayName','CW','MarkerFaceAlpha',.5);
                 if ~exist('CW_catch','var'), CW_catch=[]; end
                 CW_catch = [CW_catch; Mu];
             elseif strcmp(files(k).Light(1:2),'WW') && strcmp(files(k).participant,P)
-                p2=scatter(Mu(1),Mu(2),'sb','filled','DisplayName','WW','MarkerFaceAlpha',.7);
+                p(2)=scatter(Mu(1),Mu(2),'b','filled','DisplayName','WW','MarkerFaceAlpha',.5);
             elseif strcmp(files(k).Light(1:2),'MH') && strcmp(files(k).participant,P)
-                p3=scatter(Mu(1),Mu(2),'sr','filled','DisplayName','MH','MarkerFaceAlpha',.7);
-            elseif strcmp(files(k).participant,'dummy')
-                p4=scatter(Mu(1),Mu(2),'sk','filled','DisplayName','Baseline','MarkerFaceAlpha',.7);
+                p(3)=scatter(Mu(1),Mu(2),'r','filled','DisplayName','MH','MarkerFaceAlpha',.5);
+%             elseif strcmp(files(k).participant,'dummy')
+%                 p4=scatter(Mu(1),Mu(2),'k','filled','DisplayName','BL','MarkerFaceAlpha',.5);
             end
         end
         %text(Mu(1),Mu(2),string(k))
@@ -746,47 +745,56 @@ for k=1:n2
             
             %legend([p(1)...{'Spectral Locus','Practical Gamut'})
         end
+%     elseif strcmp(location,'PAMELA_20180205')
+%         %specify a single participant (+dummy)
+%         if strcmp(files(k).participant,'dummy') ||...
+%                 strcmp(files(k).participant,'LM')
+%             
+%             % plots all, excluding SP, BG, NPG
+%             %         if ~(strcmp(files(k).participant,'SP') ||...
+%             %                 strcmp(files(k).participant,'BG') ||...
+%             %                 strcmp(files(k).participant,'NPG'))
+%             
+%             if k==29 || k==1
+%                 h1=plot(e(1,:), e(2,:),'k','DisplayName','Baseline');
+%                 %scatter(X(idx,1),X(idx,2),'r','filled')
+%                 %comet(X(idx,1),X(idx,2))
+%                 
+%             elseif (1<k) & (k<11)
+%                 h2=plot(e(1,:), e(2,:),'r','DisplayName','MH1');
+%                 %scatter(X(idx,1),X(idx,2),'g','filled')
+%                 %comet(X(idx,1),X(idx,2))
+%             elseif (10<k) & (k<20)
+%                 h3=plot(e(1,:), e(2,:),'g','DisplayName','ML');
+%                 %scatter(X(idx,1),X(idx,2),'b','filled')
+%                 %comet(X(idx,1),X(idx,2))
+%             elseif (19<k<29)
+%                 h4=plot(e(1,:), e(2,:),'b','DisplayName','MH1');
+%                 %scatter(X(idx,1),X(idx,2),'k','filled')
+%                 %comet(X(idx,1),X(idx,2))
+%             end
+%             %title(files(k).participant)
+%             %saveas(fig,strcat('bg',files(k).participant,'.tif'))
+%         end
     elseif strcmp(location,'PAMELA_20180205')
-        %specify a single participant (+dummy)
-        if strcmp(files(k).participant,'dummy') ||...
-                strcmp(files(k).participant,'LM')
-            
-            % plots all, excluding SP, BG, NPG
-            %         if ~(strcmp(files(k).participant,'SP') ||...
-            %                 strcmp(files(k).participant,'BG') ||...
-            %                 strcmp(files(k).participant,'NPG'))
-            
-            if k==29 || k==1
-                h1=plot(e(1,:), e(2,:),'k','DisplayName','Baseline');
-                %scatter(X(idx,1),X(idx,2),'r','filled')
-                %comet(X(idx,1),X(idx,2))
-                
-            elseif (1<k) & (k<11)
-                h2=plot(e(1,:), e(2,:),'r','DisplayName','MH1');
-                %scatter(X(idx,1),X(idx,2),'g','filled')
-                %comet(X(idx,1),X(idx,2))
-            elseif (10<k) & (k<20)
-                h3=plot(e(1,:), e(2,:),'g','DisplayName','ML');
-                %scatter(X(idx,1),X(idx,2),'b','filled')
-                %comet(X(idx,1),X(idx,2))
-            elseif (19<k<29)
-                h4=plot(e(1,:), e(2,:),'b','DisplayName','MH1');
-                %scatter(X(idx,1),X(idx,2),'k','filled')
-                %comet(X(idx,1),X(idx,2))
+        %plots all, excluding SP, BG, NPG
+        if ~(strcmp(files(k).participant,'SP') ||...
+                strcmp(files(k).participant,'BG') ||...
+                strcmp(files(k).participant,'NPG'))
+            if k==1
+                %p1{k}=plot(e(1,:), e(2,:),'k');
+                p(1)=scatter(Mu(1),Mu(2),'k','filled','MarkerFaceAlpha',.5,'DisplayName','BL');
+            elseif (1<k) && (k<11)
+                %p1{k}=plot(e(1,:), e(2,:),'r');                
+                p(2)=scatter(Mu(1),Mu(2),'r','filled','MarkerFaceAlpha',.5,'DisplayName','MH1');
+            elseif (10<k) && (k<20)
+                %p1{k}=plot(e(1,:), e(2,:),'g');
+                p(3)=scatter(Mu(1),Mu(2),'g','filled','MarkerFaceAlpha',.5,'DisplayName','ML');
+            elseif (19<k)
+                %p1{k}=plot(e(1,:), e(2,:),'b');
+                p(4)=scatter(Mu(1),Mu(2),'b','filled','MarkerFaceAlpha',.5,'DisplayName','MH2');
             end
-            %title(files(k).participant)
-            %saveas(fig,strcat('bg',files(k).participant,'.tif'))
         end
-        %     elseif strcmp(location,'PAMELA_20180205')
-        %         if k==1
-        %            p1{k}=plot(e(1,:), e(2,:),'r');
-        %         elseif (1<k) && (k<11)
-        %             p1{k}=plot(e(1,:), e(2,:),'g');
-        %         elseif (10<k) && (k<20)
-        %             p1{k}=plot(e(1,:), e(2,:),'b');
-        %         elseif (19<k)
-        %             p1{k}=plot(e(1,:), e(2,:),'k');
-        %         end
     elseif strcmp(location,'basement_rgby_test')
         if k==1
             p1{k}=plot(e(1,:), e(2,:),'r');
@@ -841,13 +849,30 @@ end
 % Here goes all the stuff that you don't need to be applied for each run of
 % the data, like graph formatting
 if strcmp(location,'PAMELA_20180205')
-    legend([h1 h2 h3 h4],{'Basline','MH1','ML','MH2'})
-    xlim([0.15 0.25])
-    ylim([0.43 0.51])    
+    %legend([h1 h2 h3 h4],{'Baseline','MH1','ML','MH2'})
+    legend(p)
+%     xlim([0.15 0.25])
+%     ylim([0.43 0.51])    
+    xlim([0.17 0.22])
+    ylim([0.46 0.50]) 
+    cleanTicks
+    if saveFigs
+        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\PAMELA_20180205_results.pdf')
+    end
+end
+
+if strcmp(location,'basement_rgby_test')
+    axis equal
+    xlim([0.14 0.24])
+    ylim([0.41 0.52])
+    cleanTicks
+    if saveFigs
+        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\basement_rgby_test.pdf')
+    end
 end
 
 if strcmp(location,'PAMELA')
-    legend([p4 p1 p2 p3],'Location','northwest')
+    legend(p,'Location','southeast')
 %     xlim([0.175 0.23])
 %     ylim([0.455 0.5])
    % xticks(0.15:0.01:0.25)
@@ -855,14 +880,14 @@ if strcmp(location,'PAMELA')
     
     %Plot light chromaticities
     if exist('spd_uv_CW','var')
-        scatter(spd_uv_CW(1),spd_uv_CW(2),'g','filled','DisplayName','CW','MarkerEdgeColor','k')        
-        scatter(spd_uv_WW(1),spd_uv_WW(2),'b','filled','DisplayName','WW','MarkerEdgeColor','k')        
-        scatter(spd_uv_MH(1),spd_uv_MH(2),'r','filled','DisplayName','MH','MarkerEdgeColor','k')
+        scatter(spd_uv_CW(1),spd_uv_CW(2),'*g','DisplayName','CW')        
+        scatter(spd_uv_WW(1),spd_uv_WW(2),'*b','DisplayName','WW')        
+        scatter(spd_uv_MH(1),spd_uv_MH(2),'*r','DisplayName','MH')
         xlim([0.175 0.255])
         ylim([0.455 0.53])
     end
     
-    stats=1;
+    stats=0;
     if stats
         scatter(Mu_u_CW,Mu_v_CW,'g^','DisplayName','CW')
         scatter(Mu_u_WW,Mu_v_WW,'b^','DisplayName','WW')
@@ -872,6 +897,24 @@ if strcmp(location,'PAMELA')
    % offset
    disp(Mu_u_WW-Mu_u_CW)
    disp(Mu_v_WW-Mu_v_CW)
+   
+   if ~OM
+       xlim([0.18 0.26])
+       ylim([0.46 0.535])
+   else
+       xlim([0.17 0.22])
+       ylim([0.45 0.50])
+   end
+   cleanTicks
+   
+   if saveFigs
+       if ~OM
+           save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\PAMELA_DG_results.pdf')
+       else
+           save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\PAMELA_DG_results_ellipses.pdf')
+       end
+   end
+       
 end
 
 %         if strcmp(files(k).Light(1:2),'CW') && strcmp(files(k).participant,P)
@@ -884,47 +927,47 @@ end
 
 %close
 
-%% Assessing intra-observer variation
-% Nabbed script from 'AptialCAtestAnyalysis003_WIP.m'
-
-clc, close all
-
-subsample_median=   zeros(n-10,2,n2-1); %n2-1 would exclude dummy
-subsample_SD=       zeros(n-10,2,n2-1); %n2-1 would exclude dummy
-
-for j=1:n2-1                                                         %For all the datasets (including dummy)
-    for i=1:n-10                                      %Using 'i' as a value from 1 to the 190 (the max number of trials)
-        clear subsample
-        subsample=TabletData(1:i,11,j);
-        subsample_median(i,1,j)=nanmedian(subsample);
-        subsample_SD(i,1,j)=nanstd(subsample);                           %calculate the standard deviation of that sample
-    end
-end
-
-for j=1:n2-1
-    for i=1:n-10
-        clear subsample
-        subsample=TabletData(1:i,12,j);
-        subsample_median(i,2,j)=nanmedian(subsample);
-        subsample_SD(i,2,j)=nanstd(subsample);
-    end
-end
-
-figure, hold on
-plot(10:n-10,mean(subsample_SD(10:end,:,1),2),':r','LineWidth',2);
-plot(10:n-10,mean(subsample_SD(10:end,:,2),2),'--b','LineWidth',2);
-
-%axis([10 n-1 3.2*10^-3 5.5*10^-3])
-xlabel('# of data points in subsample')
-ylabel({'Standard Deviation (SD)','Median Across All Datasets'})
-ax = gca; ax.XTick = [10:20:190];
-legend({'u''','v'''})
-
-% %% Single run demo
-%
-% figure,
-% plot(1:190,u_prime(:,10))
-% axis([1 190 -inf inf])
-% xlabel('Trial #','FontSize',20)
-% ylabel('u''','FontSize',20)
-%
+% %% Assessing intra-observer variation
+% % Nabbed script from 'AptialCAtestAnyalysis003_WIP.m'
+% 
+% clc, close all
+% 
+% subsample_median=   zeros(n-10,2,n2-1); %n2-1 would exclude dummy
+% subsample_SD=       zeros(n-10,2,n2-1); %n2-1 would exclude dummy
+% 
+% for j=1:n2-1                                                         %For all the datasets (including dummy)
+%     for i=1:n-10                                      %Using 'i' as a value from 1 to the 190 (the max number of trials)
+%         clear subsample
+%         subsample=TabletData(1:i,11,j);
+%         subsample_median(i,1,j)=nanmedian(subsample);
+%         subsample_SD(i,1,j)=nanstd(subsample);                           %calculate the standard deviation of that sample
+%     end
+% end
+% 
+% for j=1:n2-1
+%     for i=1:n-10
+%         clear subsample
+%         subsample=TabletData(1:i,12,j);
+%         subsample_median(i,2,j)=nanmedian(subsample);
+%         subsample_SD(i,2,j)=nanstd(subsample);
+%     end
+% end
+% 
+% figure, hold on
+% plot(10:n-10,mean(subsample_SD(10:end,:,1),2),':r','LineWidth',2);
+% plot(10:n-10,mean(subsample_SD(10:end,:,2),2),'--b','LineWidth',2);
+% 
+% %axis([10 n-1 3.2*10^-3 5.5*10^-3])
+% xlabel('# of data points in subsample')
+% ylabel({'Standard Deviation (SD)','Median Across All Datasets'})
+% ax = gca; ax.XTick = [10:20:190];
+% legend({'u''','v'''})
+% 
+% % %% Single run demo
+% %
+% % figure,
+% % plot(1:190,u_prime(:,10))
+% % axis([1 190 -inf inf])
+% % xlabel('Trial #','FontSize',20)
+% % ylabel('u''','FontSize',20)
+% %
