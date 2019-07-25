@@ -8,6 +8,8 @@ clc, clear, close all
 % Add Grant data (different run length, should just be able to change n)
 % Clean up data, find a way to threshold and recognise duds
 % Replace dist function in BM plotting
+% Replace full paths with relative ones using rootdir and something like
+% 'fig_output_folder'
 
 %% Load Data
 
@@ -16,7 +18,7 @@ clc, clear, close all
 % both raw and numerical data is useful, but they require different excel
 % addresses to specify data)
 
-location='BM';  %changing this changes EVERYTHING
+location='PAMELA';  %changing this changes EVERYTHING
 %'PAMELA' or 'GRANT' or 'BM' or '200s' or
 %'PAMELA_20180205' or 'basement_rgby_test' or
 %'basement_greyCard_test'
@@ -43,7 +45,7 @@ catch
     end
     
     for i=1:numel(sheets) %65 for BM, 20 for PAMELA
-        i %to provide a progress update in command window, should take ~2mins
+        disp(i) %to provide a progress update in command window, should take ~2mins
         if strcmp(location,'200s')
             TabletData(:,:,i)=xlsread(TBfilename, i,'A2:H201');
         else
@@ -327,12 +329,16 @@ if strcmp(location,'PAMELA')
     % session, not neccessarily the one specified at the start of this
     % script
     
-    plt_ind_spd = 0; %plot individual SPD
+    plt_ind_spd = 1; %plot individual SPD
     if plt_ind_spd
+        try
+            load('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\PAMELA\2017 Spectra\PAMELA_SPD_data.mat')
+        catch
+            [data,peak,lux,spd_uv]=read_UPRtek('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\PAMELA\2017 Spectra',0,0,0);
+            save('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\PAMELA\2017 Spectra\PAMELA_SPD_data.mat','spd_data','spd_uv')
+        end
         
-        [data,peak,lux,spd_uv]=read_UPRtek('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\PAMELA\2017 Spectra',0,0,0);
-        
-        figure('Position',[[100,100], [500,309]],...
+        figure('Position',[[100,100], [500,400]],...
             'defaultLineLineWidth',2,...
             'defaultAxesFontSize',12,...
             'defaultAxesFontName', 'Courier',...
@@ -341,7 +347,7 @@ if strcmp(location,'PAMELA')
         h= plot(360:760,data(:,[1,3:8]));
         set(h, {'color'}, {'k';'r';'g';'b';[0.9,0.9,0];'k';'k'});
         set(h, {'LineStyle'}, {'-';'-';'-';'-';'-';':';'--'});
-        legend({'High output','Red','Green','Blue','Amber','Warm White','Cool White'},'Location','eastoutside')
+        legend({'High output','Red','Green','Blue','Amber','Warm White','Cool White'},'Location','northoutside')
         
         xlabel('Wavelength (nm)')
         ylabel('Normalised power')
@@ -350,7 +356,9 @@ if strcmp(location,'PAMELA')
         yticks(ylim)
         %title('Normalised SPDs of PAMELA lighting channels')
         
-        %save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\PAMELA_SPD.pdf')
+        if 1
+            save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\PAMELA_SPD.pdf')
+        end
     end
     
     
