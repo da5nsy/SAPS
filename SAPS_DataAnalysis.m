@@ -447,13 +447,13 @@ if strcmp(location,'BM')
     %scatter(kstd_mean(4),diffs(4),'k','filled','DisplayName','known dud');
     scatter(kstd(66),diffs(66),'y','filled','DisplayName','Baseline Data');
     
-    plot([kstd(end),kstd(end)],[0,0.07],'k:','DisplayName','Logical Threshold')
+    %plot([kstd(end),kstd(end)],[0,0.07],'k:','DisplayName','Logical Threshold')
     
-    %plot([thresh_SD,thresh_SD],[0,0.07],'k:','DisplayName','SD > 0.01')
-    %plot([min(xlim),max(xlim)],[thresh_DBUR,thresh_DBUR],'k:','DisplayName','DBUR > 0.018')
+    plot([thresh_SD,thresh_SD],[0,0.07],'k:','DisplayName','SD > 0.01')
+    plot([min(xlim),max(xlim)],[thresh_DBUR,thresh_DBUR],'k:','DisplayName','DBUR > 0.018')
     
-    %f(1)=fill([min(xlim),max(xlim),max(xlim),min(xlim)],[thresh_DBUR,thresh_DBUR,max(ylim),max(ylim)],'k','LineStyle','none','FaceAlpha','0.1','DisplayName','Excluded Data');
-    %f(2)=fill([thresh_SD,max(xlim),max(xlim),thresh_SD],[min(ylim),min(ylim),max(ylim),max(ylim)],'k','LineStyle','none','FaceAlpha','0.1','DisplayName','Excluded Data');
+    f(1)=fill([min(xlim),max(xlim),max(xlim),min(xlim)],[thresh_DBUR,thresh_DBUR,max(ylim),max(ylim)],'k','LineStyle','none','FaceAlpha','0.1','DisplayName','Excluded Data');
+    f(2)=fill([thresh_SD,max(xlim),max(xlim),thresh_SD],[min(ylim),min(ylim),max(ylim),max(ylim)],'k','LineStyle','none','FaceAlpha','0.1','DisplayName','Excluded Data');
     
     if strcmp(MinOrMean,'Min')
         xlabel('Min SD')
@@ -468,7 +468,7 @@ if strcmp(location,'BM')
     
     cleanTicks
     if saveFigs
-        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\excl1.pdf')
+        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\excl3.pdf')
     end
 
     figure, hold on
@@ -502,6 +502,7 @@ if strcmp(location,'BM')
     xlabel({'SD in x axis', 'during checkerboard (pixels)'})
     ylabel({'SD in y axis', 'during checkerboard (pixels)'})    
     plot([0,12],[0,12],'k--')
+
     if saveFigs
         save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\BMtouch.pdf')
     end
@@ -527,6 +528,11 @@ if strcmp(location,'BM')
     ylim([0 0.015])
     xlabel('SD in u'' dimension')
     ylabel('SD in v'' dimension')
+end
+
+cleanTicks
+if saveFigs
+    save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\naive.pdf')
 end
 
 % hold on
@@ -714,13 +720,14 @@ for k=1:n2
         %text(Mu(1),Mu(2),string(k))
         
     elseif strcmp(location,'BM') && kstd(k) < thresh_SD && diffs(k) < thresh_DBUR
+        %elseif strcmp(location,'BM') %without exclusions
         %if strcmp(files(k).participant,'Public') %Exclude LM and DG
         if k==55 %from time-stamp this appears to be from before the data collection started, and so I assume it is not 'real' data
             continue
         elseif files(k).date==10||files(k).date==11 %77/78
             
             %scatter mean
-            scatter(Mu(1),Mu(2),'rs','filled');
+            p(1) = scatter(Mu(1),Mu(2),'rs','filled','DisplayName','77/78');
             
             %plot elipse
             %scatter(e(1,:), e(2,:))
@@ -732,15 +739,15 @@ for k=1:n2
             %                 [I_row, I_col] = ind2sub(size(e2),I);
             %                 plot([e(1,I_row),e(1,I_col)],[e(2,I_row),e(2,I_col)],'r:')
             
-        elseif files(k).date==12||files(k).date==13 %Africa
-            scatter(Mu(1),Mu(2),'kv','filled');
+        elseif files(k).date==12||files(k).date==13 %25 Africa
+            p(2) = scatter(Mu(1),Mu(2),'kv','filled','DisplayName','25');
             %plot(e(1,:), e(2,:), 'Color','g');
             %                 e2=dist(e);
             %                 [~,I] = max(e2(:));
             %                 [I_row, I_col] = ind2sub(size(e2),I);
             %                 plot([e(1,I_row),e(1,I_col)],[e(2,I_row),e(2,I_col)],'k--')
         elseif files(k).date==14 %Great Court
-            scatter(Mu(1),Mu(2),'bo','filled');
+            p(3) = scatter(Mu(1),Mu(2),'bo','filled','DisplayName','GC');
             %plot(e(1,:), e(2,:), 'Color','b');
             %                 e2=dist(e);
             %                 [~,I] = max(e2(:));
@@ -755,12 +762,6 @@ for k=1:n2
         %             end
         %             text(Mu(1),Mu(2),num2str(k))
         %end
-        if k==1
-            scatter(flip(GLuv(1,:)),flip(GLuv(2,:)),'k*');
-            text(flip(GLuv(1,:))+0.005,flip(GLuv(2,:)),{'1','2','3'})
-            
-            %legend([p(1)...{'Spectral Locus','Practical Gamut'})
-        end
 %     elseif strcmp(location,'PAMELA_20180205')
 %         end
     elseif strcmp(location,'PAMELA_20180205')
@@ -797,8 +798,7 @@ for k=1:n2
                 if k==29 || k==1
                     p(1)=plot(e(1,:), e(2,:),'k','DisplayName','BL');
                     scatter(X(idx,1),X(idx,2),'k','filled')
-                    %comet(X(idx,1),X(idx,2))
-                    
+                    %comet(X(idx,1),X(idx,2))                    
                 elseif (1<k) & (k<11)
                     p(2)=plot(e(1,:), e(2,:),'r','DisplayName','MH1');
                     scatter(X(idx,1),X(idx,2),'r','filled')
@@ -885,6 +885,25 @@ if strcmp(location,'PAMELA_20180205')
         end
     end
 end
+
+if strcmp(location,'BM')
+    legend(p,'Location','northwest')
+    colorbar off
+    xlim([0.16, 0.28])
+    ylim([0.46, 0.56])
+    
+    scatter(GLuv(1,3),GLuv(2,3),'r*','DisplayName','77/78');
+    scatter(GLuv(1,2),GLuv(2,2),'k*','DisplayName','25');
+    scatter(GLuv(1,1),GLuv(2,1),'b*','DisplayName','GC');
+    
+    cleanTicks
+    
+    if saveFigs
+        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\exp2.pdf')
+    end
+    
+end
+    
 
 if strcmp(location,'basement_rgby_test')
     axis equal
