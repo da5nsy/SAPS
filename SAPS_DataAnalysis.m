@@ -18,7 +18,7 @@ set(groot,'defaultAxesFontSize',12);
 set(groot,'defaultFigureRenderer', 'painters') %renders pdfs as vectors
 set(groot,'defaultfigurecolor','white')
 
-saveFigs = 0;
+saveFigs = 1;
 
 %% Load Data
 
@@ -746,53 +746,58 @@ for k=1:n2
             %legend([p(1)...{'Spectral Locus','Practical Gamut'})
         end
 %     elseif strcmp(location,'PAMELA_20180205')
-%         %specify a single participant (+dummy)
-%         if strcmp(files(k).participant,'dummy') ||...
-%                 strcmp(files(k).participant,'LM')
-%             
-%             % plots all, excluding SP, BG, NPG
-%             %         if ~(strcmp(files(k).participant,'SP') ||...
-%             %                 strcmp(files(k).participant,'BG') ||...
-%             %                 strcmp(files(k).participant,'NPG'))
-%             
-%             if k==29 || k==1
-%                 h1=plot(e(1,:), e(2,:),'k','DisplayName','Baseline');
-%                 %scatter(X(idx,1),X(idx,2),'r','filled')
-%                 %comet(X(idx,1),X(idx,2))
-%                 
-%             elseif (1<k) & (k<11)
-%                 h2=plot(e(1,:), e(2,:),'r','DisplayName','MH1');
-%                 %scatter(X(idx,1),X(idx,2),'g','filled')
-%                 %comet(X(idx,1),X(idx,2))
-%             elseif (10<k) & (k<20)
-%                 h3=plot(e(1,:), e(2,:),'g','DisplayName','ML');
-%                 %scatter(X(idx,1),X(idx,2),'b','filled')
-%                 %comet(X(idx,1),X(idx,2))
-%             elseif (19<k<29)
-%                 h4=plot(e(1,:), e(2,:),'b','DisplayName','MH1');
-%                 %scatter(X(idx,1),X(idx,2),'k','filled')
-%                 %comet(X(idx,1),X(idx,2))
-%             end
-%             %title(files(k).participant)
-%             %saveas(fig,strcat('bg',files(k).participant,'.tif'))
 %         end
     elseif strcmp(location,'PAMELA_20180205')
-        %plots all, excluding SP, BG, NPG
-        if ~(strcmp(files(k).participant,'SP') ||...
-                strcmp(files(k).participant,'BG') ||...
-                strcmp(files(k).participant,'NPG'))
-            if k==1
-                %p1{k}=plot(e(1,:), e(2,:),'k');
-                p(1)=scatter(Mu(1),Mu(2),'k','filled','MarkerFaceAlpha',.5,'DisplayName','BL');
-            elseif (1<k) && (k<11)
-                %p1{k}=plot(e(1,:), e(2,:),'r');                
-                p(2)=scatter(Mu(1),Mu(2),'r','filled','MarkerFaceAlpha',.5,'DisplayName','MH1');
-            elseif (10<k) && (k<20)
-                %p1{k}=plot(e(1,:), e(2,:),'g');
-                p(3)=scatter(Mu(1),Mu(2),'g','filled','MarkerFaceAlpha',.5,'DisplayName','ML');
-            elseif (19<k)
-                %p1{k}=plot(e(1,:), e(2,:),'b');
-                p(4)=scatter(Mu(1),Mu(2),'b','filled','MarkerFaceAlpha',.5,'DisplayName','MH2');
+        plt_all = 0;
+        if plt_all
+            %plots all, excluding SP, BG, NPG
+            if ~(strcmp(files(k).participant,'SP') ||...
+                    strcmp(files(k).participant,'BG') ||...
+                    strcmp(files(k).participant,'NPG'))
+                if k==1
+                    %p1{k}=plot(e(1,:), e(2,:),'k');
+                    p(1)=scatter(Mu(1),Mu(2),'k','filled','MarkerFaceAlpha',.5,'DisplayName','BL');
+                elseif (1<k) && (k<11)
+                    %p1{k}=plot(e(1,:), e(2,:),'r');
+                    p(2)=scatter(Mu(1),Mu(2),'r','filled','MarkerFaceAlpha',.5,'DisplayName','MH1');
+                elseif (10<k) && (k<20)
+                    %p1{k}=plot(e(1,:), e(2,:),'g');
+                    p(3)=scatter(Mu(1),Mu(2),'g','filled','MarkerFaceAlpha',.5,'DisplayName','ML');
+                elseif (19<k)
+                    %p1{k}=plot(e(1,:), e(2,:),'b');
+                    p(4)=scatter(Mu(1),Mu(2),'b','filled','MarkerFaceAlpha',.5,'DisplayName','MH2');
+                end
+            end
+        else
+            %specify a single participant (+dummy)
+            if strcmp(files(k).participant,'dummy') ||...
+                    strcmp(files(k).participant,'PK')
+                
+                % plots all, excluding SP, BG, NPG
+                %         if ~(strcmp(files(k).participant,'SP') ||...
+                %                 strcmp(files(k).participant,'BG') ||...
+                %                 strcmp(files(k).participant,'NPG'))
+                
+                if k==29 || k==1
+                    p(1)=plot(e(1,:), e(2,:),'k','DisplayName','BL');
+                    %scatter(X(idx,1),X(idx,2),'k','filled')
+                    %comet(X(idx,1),X(idx,2))
+                    
+                elseif (1<k) & (k<11)
+                    p(2)=plot(e(1,:), e(2,:),'r','DisplayName','MH1');
+                    %scatter(X(idx,1),X(idx,2),'r','filled')
+                    %comet(X(idx,1),X(idx,2))
+                elseif (10<k) & (k<20)
+                    p(3)=plot(e(1,:), e(2,:),'g','DisplayName','ML');
+                    %scatter(X(idx,1),X(idx,2),'g','filled')
+                    %comet(X(idx,1),X(idx,2))
+                elseif (19<k<29)
+                    p(4)=plot(e(1,:), e(2,:),'b','DisplayName','MH1');
+                    %scatter(X(idx,1),X(idx,2),'b','filled')
+                    %comet(X(idx,1),X(idx,2))
+                end
+                %title(files(k).participant)
+                %saveas(fig,strcat('bg',files(k).participant,'.tif'))
             end
         end
     elseif strcmp(location,'basement_rgby_test')
@@ -851,13 +856,17 @@ end
 if strcmp(location,'PAMELA_20180205')
     %legend([h1 h2 h3 h4],{'Baseline','MH1','ML','MH2'})
     legend(p)
-%     xlim([0.15 0.25])
-%     ylim([0.43 0.51])    
+    %     xlim([0.15 0.25])
+    %     ylim([0.43 0.51])
     xlim([0.17 0.22])
-    ylim([0.46 0.50]) 
+    ylim([0.45 0.50])
     cleanTicks
     if saveFigs
-        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\PAMELA_20180205_results.pdf')
+        if plt_all
+            save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\PAMELA_20180205_results.pdf')
+        else
+            save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\PAMELA_20180205_Individual2.pdf')
+        end
     end
 end
 
