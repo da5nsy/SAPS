@@ -18,7 +18,7 @@ set(groot,'defaultAxesFontSize',12);
 set(groot,'defaultFigureRenderer', 'painters') %renders pdfs as vectors
 set(groot,'defaultfigurecolor','white')
 
-saveFigs = 1;
+saveFigs = 0;
 
 %% Load Data
 
@@ -780,20 +780,20 @@ for k=1:n2
                 
                 if k==29 || k==1
                     p(1)=plot(e(1,:), e(2,:),'k','DisplayName','BL');
-                    %scatter(X(idx,1),X(idx,2),'k','filled')
+                    scatter(X(idx,1),X(idx,2),'k','filled')
                     %comet(X(idx,1),X(idx,2))
                     
                 elseif (1<k) & (k<11)
                     p(2)=plot(e(1,:), e(2,:),'r','DisplayName','MH1');
-                    %scatter(X(idx,1),X(idx,2),'r','filled')
+                    scatter(X(idx,1),X(idx,2),'r','filled')
                     %comet(X(idx,1),X(idx,2))
                 elseif (10<k) & (k<20)
                     p(3)=plot(e(1,:), e(2,:),'g','DisplayName','ML');
-                    %scatter(X(idx,1),X(idx,2),'g','filled')
+                    scatter(X(idx,1),X(idx,2),'g','filled')
                     %comet(X(idx,1),X(idx,2))
                 elseif (19<k<29)
                     p(4)=plot(e(1,:), e(2,:),'b','DisplayName','MH1');
-                    %scatter(X(idx,1),X(idx,2),'b','filled')
+                    scatter(X(idx,1),X(idx,2),'b','filled')
                     %comet(X(idx,1),X(idx,2))
                 end
                 %title(files(k).participant)
