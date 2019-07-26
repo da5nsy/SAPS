@@ -447,13 +447,13 @@ if strcmp(location,'BM')
     %scatter(kstd_mean(4),diffs(4),'k','filled','DisplayName','known dud');
     scatter(kstd(66),diffs(66),'y','filled','DisplayName','Baseline Data');
     
-    %plot([kstd(end),kstd(end)],[0,max(diffs)],'k:','DisplayName','Logical Threshold')
+    plot([kstd(end),kstd(end)],[0,0.07],'k:','DisplayName','Logical Threshold')
     
-    plot([thresh_SD,thresh_SD],[0,0.07],'k:','DisplayName','SD > 0.01')
-    plot([min(xlim),max(xlim)],[thresh_DBUR,thresh_DBUR],'k:','DisplayName','DBUR > 0.018')
+    %plot([thresh_SD,thresh_SD],[0,0.07],'k:','DisplayName','SD > 0.01')
+    %plot([min(xlim),max(xlim)],[thresh_DBUR,thresh_DBUR],'k:','DisplayName','DBUR > 0.018')
     
-    f(1)=fill([min(xlim),max(xlim),max(xlim),min(xlim)],[thresh_DBUR,thresh_DBUR,max(ylim),max(ylim)],'k','LineStyle','none','FaceAlpha','0.1','DisplayName','Excluded Data');
-    f(2)=fill([thresh_SD,max(xlim),max(xlim),thresh_SD],[min(ylim),min(ylim),max(ylim),max(ylim)],'k','LineStyle','none','FaceAlpha','0.1','DisplayName','Excluded Data');
+    %f(1)=fill([min(xlim),max(xlim),max(xlim),min(xlim)],[thresh_DBUR,thresh_DBUR,max(ylim),max(ylim)],'k','LineStyle','none','FaceAlpha','0.1','DisplayName','Excluded Data');
+    %f(2)=fill([thresh_SD,max(xlim),max(xlim),thresh_SD],[min(ylim),min(ylim),max(ylim),max(ylim)],'k','LineStyle','none','FaceAlpha','0.1','DisplayName','Excluded Data');
     
     if strcmp(MinOrMean,'Min')
         xlabel('Min SD')
@@ -462,13 +462,13 @@ if strcmp(location,'BM')
     end
     ylabel('DBUR')  
     
-    set( get( get( f(1), 'Annotation'), 'LegendInformation' ), 'IconDisplayStyle', 'off' );
-    set( get( get( f(2), 'Annotation'), 'LegendInformation' ), 'IconDisplayStyle', 'off' );
+    %set( get( get( f(1), 'Annotation'), 'LegendInformation' ), 'IconDisplayStyle', 'off' );
+    %set( get( get( f(2), 'Annotation'), 'LegendInformation' ), 'IconDisplayStyle', 'off' );
     legend('Location','east')
     
     cleanTicks
     if saveFigs
-        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\excl3.pdf')
+        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\excl2.pdf')
     end
 
     figure, hold on
