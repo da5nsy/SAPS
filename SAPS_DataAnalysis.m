@@ -426,7 +426,7 @@ thresh_SD = 0.01;
 thresh_DBUR = 0.018;
 
 if strcmp(location,'BM')
-    if strcmp(MinOrMean,'Min')
+    if strcmp(MinOrMean,'Mean')
         kstd=kstd_min;
     else
         kstd=kstd_mean;
@@ -468,7 +468,7 @@ if strcmp(location,'BM')
     
     cleanTicks
     if saveFigs
-        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\excl2.pdf')
+        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\excl1.pdf')
     end
 
     figure, hold on
