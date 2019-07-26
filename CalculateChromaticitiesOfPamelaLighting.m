@@ -3,6 +3,15 @@ clc, clear, close all
 
 %Add some text here that says what this does
 
+set(groot,'defaultfigureposition',[100 100 500 400]); 
+set(groot,'defaultLineLineWidth',2);
+set(groot,'defaultAxesFontName', 'Courier');
+set(groot,'defaultAxesFontSize',12);
+set(groot,'defaultFigureRenderer', 'painters') %renders pdfs as vectors
+set(groot,'defaultfigurecolor','white')
+
+saveFigs = 1;
+
 data_folder = 'C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data';
 
 %% Load lighting measurements
@@ -12,7 +21,7 @@ cd([data_folder,'\PAMELA\20180205 Spectra'])
 try
     load('PAMELA_ChromData')
 catch
-    [spectral_data,peak,lux_fromExcel,spd_uv,spd_xy]=read_UPRtek([data_folder,'PAMELA\20180205 Spectra'],[],[],[]);
+    [spectral_data,peak,lux_fromExcel,spd_uv,spd_xy]=read_UPRtek([data_folder,'\PAMELA\20180205 Spectra'],[],[],[]);
     S_spectral_data=[360,1,401];
     save('PAMELA_ChromData')
 end
@@ -79,6 +88,13 @@ else
     %ylabel('?')!!!!!!!!
 end
 legend
+axis tight
+ylim([0 1])
+yticks(ylim)
+
+if saveFigs    
+    save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\PAMELA_SPD2.pdf')
+end
 
 %% Calculate chromaticities
 

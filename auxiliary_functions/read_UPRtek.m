@@ -7,7 +7,7 @@
 % files due to unusual '.XLS' files (probably a more efficient way to do
 % this could be found).
 
-function [data,peak,lux,spd_uv, spd_xy] = read_UPRtek(folder,plt,sv_plt,norm)
+function [data,peak,lux,spd_uv,spd_xy] = read_UPRtek(folder,plt,sv_plt,norm)
 
 cd(folder)
 xlsx=dir('*.xlsx');

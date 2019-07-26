@@ -27,7 +27,7 @@ saveFigs = 0;
 % both raw and numerical data is useful, but they require different excel
 % addresses to specify data)
 
-location='PAMELA_20180205';  %changing this changes EVERYTHING
+location='BM';  %changing this changes EVERYTHING
 %'PAMELA' or 'GRANT' or 'BM' or '200s' or
 %'PAMELA_20180205' or 'basement_rgby_test' or
 %'basement_greyCard_test'
@@ -354,9 +354,20 @@ if strcmp(location,'PAMELA')
             save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\PAMELA_SPD.pdf')
         end
     end
-    
-    
 end
+
+% Abandoned this as it already exists in
+% CalculateChromaticitiesOfPamelaLighting.m
+%
+% if strcmp(location,'PAMELA_20180205')
+%     try
+%         load('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\PAMELA\20180205 Spectra\PAMELA_ChromData.mat')
+%     catch
+%         [spectral_data,peak,lux_fromExcel,spd_uv,spd_xy] = read_UPRtek('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS\data\PAMELA\20180205 Spectra',0,0,0);
+%         S_spectral_data = [360,1,401];
+%         save('PAMELA_ChromData.mat','spectral_data','peak','lux_fromExcel','spd_uv','S_spectral_data','spd_xy')
+%     end
+% end
 
 %% Assess variance
 
@@ -427,6 +438,8 @@ if strcmp(location,'BM')
     %scatter(kstd_mean,diffs); %plot all data, incl LM data, which is not
     %included below
     
+    ylim([0 0.07])
+    
     scatter(kstd(5:28),diffs(5:28),'r','filled','DisplayName','Room 77/78');
     scatter(kstd(29:54),diffs(29:54),'g','filled','DisplayName','Room 25');
     scatter(kstd(55:end),diffs(55:end),'b','filled','DisplayName','Great Court');
@@ -436,9 +449,7 @@ if strcmp(location,'BM')
     
     %plot([kstd(end),kstd(end)],[0,max(diffs)],'k:','DisplayName','Logical Threshold')
     
-    axis equal
-    
-    plot([thresh_SD,thresh_SD],[0,max(diffs)],'k:','DisplayName','SD > 0.01')
+    plot([thresh_SD,thresh_SD],[0,0.07],'k:','DisplayName','SD > 0.01')
     plot([min(xlim),max(xlim)],[thresh_DBUR,thresh_DBUR],'k:','DisplayName','DBUR > 0.018')
     
     f(1)=fill([min(xlim),max(xlim),max(xlim),min(xlim)],[thresh_DBUR,thresh_DBUR,max(ylim),max(ylim)],'k','LineStyle','none','FaceAlpha','0.1','DisplayName','Excluded Data');
@@ -449,15 +460,17 @@ if strcmp(location,'BM')
     else
         xlabel('Mean SD')
     end
-    ylabel('differences between unnanounced repeats')
+    ylabel('DBUR')  
     
     set( get( get( f(1), 'Annotation'), 'LegendInformation' ), 'IconDisplayStyle', 'off' );
     set( get( get( f(2), 'Annotation'), 'LegendInformation' ), 'IconDisplayStyle', 'off' );
-    legend('Location','best')
+    legend('Location','east')
     
-end
+    cleanTicks
+    if saveFigs
+        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\excl3.pdf')
+    end
 
-if strcmp(location,'BM')
     figure, hold on
     clc
     clear sdcoll
@@ -483,12 +496,15 @@ if strcmp(location,'BM')
     figure, hold on  %scatter excluding outliers
     scatter(sdcoll(sdcoll(:,1)<15,1),sdcoll(sdcoll(:,1)<15,2),'k','filled','MarkerFaceAlpha',.5)
     axis equal
-    xlim([0 inf])
-    ylim([0 inf])
+    xlim([0 12])
+    ylim([0 12])
     %title('(Excluding 4 outliers)')
-    xlabel('SD in x axis during checkerboard (pixels)')
-    ylabel('SD in y axis during checkerboard (pixels)')    
-    plot([0,10],[0,10],'k--')
+    xlabel({'SD in x axis', 'during checkerboard (pixels)'})
+    ylabel({'SD in y axis', 'during checkerboard (pixels)'})    
+    plot([0,12],[0,12],'k--')
+    if saveFigs
+        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\BMtouch.pdf')
+    end
 end
 
 %%
