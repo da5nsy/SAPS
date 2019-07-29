@@ -463,9 +463,9 @@ thresh_DBUR = 0.018;
 
 if strcmp(location,'BM')
     if strcmp(MinOrMean,'Mean')
-        kstd=kstd_min;
-    else
         kstd=kstd_mean;
+    else
+        kstd=kstd_min;
     end
     %figure
     %bar([kstd_mean;diffs]')
