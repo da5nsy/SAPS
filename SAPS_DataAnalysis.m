@@ -458,9 +458,9 @@ if strcmp(location,'PAMELA_20180205')
 end
 
 
-MinOrMean = 'Mean'; %'Min' or 'Mean'
+MinOrMean = 'Min'; %'Min' or 'Mean'
 thresh_SD = 0.01;
-thresh_DBUR = 0.018;
+thresh_DBUR = 0.04;
 
 if strcmp(location,'BM')
     if strcmp(MinOrMean,'Mean')
@@ -472,35 +472,37 @@ if strcmp(location,'BM')
     %bar([kstd_mean;diffs]')
     
     figure, hold on
-    %scatter(kstd_mean,diffs); %plot all data, incl LM data, which is not
-    %included below
-    
-    ylim([0 0.07])
-    
+    %scatter(kstd,diffs); %plot all data, incl LM data, which is not included below
     scatter(kstd(5:28),diffs(5:28),'r','filled','DisplayName','Room 77/78');
     scatter(kstd(29:54),diffs(29:54),'g','filled','DisplayName','Room 25');
-    scatter(kstd(55:end),diffs(55:end),'b','filled','DisplayName','Great Court');
-    
+    scatter(kstd(55:end),diffs(55:end),'b','filled','DisplayName','Great Court');    
     %scatter(kstd_mean(4),diffs(4),'k','filled','DisplayName','known dud');
     scatter(kstd(66),diffs(66),'y','filled','DisplayName','Baseline Data');
     
-    %plot([kstd(end),kstd(end)],[0,0.07],'k:','DisplayName','Logical Threshold')
+    plt_logThr = 1;
+    if plt_logThr
+        plot([kstd(end),kstd(end)],[0,0.07],'k:','DisplayName','Logical Threshold')
+    end
     
-    plot([thresh_SD,thresh_SD],[0,0.07],'k:','DisplayName','SD > 0.01')
-    plot([min(xlim),max(xlim)],[thresh_DBUR,thresh_DBUR],'k:','DisplayName','DBUR > 0.018')
-    
-    f(1)=fill([min(xlim),max(xlim),max(xlim),min(xlim)],[thresh_DBUR,thresh_DBUR,max(ylim),max(ylim)],'k','LineStyle','none','FaceAlpha','0.1','DisplayName','Excluded Data');
-    f(2)=fill([thresh_SD,max(xlim),max(xlim),thresh_SD],[min(ylim),min(ylim),max(ylim),max(ylim)],'k','LineStyle','none','FaceAlpha','0.1','DisplayName','Excluded Data');
+    plt_areas = 1;
+    if plt_areas
+        plot([thresh_SD,thresh_SD],[0,0.07],'k:','DisplayName',['SD > ',num2str(thresh_SD)])
+        plot([min(xlim),max(xlim)],[thresh_DBUR,thresh_DBUR],'k:','DisplayName',['DBUR > ', num2str(thresh_DBUR)])
+        f(1)=fill([min(xlim),max(xlim),max(xlim),min(xlim)],[thresh_DBUR,thresh_DBUR,max(ylim),max(ylim)],'k','LineStyle','none','FaceAlpha','0.1','DisplayName','Excluded Data');
+        f(2)=fill([thresh_SD,max(xlim),max(xlim),thresh_SD],[min(ylim),min(ylim),max(ylim),max(ylim)],'k','LineStyle','none','FaceAlpha','0.1','DisplayName','Excluded Data');
+        set( get( get( f(1), 'Annotation'), 'LegendInformation' ), 'IconDisplayStyle', 'off' );
+        set( get( get( f(2), 'Annotation'), 'LegendInformation' ), 'IconDisplayStyle', 'off' );
+    end
     
     if strcmp(MinOrMean,'Min')
         xlabel('Min SD')
     else
         xlabel('Mean SD')
     end
+    ylim([0,0.07])
     ylabel('DBUR')  
     
-    %set( get( get( f(1), 'Annotation'), 'LegendInformation' ), 'IconDisplayStyle', 'off' );
-    %set( get( get( f(2), 'Annotation'), 'LegendInformation' ), 'IconDisplayStyle', 'off' );
+
     legend('Location','east')
     
     %cleanTicks
@@ -536,18 +538,21 @@ if strcmp(location,'BM')
         ylabel('SD in y axis during checkerboard (pixels)')
     end
     
-    figure, hold on  %scatter excluding outliers
-    scatter(sdcoll(sdcoll(:,1)<15,1),sdcoll(sdcoll(:,1)<15,2),'k','filled','MarkerFaceAlpha',.5)
-    axis equal
-    xlim([0 12])
-    ylim([0 12])
-    %title('(Excluding 4 outliers)')
-    xlabel({'SD in x axis', 'during checkerboard (pixels)'})
-    ylabel({'SD in y axis', 'during checkerboard (pixels)'})    
-    plot([0,12],[0,12],'k--')
-
-    if saveFigs
-        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\BMtouch.pdf')
+    plt_ch = 0; %plot checkerboard
+    if plt_ch
+        figure, hold on  %scatter excluding outliers
+        scatter(sdcoll(sdcoll(:,1)<15,1),sdcoll(sdcoll(:,1)<15,2),'k','filled','MarkerFaceAlpha',.5)
+        axis equal
+        xlim([0 12])
+        ylim([0 12])
+        %title('(Excluding 4 outliers)')
+        xlabel({'SD in x axis', 'during checkerboard (pixels)'})
+        ylabel({'SD in y axis', 'during checkerboard (pixels)'})
+        plot([0,12],[0,12],'k--')
+        
+        if saveFigs
+            save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\BMtouch.pdf')
+        end
     end
 end
 
