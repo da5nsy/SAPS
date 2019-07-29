@@ -5,8 +5,7 @@ clc, clear, close all
 
 % To do list
 
-% Add Grant data (different run length, should just be able to change n)
-% Clean up data, find a way to threshold and recognise duds
+% Add Grant data (different run length, should just be able to change n
 % Replace dist function in BM plotting
 % Replace full paths with relative ones using rootdir and something like
 % 'fig_output_folder'
@@ -158,14 +157,16 @@ end
 
 %% Time analysis
 
-timeA = 0;
+timeA = 0; %time analysis
 if timeA    
     count = 1;
     for i=1:length(raw)
         if ~strcmp(files(i).participant,'dud')
             if ~strcmp(files(i).participant,'dummy')
-                time(:,count) = (cell2mat(raw{1,i}(1:40,6)));
-                count = count+1;
+                if and(strcmp(location,'BM'),i~=40) %a specific dud from the BM set
+                    time(:,count) = (cell2mat(raw{1,i}(1:40,6)));
+                    count = count+1;
+                end
             end
         end
     end
@@ -507,8 +508,10 @@ if strcmp(location,'BM')
         save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\excl3.pdf')
     end
 
-    figure, hold on
-    clc
+    plt_outL = 0;
+    if plt_outL
+        figure, hold on
+    end
     clear sdcoll
     for i=1:n2
         if strcmp(files(i).participant, 'Public') %only include public (also excludes dummy)
@@ -516,18 +519,22 @@ if strcmp(location,'BM')
                 if ~exist('sdcoll','var'),sdcoll=[];end %collect sd
                 %sdcoll=[sdcoll; nanstd(TabletData(end-9:end,11,i)),nanstd((TabletData(end-9:end,12,i)))];
                 sdcoll=[sdcoll; nanstd(Xdp(:,i)),nanstd(Ydp(:,i))];
-                if sdcoll(end,1)>15 %annotate outliers
-                    text(sdcoll(end,1),sdcoll(end,2),string(i),'FontSize',14)
+                if plt_outL
+                    if sdcoll(end,1)>15 %annotate outliers
+                        text(sdcoll(end,1),sdcoll(end,2),string(i),'FontSize',14)
+                    end
                 end
             end
         end
     end
-    scatter(sdcoll(:,1),sdcoll(:,2))
-    axis equal
-    xlim([0 inf])
-    ylim([0 inf])    
-    xlabel('SD in x axis during checkerboard (pixels)')
-    ylabel('SD in y axis during checkerboard (pixels)')
+    if plt_outL
+        scatter(sdcoll(:,1),sdcoll(:,2))
+        axis equal
+        xlim([0 inf])
+        ylim([0 inf])
+        xlabel('SD in x axis during checkerboard (pixels)')
+        ylabel('SD in y axis during checkerboard (pixels)')
+    end
     
     figure, hold on  %scatter excluding outliers
     scatter(sdcoll(sdcoll(:,1)<15,1),sdcoll(sdcoll(:,1)<15,2),'k','filled','MarkerFaceAlpha',.5)
