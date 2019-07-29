@@ -156,6 +156,42 @@ for i=1:n2
     
 end
 
+%% Time analysis
+
+timeA = 0;
+if timeA    
+    count = 1;
+    for i=1:length(raw)
+        if ~strcmp(files(i).participant,'dud')
+            if ~strcmp(files(i).participant,'dummy')
+                time(:,count) = (cell2mat(raw{1,i}(1:40,6)));
+                count = count+1;
+            end
+        end
+    end
+    
+    figure,
+    %plot(time) %plots everything - messy
+    plot(nanmedian(time,2),'k-o') %takes the median, ignoring NaNs (which occur when it times out because someone took too long)
+    ylim([0,10])
+    xlabel('Trial number')
+    ylabel('Median response time (seconds)')
+    
+    if saveFigs
+        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\mediantime.pdf')
+    end
+    
+    figure,
+    %hist(sum(time(2:end,:)),50) %seconds
+    histogram(sum(time(2:end,:)/60),50,'FaceColor','k') %minutes
+    xlabel('Total time taken (minutes)')
+    %yticks([0 max(ylim)])
+    ylabel('number of observers')
+    if saveFigs
+        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\timeHistogram.pdf')
+    end
+end
+
 %% Plot u'v'
 
 ciefile = fullfile('C:','Users','cege-user','Dropbox','UCL','Data',...
@@ -421,7 +457,7 @@ if strcmp(location,'PAMELA_20180205')
 end
 
 
-MinOrMean = 'Min'; %'Min' or 'Mean'
+MinOrMean = 'Mean'; %'Min' or 'Mean'
 thresh_SD = 0.01;
 thresh_DBUR = 0.018;
 
@@ -466,7 +502,7 @@ if strcmp(location,'BM')
     %set( get( get( f(2), 'Annotation'), 'LegendInformation' ), 'IconDisplayStyle', 'off' );
     legend('Location','east')
     
-    cleanTicks
+    %cleanTicks
     if saveFigs
         save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\excl3.pdf')
     end
