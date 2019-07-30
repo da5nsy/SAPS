@@ -254,7 +254,8 @@ if strcmp(location,'BM')
         out(i+1,1)=str2double(xFile.getElementsByTagName('row').item(i).getAttribute('wavelength'));
     end
     
-    spd=out(28:end,:);
+    %spd=out(28:end,:);
+    spd = out;
     
     %for new data, where this is 10 of each datasets
     spd_all=spd; %backup all data before averaging
@@ -264,11 +265,20 @@ if strcmp(location,'BM')
     spd(:,4)=mean(spd(:,22:end),2);
     spd=spd(:,1:4);
     
+    load T_CIE_Y2.mat
+    spd_interp = interp1(spd(:,1),spd(:,2:4),380:1.7:768);
+    spd_spline = SplineSpd([380:1.7:768]',spd_interp,S_CIE_Y2);
+    figure, hold on
+    plot(SToWls(S_CIE_Y2),spd_spline)
+    plot(SToWls(S_CIE_Y2),T_CIE_Y2)
+    %BMlum = 
+    
     plt_spd = 0;
     if plt_spd
         figure, hold on
         for i=[4,3,2]
-            plot(spd(:,1),spd(:,i)/max(spd(:,i)))
+            plot(spd(:,1),spd(:,i)/max(spd(:,i))) %normalised to 1            
+            %plot(spd(:,1),spd(:,i)) %not normalised (change ylabel)
         end
         
         legend({'Rooms 77/78','Room 25','Great Court'},'Location','northoutside')
@@ -419,6 +429,10 @@ kstd_mean=mean([kstd_u;kstd_v]);
 kstd_min=min([kstd_u;kstd_v]);
 diffs=squeeze(sqrt((TabletData(3,11,:)-TabletData(8,11,:)).^2+(TabletData(3,12,:)-TabletData(8,12,:)).^2))';
 
+MinOrMean = 'Min'; %Use the minimum SD or the mean SD ('Min' or 'Mean')
+thresh_SD = 0.01; %Threshold for exclusion
+thresh_DBUR = 0.04; %Threshold for exclusion
+
 if strcmp(location,'PAMELA')
     %calc means for DG data for specific lighting conditions
     Mu_u_CW=mean(Mu_ind_u([1,2,6,8,15,17]));
@@ -430,37 +444,68 @@ if strcmp(location,'PAMELA')
 end
 
 if strcmp(location,'PAMELA_20180205')
-    figure, hold on
-    %scatter(1,kstd_mean(1),'k','filled');
-    plot([1,9],[kstd_mean(1),kstd_mean(1)],'k--','DisplayName','Real touch baseline data');
-    plot([1,9],[kstd_mean(end),kstd_mean(end)],'k:','DisplayName','Computed baseline data');
-    sc(1)=scatter(1:9,kstd_mean(2:10),'r','filled','DisplayName','MH1');
-    sc(2)=scatter(1:9,kstd_mean(11:19),'g','filled','DisplayName','ML');
-    sc(3)=scatter(1:9,kstd_mean(20:28),'b','filled','DisplayName','MH2');
-    xlim([0 10])
-    xticks(1:9)
-    xlabel('Observer')
-    ylabel('Mean SD in u'' and v''')
-    ylim([0, 0.02])
-    yticks([0, 0.02])
-    % %Replace numbers with participant identifiers
-    %xticklabels({[],files([2:10]).participant})
-    legend
     
-    % %Plot DBUR
+    if strcmp(MinOrMean,'Mean')
+        kstd=kstd_mean;
+    else
+        kstd=kstd_min;
+    end
+    %     figure, hold on
+    %     %scatter(1,kstd_mean(1),'k','filled');
+    %     plot([1,9],[kstd_mean(1),kstd_mean(1)],'k--','DisplayName','Real touch baseline data');
+    %     plot([1,9],[kstd_mean(end),kstd_mean(end)],'k:','DisplayName','Computed baseline data');
+    %     sc(1)=scatter(1:9,kstd_mean(2:10),'r','filled','DisplayName','MH1');
+    %     sc(2)=scatter(1:9,kstd_mean(11:19),'g','filled','DisplayName','ML');
+    %     sc(3)=scatter(1:9,kstd_mean(20:28),'b','filled','DisplayName','MH2');
+    %     xlim([0 10])
+    %     xticks(1:9)
+    %     xlabel('Observer')
+    %     ylabel('Mean SD in u'' and v''')
+    %     ylim([0, 0.02])
+    %     yticks([0, 0.02])
+    %     % %Replace numbers with participant identifiers
+    %     %xticklabels({[],files([2:10]).participant})
+    %     legend
+    %
+    %     % %Plot DBUR
     %     figure, hold on
     %     scatter(1:9,diffs(2:10),'r','filled','DisplayName','MH1');
     %     scatter(1:9,diffs(11:19),'g','filled','DisplayName','ML');
     %     scatter(1:9,diffs(20:28),'b','filled','DisplayName','MH2');
+    
+    figure, hold on
+    
+    scatter(kstd(2:10),diffs(2:10),'r','filled','DisplayName','MH1');
+    scatter(kstd(11:19),diffs(11:19),'g','filled','DisplayName','ML');
+    scatter(kstd(20:28),diffs(20:28),'b','filled','DisplayName','MH2');
+    plt_areas = 1;
+    xlim([0 0.025])
+    ylim([0 0.07])
+    if plt_areas
+        plot([thresh_SD,thresh_SD],[0,0.07],'k:','DisplayName',['SD > ',num2str(thresh_SD)])
+        plot([min(xlim),max(xlim)],[thresh_DBUR,thresh_DBUR],'k:','DisplayName',['DBUR > ', num2str(thresh_DBUR)])
+        f(1)=fill([min(xlim),max(xlim),max(xlim),min(xlim)],[thresh_DBUR,thresh_DBUR,max(ylim),max(ylim)],'k','LineStyle','none','FaceAlpha','0.1','DisplayName','Excluded Data');
+        f(2)=fill([thresh_SD,max(xlim),max(xlim),thresh_SD],[min(ylim),min(ylim),max(ylim),max(ylim)],'k','LineStyle','none','FaceAlpha','0.1','DisplayName','Excluded Data');
+        set( get( get( f(1), 'Annotation'), 'LegendInformation' ), 'IconDisplayStyle', 'off' );
+        set( get( get( f(2), 'Annotation'), 'LegendInformation' ), 'IconDisplayStyle', 'off' );
+    end
+    legend('Location','best','Autoupdate','off') 
+    for i=1:9
+        plot([kstd(i+1),kstd(i+10),kstd(i+19),kstd(i+1)],[diffs(i+1),diffs(i+10),diffs(i+19),diffs(i+1)],'k','LineWidth',1)
+    end
+    
+    if strcmp(MinOrMean,'Min')
+        xlabel('Min SD')
+    else
+        xlabel('Mean SD')
+    end
+    ylim([0,0.07])
+    ylabel('DBUR')
+    
     if saveFigs
-        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\exp3excl.pdf')
+        save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\exp3excl2.pdf')
     end
 end
-
-
-MinOrMean = 'Min'; %'Min' or 'Mean'
-thresh_SD = 0.01;
-thresh_DBUR = 0.04;
 
 if strcmp(location,'BM')
     if strcmp(MinOrMean,'Mean')
@@ -500,12 +545,9 @@ if strcmp(location,'BM')
         xlabel('Mean SD')
     end
     ylim([0,0.07])
-    ylabel('DBUR')  
-    
-
+    ylabel('DBUR')      
     legend('Location','east')
     
-    %cleanTicks
     if saveFigs
         save2pdf('C:\Users\cege-user\Dropbox\UCL\Ongoing Work\Thesis\figs\tablet\excl3.pdf')
     end
